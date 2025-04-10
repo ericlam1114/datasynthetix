@@ -29,15 +29,29 @@ export async function createUserDirectory(userId, uploadsDir) {
 
 /**
  * Save a file to disk
- * @param {Buffer} buffer - The file buffer to save
- * @param {string} filePath - The path where the file should be saved
+ * @param {File|Blob|Buffer} file - The file to save
+ * @param {string} filePath - The path to save the file to
  * @returns {Promise<void>}
  */
-export async function saveFileToDisk(buffer, filePath) {
+export async function saveFileToDisk(file, filePath) {
   try {
-    // Ensure the directory exists
-    const fileDir = path.dirname(filePath);
-    await ensureUploadsDir(fileDir);
+    console.log(`Saving file to ${filePath}`);
+    
+    // Convert File/Blob to Buffer if needed
+    let buffer;
+    
+    if (file instanceof File || file instanceof Blob) {
+      // Handle web File or Blob object
+      buffer = Buffer.from(await file.arrayBuffer());
+    } else if (Buffer.isBuffer(file)) {
+      // Already a buffer
+      buffer = file;
+    } else if (typeof file === 'string') {
+      // Handle string data
+      buffer = Buffer.from(file);
+    } else {
+      throw new Error(`Unsupported file type: ${typeof file}`);
+    }
     
     // Write the file
     await fs.writeFile(filePath, buffer);

@@ -85,6 +85,10 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
     classifiedClauses: 0,
     generatedVariants: 0,
   });
+  const [files, setFiles] = useState([]);
+  const [uploadErrors, setUploadErrors] = useState({});
+  const [useOcr, setUseOcr] = useState(false);
+  const [prioritizeImportant, setPrioritizeImportant] = useState(false);
 
   // Expose the handleProcess function to parent components
   useImperativeHandle(ref, () => ({
@@ -287,6 +291,7 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
       formData.append("overlap", overlap);
       formData.append("outputFormat", outputFormat);
       formData.append("classFilter", classFilter);
+      formData.append("prioritizeImportant", prioritizeImportant);
       formData.append("jobId", jobId); // Add job ID to form data
 
       // Add auth token if available
@@ -1277,6 +1282,25 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
                               Filter clauses by importance classification
                             </p>
                           </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="prioritizeImportant"
+                              checked={prioritizeImportant}
+                              onCheckedChange={setPrioritizeImportant}
+                            />
+                            <label
+                              htmlFor="prioritizeImportant"
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                              Prioritize Important Content
+                            </label>
+                          </div>
+                          <p className="text-xs text-gray-500 ml-6">
+                            Focuses token usage on critical and important content when token limits are reached
+                          </p>
                         </div>
                       </div>
                     )}

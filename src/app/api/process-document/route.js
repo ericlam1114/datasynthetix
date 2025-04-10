@@ -598,6 +598,7 @@ export async function POST(request) {
         overlap: parseInt(formData.get("overlap") || 100, 10),
         outputFormat: formData.get("outputFormat") || "jsonl",
         classFilter: formData.get("classFilter") || "all",
+        prioritizeImportant: formData.get("prioritizeImportant") === "true",
         onProgress: (stage, stats) => {
           // Update processing status in your database
           try {
@@ -786,6 +787,7 @@ export async function POST(request) {
           overlap: parseInt(formData.get("overlap") || 100, 10),
           outputFormat: formData.get("outputFormat") || "jsonl",
           classFilter: formData.get("classFilter") || "all",
+          prioritizeImportant: formData.get("prioritizeImportant") === "true",
         },
       };
 
@@ -1003,5 +1005,193 @@ export async function GET(request) {
       { error: "Failed to serve file" },
       { status: 500 }
     );
+  }
+}
+
+/**
+ * Process an existing document from Firestore
+ */
+async function processExistingDocument(userId, documentId, processingOptions, jobId, hasAdminCredentials) {
+  console.log(`Processing existing document with ID: ${documentId}`);
+  
+  try {
+    // Get document from Firestore
+    let documentData = null;
+    let db;
+    
+    if (hasAdminCredentials) {
+      try {
+        const adminDb = await getAdminFirestore();
+        if (adminDb) {
+          console.log("Getting Firestore from Admin SDK");
+          const docRef = adminDb.collection("documents").doc(documentId);
+          const docSnap = await docRef.get();
+          
+          if (docSnap.exists) {
+            documentData = docSnap.data();
+            console.log(`Document exists. Fields: ${Object.keys(documentData).join(', ')}`);
+          } else {
+            console.error(`Document ${documentId} not found in Firestore`);
+          }
+        }
+      } catch (adminError) {
+        console.error("Admin Firestore document retrieval failed:", adminError);
+      }
+    }
+    
+    // Fall back to client SDK if needed
+    if (!documentData) {
+      console.log("Falling back to client SDK");
+      db = getFirestore();
+      const docRef = doc(db, "documents", documentId);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        documentData = docSnap.data();
+        console.log(`Document exists via client SDK. Fields: ${Object.keys(documentData).join(', ')}`);
+      } else {
+        throw new Error(`Document ${documentId} not found`);
+      }
+    }
+    
+    // Check if document belongs to user
+    if (documentData.userId !== userId && !hasAdminCredentials) {
+      throw new Error("Not authorized to process this document");
+    }
+    
+    // Get text content from document
+    let text = documentData.content || documentData.text || "";
+    console.log(`Retrieved document content: ${text.length} characters`);
+    console.log(`Content field name: ${documentData.content ? 'content' : (documentData.text ? 'text' : 'neither')}`);
+    
+    // If there's a file path but no content, try to get from storage
+    if ((!text || text.length < 10) && documentData.filePath) {
+      console.log(`Document has filePath: ${documentData.filePath}. Attempting to retrieve from storage.`);
+      
+      try {
+        // Try to get file from Firebase Storage
+        let fileBuffer;
+        
+        if (hasAdminCredentials) {
+          // Try admin storage first
+          try {
+            const adminStorage = await getAdminStorage();
+            if (adminStorage) {
+              console.log("Getting file using Admin Storage SDK");
+              const bucket = adminStorage.bucket(process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
+              const file = bucket.file(documentData.filePath);
+              
+              // Check if file exists
+              const [exists] = await file.exists();
+              if (exists) {
+                console.log("File exists in storage, downloading...");
+                const [fileContents] = await file.download();
+                fileBuffer = fileContents;
+              } else {
+                console.error("File does not exist in storage:", documentData.filePath);
+              }
+            }
+          } catch (adminStorageError) {
+            console.error("Admin Storage file retrieval failed:", adminStorageError);
+          }
+        }
+        
+        // Fall back to client storage if needed
+        if (!fileBuffer) {
+          console.log("Falling back to client Storage SDK");
+          const storage = getStorage();
+          const fileRef = ref(storage, documentData.filePath);
+          
+          try {
+            // Get download URL
+            const url = await getDownloadURL(fileRef);
+            console.log("File download URL obtained");
+            
+            // Fetch the file
+            const response = await fetch(url);
+            if (response.ok) {
+              const arrayBuffer = await response.arrayBuffer();
+              fileBuffer = Buffer.from(arrayBuffer);
+              console.log(`File downloaded successfully: ${fileBuffer.length} bytes`);
+            } else {
+              console.error("File fetch failed:", response.status, response.statusText);
+            }
+          } catch (clientStorageError) {
+            console.error("Client Storage file retrieval failed:", clientStorageError);
+          }
+        }
+        
+        // Extract text from file if we got it
+        if (fileBuffer && fileBuffer.length > 0) {
+          console.log(`File retrieved, size: ${fileBuffer.length} bytes`);
+          
+          const fileName = documentData.fileName || documentData.name || path.basename(documentData.filePath);
+          const fileType = documentData.contentType || documentData.type || '';
+          
+          console.log(`File name: ${fileName}, type: ${fileType}`);
+          
+          // Extract text based on file type
+          if (fileType.includes('pdf') || fileName.toLowerCase().endsWith('.pdf')) {
+            console.log("Extracting text from PDF");
+            text = await extractTextFromPdf(fileBuffer, { useOcr: processingOptions.ocr });
+          } else if (fileType.includes('text/plain') || fileName.toLowerCase().endsWith('.txt')) {
+            console.log("Extracting text from plain text");
+            text = extractTextFromTxt(fileBuffer);
+          } else if (fileType.includes('word') || fileName.toLowerCase().endsWith('.docx')) {
+            console.log("Extracting text from Word document");
+            const result = await mammoth.extractRawText({ buffer: fileBuffer });
+            text = result.value;
+          } else {
+            console.warn(`Unsupported file type: ${fileType}`);
+          }
+          
+          console.log(`Text extracted from file: ${text.length} characters`);
+          
+          // Update the document with the extracted text if we got some
+          if (text && text.length > 25) {
+            console.log("Updating document with extracted text");
+            if (hasAdminCredentials) {
+              try {
+                const adminDb = await getAdminFirestore();
+                if (adminDb) {
+                  await adminDb.collection("documents").doc(documentId).update({
+                    content: text,
+                    updatedAt: new Date()
+                  });
+                }
+              } catch (updateError) {
+                console.error("Failed to update document with extracted text:", updateError);
+              }
+            } else {
+              const db = getFirestore();
+              await updateDoc(doc(db, "documents", documentId), {
+                content: text,
+                updatedAt: serverTimestamp()
+              });
+            }
+          }
+        }
+      } catch (storageError) {
+        console.error("Error retrieving file from storage:", storageError);
+      }
+    }
+    
+    // Check if text extraction worked
+    const textValidation = validateExtractedText(text);
+    if (!textValidation.valid) {
+      console.error(`Text extraction failed or produced insufficient content. Text length: ${text?.length || 0} characters`);
+      return null;
+    }
+    
+    return {
+      documentId,
+      text,
+      fileName: documentData.fileName || documentData.name || "",
+      fileType: documentData.contentType || documentData.type || "",
+    };
+    
+  } catch (error) {
+    console.error("Error processing existing document:", error);
+    return null;
   }
 }

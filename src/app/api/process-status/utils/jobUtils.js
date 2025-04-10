@@ -1,4 +1,4 @@
-import { getFirestore, collection, doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
+import { getFirestore, collection, doc, setDoc, serverTimestamp, getDoc, updateDoc } from "firebase/firestore";
 import { getAdminFirestore } from "../../../../lib/firebase-admin";
 
 /**
@@ -88,5 +88,68 @@ export async function getProcessingJob(userId, jobId) {
   } catch (error) {
     console.error("Error getting processing job:", error);
     return null;
+  }
+}
+
+/**
+ * Updates the status of a processing job in Firestore
+ * @param {string} userId - The user ID associated with the job
+ * @param {string} jobId - The ID of the job to update
+ * @param {string} status - The new status of the job
+ * @param {Object} additionalData - Additional data to update in the job
+ * @returns {Promise<boolean>} - True if the job was updated successfully, false otherwise
+ */
+export async function updateJobStatus(userId, jobId, status, additionalData = {}) {
+  try {
+    if (!jobId) {
+      console.error("Job ID is required to update status");
+      return false;
+    }
+    
+    if (!userId) {
+      console.error("User ID is required to update status");
+      return false;
+    }
+
+    console.log(`Updating job ${jobId} for user ${userId} to status: ${status}`);
+    
+    // Update via saveProcessingJob which supports both Admin and Client SDKs
+    try {
+      await saveProcessingJob(userId, {
+        jobId,
+        userId,
+        status,
+        ...additionalData,
+        updatedAt: new Date().toISOString()
+      });
+      
+      console.log(`Successfully updated job ${jobId} status to ${status}`);
+      return true;
+    } catch (error) {
+      console.error(`Error updating job status via saveProcessingJob: ${error.message}`);
+      
+      // Fall back to direct method if saveProcessingJob fails
+      try {
+        const db = getFirestore();
+        const jobRef = doc(db, "processingJobs", jobId);
+        
+        // Update the job status
+        await updateDoc(jobRef, {
+          status,
+          userId,
+          ...additionalData,
+          updatedAt: serverTimestamp()
+        });
+        
+        console.log(`Successfully updated job ${jobId} status to ${status} using client SDK`);
+        return true;
+      } catch (clientError) {
+        console.error(`Error updating job with client SDK: ${clientError.message}`);
+        return false;
+      }
+    }
+  } catch (error) {
+    console.error(`Error updating job ${jobId} status:`, error);
+    return false;
   }
 } 
