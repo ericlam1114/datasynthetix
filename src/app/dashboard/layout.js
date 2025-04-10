@@ -32,7 +32,7 @@ export default function DashboardLayout({ children }) {
   
   const routes = [
     { path: '/dashboard', label: 'Dashboard', icon: Home },
-    { path: '/dashboard/upload', label: 'Create Synthetic Data', icon: Upload },
+    { path: '/dashboard/upload', label: 'Upload', icon: Upload },
     { path: '/dashboard/datasets', label: 'My Datasets', icon: FileText },
     { path: '/dashboard/credits', label: 'Credits', icon: CreditCard },
     { path: '/dashboard/settings', label: 'Settings', icon: Settings },

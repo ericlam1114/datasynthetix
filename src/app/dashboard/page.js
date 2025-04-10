@@ -260,7 +260,7 @@ export default function DashboardPage() {
             <Button asChild>
               <Link href="/dashboard/upload">
                 <Upload className="h-4 w-4 mr-2" />
-                Upload Document
+                Upload
               </Link>
             </Button>
           </div>
