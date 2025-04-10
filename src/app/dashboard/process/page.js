@@ -1,8 +1,7 @@
-// In src/app/dashboard/process/page.js
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import DocumentProcessor from '../../../components/document-processor';
@@ -16,8 +15,12 @@ export default function ProcessDocumentPage() {
   const [document, setDocument] = useState(null);
   const [loading, setLoading] = useState(true);
   
-  // Get document ID from URL params
+  // Use a ref to store reference to the DocumentProcessor
+  const processorRef = useRef(null);
+  
+  // Get document ID and autoStart from URL params
   const documentId = searchParams.get('documentId');
+  const autoStart = searchParams.get('autoStart');
   
   useEffect(() => {
     async function fetchDocument() {
@@ -42,6 +45,19 @@ export default function ProcessDocumentPage() {
     
     fetchDocument();
   }, [documentId, user, router]);
+
+  // Auto-start processing if requested and document is loaded
+  useEffect(() => {
+    // Only run this effect when document is loaded and autoStart is true
+    if (autoStart === 'true' && document && processorRef.current && processorRef.current.handleProcess) {
+      // Small delay to ensure the component is fully rendered
+      const timer = setTimeout(() => {
+        processorRef.current.handleProcess();
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [autoStart, document]);
   
   return (
     <div className="space-y-6">
@@ -63,7 +79,10 @@ export default function ProcessDocumentPage() {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
         </div>
       ) : (
-        <DocumentProcessor initialDocument={document} />
+        <DocumentProcessor 
+          initialDocument={document} 
+          ref={processorRef}
+        />
       )}
     </div>
   );

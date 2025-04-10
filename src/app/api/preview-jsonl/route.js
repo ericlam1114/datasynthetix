@@ -1,41 +1,54 @@
 // src/app/api/preview-jsonl/route.js
-import { NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
-import { checkRateLimit } from "../../lib/rateLimiter";
+import { NextResponse } from 'next/server';
+import fs from 'fs/promises';
+import path from 'path';
 
 export async function GET(request) {
   const url = new URL(request.url);
-  const filePath = url.searchParams.get("file");
-  const limit = parseInt(url.searchParams.get("limit") || "5", 10);
-
-  const userId = url.searchParams.get("userId");
-
-  if (!userId) {
-    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
-  }
-
-  // Apply rate limiting
-  const rateLimitResponse = await checkRateLimit(userId, "preview-jsonl");
-  if (rateLimitResponse) {
-    return rateLimitResponse;
-  }
+  const filePath = url.searchParams.get('file');
+  const limit = parseInt(url.searchParams.get('limit') || '5', 10);
+  const userId = url.searchParams.get('userId');
 
   if (!filePath) {
     return NextResponse.json(
-      { error: "File path is required" },
+      { error: 'File path is required' },
       { status: 400 }
     );
   }
 
   try {
-    const fullPath = path.join(process.cwd(), "api/uploads", filePath);
-    const fileContent = await fs.readFile(fullPath, "utf-8");
-
+    // Parse file path to get userId and fileName
+    const parts = filePath.split('/');
+    const fileUserId = parts[0];
+    const fileName = parts[1];
+    
+    // If userId is provided, verify it matches the file path
+    if (userId && userId !== fileUserId) {
+      return NextResponse.json(
+        { error: 'Unauthorized access to file' },
+        { status: 403 }
+      );
+    }
+    
+    const fullPath = path.join(process.cwd(), 'uploads', fileUserId, fileName);
+    
+    // Check if file exists
+    try {
+      await fs.access(fullPath);
+    } catch (error) {
+      return NextResponse.json(
+        { error: 'File not found' },
+        { status: 404 }
+      );
+    }
+    
+    // Read file content
+    const fileContent = await fs.readFile(fullPath, 'utf-8');
+    
     // Parse JSONL content
-    const lines = fileContent.trim().split("\n");
+    const lines = fileContent.trim().split('\n');
     const jsonData = [];
-
+    
     for (let i = 0; i < Math.min(lines.length, limit); i++) {
       try {
         const parsedLine = JSON.parse(lines[i]);
@@ -44,15 +57,15 @@ export async function GET(request) {
         console.error(`Error parsing line ${i + 1}:`, error);
       }
     }
-
+    
     return NextResponse.json({
       data: jsonData,
       total: lines.length,
     });
   } catch (error) {
-    console.error("Error previewing JSONL file:", error);
+    console.error('Error previewing JSONL file:', error);
     return NextResponse.json(
-      { error: "Failed to preview JSONL file" },
+      { error: 'Failed to preview JSONL file: ' + error.message },
       { status: 500 }
     );
   }

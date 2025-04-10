@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   getUserDocumentsSafe,
@@ -28,6 +29,7 @@ import {
 } from "lucide-react";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const { user } = useAuth();
   const [documents, setDocuments] = useState([]);
   const [datasets, setDatasets] = useState([]);
@@ -64,6 +66,16 @@ export default function DashboardPage() {
 
   const handleRetry = () => {
     setIsRetrying(true);
+  };
+
+  // Simply navigate to the process page with auto-start parameter
+  const handleProcessDocument = (docId) => {
+    router.push(`/dashboard/process?documentId=${docId}&autoStart=true`);
+  };
+
+  const handleDownloadDataset = (filePath) => {
+    // Open the download in a new tab/window
+    window.open(`/api/process-document?file=${filePath}`, '_blank');
   };
 
   if (loading) {
@@ -193,9 +205,7 @@ export default function DashboardPage() {
                       variant="outline"
                       size="sm"
                       className="w-full"
-                      onClick={() =>
-                        router.push(`/dashboard/process?documentId=${doc.id}`)
-                      }
+                      onClick={() => handleProcessDocument(doc.id)}
                     >
                       Generate Data
                     </Button>
@@ -248,7 +258,12 @@ export default function DashboardPage() {
                     </div>
                   </CardContent>
                   <CardFooter className="pt-0">
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => handleDownloadDataset(dataset.filePath)}
+                    >
                       Download JSONL
                     </Button>
                   </CardFooter>

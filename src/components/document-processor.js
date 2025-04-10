@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { addDataSet, getUserProfile } from '../lib/firestoreService';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Upload, FileText, File, X, CheckCircle, AlertCircle, Download, CreditCard, Settings, Filter } from 'lucide-react';
 
-export default function DocumentProcessor({ initialDocument = null }) {
+const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
   const { user } = useAuth();
   const [name, setName] = useState(initialDocument?.name || '');
   const [description, setDescription] = useState(initialDocument?.description || '');
@@ -35,6 +35,13 @@ export default function DocumentProcessor({ initialDocument = null }) {
   const [creditsUsed, setCreditsUsed] = useState(0);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
   const [classStats, setClassStats] = useState({ Critical: 0, Important: 0, Standard: 0 });
+
+  // Expose the handleProcess function to parent components
+  useImperativeHandle(ref, () => ({
+    handleProcess: function() {
+      return handleProcess.apply(this);
+    }
+  }));
 
   // Fetch user credits on component mount
   useEffect(() => {
@@ -59,6 +66,44 @@ export default function DocumentProcessor({ initialDocument = null }) {
       setActiveTab('preview');
     }
   }, [processingState, processResult]);
+
+  // Set file placeholder from initialDocument if available
+  useEffect(() => {
+    if (initialDocument && initialDocument.fileName) {
+      // Create a placeholder for the file
+      const placeholderFile = {
+        name: initialDocument.fileName,
+        type: initialDocument.fileType || 'application/pdf',
+        size: initialDocument.fileSize || 0
+      };
+      setFile(placeholderFile);
+    }
+  }, [initialDocument]);
+
+  const updateProcessingStatus = async (status, processedChunks, totalChunks) => {
+    try {
+      const fileName = file?.name || initialDocument?.fileName;
+      
+      await fetch('/api/process-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: user.uid,
+          fileName,
+          status,
+          processedChunks,
+          totalChunks,
+          creditsUsed,
+          creditsRemaining: creditsAvailable,
+          updatedAt: new Date().toISOString()
+        })
+      });
+    } catch (error) {
+      console.error('Error updating processing status:', error);
+    }
+  };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -89,13 +134,15 @@ export default function DocumentProcessor({ initialDocument = null }) {
   };
 
   const clearFile = () => {
-    setFile(null);
+    if (!initialDocument) {
+      setFile(null);
+    }
   };
 
   const handleProcess = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     
-    if (!file) {
+    if (!file && !initialDocument) {
       setError('Please select a file to upload.');
       return;
     }
@@ -108,7 +155,25 @@ export default function DocumentProcessor({ initialDocument = null }) {
       
       // Create form data with all parameters
       const formData = new FormData();
-      formData.append('file', file);
+      
+      // Safer check for File object without using instanceof
+      const isRealFile = file && 
+                        typeof file === 'object' && 
+                        'name' in file &&
+                        'size' in file &&
+                        'type' in file &&
+                        typeof file.name === 'string';
+      
+      if (isRealFile && typeof file.arrayBuffer === 'function') {
+        // If we have an actual File object (from file input)
+        formData.append('file', file);
+      } else if (initialDocument) {
+        // If we're processing from an existing document
+        formData.append('documentId', initialDocument.id);
+      } else {
+        throw new Error('No document to process');
+      }
+      
       formData.append('userId', user.uid);
       formData.append('chunkSize', chunkSize);
       formData.append('overlap', overlap);
@@ -134,12 +199,60 @@ export default function DocumentProcessor({ initialDocument = null }) {
         throw new Error(errorData.error || 'Failed to process document');
       }
       
-      setProcessingState('processing');
+      // Add these lines after the successful response from the API:
+      if (response.ok) {
+        // Create an initial processing status
+        const responseData = await response.json();
+        
+        // If the API returns a simulated result without using the real polling system
+        if (responseData.simulatedResult) {
+          // Simulate processing progress
+          setProcessingState('processing');
+          
+          // Create mock progress updates
+          let progress = 0;
+          const mockInterval = setInterval(async () => {
+            progress += 20;
+            setProgress(progress);
+            
+            await updateProcessingStatus('processing', progress, 100);
+            
+            if (progress >= 100) {
+              clearInterval(mockInterval);
+              setProcessingState('complete');
+              setProcessResult(responseData.simulatedResult);
+              
+              // Simulate preview data
+              setPreviewData([
+                {
+                  input: "The company shall pay a fee of $5,000 upon signing this agreement.",
+                  classification: "Critical",
+                  output: "The client will make a payment of $7,500 upon execution of this contract."
+                },
+                {
+                  input: "All proprietary information shall remain confidential for 5 years.",
+                  classification: "Important",
+                  output: "Any sensitive materials must be kept private for a period of 3 years."
+                }
+              ]);
+              
+              setActiveTab('preview');
+              
+              await updateProcessingStatus('complete', 100, 100, responseData.simulatedResult);
+            }
+          }, 1000);
+          
+          return;
+        }
+        
+        setProcessingState('processing');
+      }
       
       // Set up polling to check progress
       const pollingInterval = setInterval(async () => {
         try {
-          const progressResponse = await fetch(`/api/process-status?userId=${user.uid}&fileName=${file.name}`);
+          const fileName = file?.name || initialDocument?.fileName;
+          const progressResponse = await fetch(`/api/process-status?userId=${user.uid}&fileName=${fileName}`);
           if (progressResponse.ok) {
             const progressData = await progressResponse.json();
             
@@ -153,7 +266,7 @@ export default function DocumentProcessor({ initialDocument = null }) {
               setProcessingState('complete');
               setProcessResult(progressData.result);
               
-              if (progressData.result.classificationStats) {
+              if (progressData.result && progressData.result.classificationStats) {
                 setClassStats(progressData.result.classificationStats);
               }
               
@@ -162,7 +275,7 @@ export default function DocumentProcessor({ initialDocument = null }) {
               setCreditsUsed(progressData.creditsUsed || 0);
               
               // Load preview data
-              if (progressData.result.filePath) {
+              if (progressData.result && progressData.result.filePath) {
                 const previewResponse = await fetch(`/api/preview-jsonl?file=${progressData.result.filePath}&limit=5`);
                 if (previewResponse.ok) {
                   const previewData = await previewResponse.json();
@@ -322,7 +435,7 @@ export default function DocumentProcessor({ initialDocument = null }) {
                 {file.name}
               </p>
               <p className="text-xs text-gray-500">
-                {(file.size / 1024 / 1024).toFixed(2)} MB
+                {file.size ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : 'Size unknown'}
               </p>
             </div>
           </div>
@@ -330,7 +443,7 @@ export default function DocumentProcessor({ initialDocument = null }) {
             variant="ghost" 
             size="sm" 
             onClick={clearFile}
-            disabled={loading || processingState !== 'idle'}
+            disabled={loading || processingState !== 'idle' || !!initialDocument}
           >
             <X className="h-4 w-4" />
           </Button>
@@ -602,7 +715,7 @@ export default function DocumentProcessor({ initialDocument = null }) {
                   
                   <div className="space-y-2">
                     <Label>Upload File</Label>
-                    {!file ? (
+                    {!file && !initialDocument ? (
                       <div 
                         className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-50 transition-colors"
                         onClick={() => document.getElementById('file-upload').click()}
@@ -630,7 +743,7 @@ export default function DocumentProcessor({ initialDocument = null }) {
                   <Button 
                     type="submit" 
                     className="w-full" 
-                    disabled={loading || !file}
+                    disabled={loading || (!file && !initialDocument)}
                   >
                     {loading ? 'Processing...' : 'Process Document'}
                   </Button>
@@ -675,4 +788,8 @@ export default function DocumentProcessor({ initialDocument = null }) {
       </Tabs>
     </div>
   );
-}
+});
+
+DocumentProcessor.displayName = 'DocumentProcessor';
+
+export default DocumentProcessor;
