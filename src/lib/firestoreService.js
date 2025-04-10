@@ -599,3 +599,46 @@ export async function updateProcessingJobStatus(jobId, status, progress, result)
     return false;
   }
 }
+// Add this function to your firestoreService.js file
+
+// Cancel a processing job
+export async function cancelProcessingJob(userId, jobId) {
+  try {
+    console.log(`Attempting to cancel job ${jobId} for user ${userId}`);
+    
+    if (!userId || !jobId) {
+      throw new Error('User ID and Job ID are required to cancel a job');
+    }
+    
+    // Make API request to the cancel endpoint
+    const response = await fetch('/api/cancel-job', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId,
+        jobId,
+      }),
+    });
+
+    const responseData = await response.json();
+    
+    if (!response.ok) {
+      const errorMessage = responseData.error || responseData.message || 'Failed to cancel job';
+      console.error(`Server returned ${response.status}: ${errorMessage}`);
+      throw new Error(errorMessage);
+    }
+
+    console.log('Job cancellation successful:', responseData);
+
+    // Invalidate the jobs cache
+    delete cachedJobs[userId];
+    delete cachedJobsTime[userId];
+    
+    return responseData;
+  } catch (error) {
+    console.error('Error cancelling processing job:', error);
+    throw error;
+  }
+}

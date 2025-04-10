@@ -7,6 +7,7 @@ try {
   adminAppModule = require('firebase-admin/app');
   adminFirestoreModule = require('firebase-admin/firestore');
   adminStorageModule = require('firebase-admin/storage');
+  console.log('Firebase Admin modules loaded successfully');
 } catch (error) {
   console.warn('Firebase Admin modules not available:', error.message);
   // Create mock implementations for the modules
@@ -47,35 +48,63 @@ export async function initializeAdminApp() {
   // If an admin app already exists, return it
   if (apps.length > 0) {
     adminApp = apps[0];
+    console.log('Using existing Firebase Admin app');
     return adminApp;
   }
 
   // Initialize a new admin app
   try {
+    console.log('Attempting to initialize Firebase Admin SDK');
+    
     // Check for service account credentials in environment variables
-    if (!process.env.FIREBASE_ADMIN_PROJECT_ID || 
-        !process.env.FIREBASE_ADMIN_CLIENT_EMAIL || 
-        !process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
-      throw new Error('Firebase Admin SDK credentials not found in environment variables');
+    let hasCredentials = false;
+    let projectId, clientEmail, privateKey;
+    
+    if (process.env.FIREBASE_ADMIN_PROJECT_ID && 
+        process.env.FIREBASE_ADMIN_CLIENT_EMAIL && 
+        process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
+      hasCredentials = true;
+      projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
+      clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
+      privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n');
+      console.log(`Found Firebase Admin credentials for project: ${projectId}`);
+    } else {
+      console.warn('Firebase Admin SDK credentials not found in environment variables');
+      
+      // For development only: Try to use the client-side project ID if available
+      projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+      if (projectId) {
+        console.log(`Using client-side project ID for dev mode: ${projectId}`);
+      } else {
+        throw new Error('No Firebase project ID available');
+      }
     }
 
-    // Initialize with service account
-    adminApp = initializeApp({
-      credential: cert({
-        projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-        // The private key needs to be properly formatted from the environment variable
-        privateKey: process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      }),
-      projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-      databaseURL: `https://${process.env.FIREBASE_ADMIN_PROJECT_ID}.firebaseio.com`,
-      storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-    });
+    if (hasCredentials) {
+      // Initialize with full service account credentials
+      adminApp = initializeApp({
+        credential: cert({
+          projectId,
+          clientEmail,
+          privateKey,
+        }),
+        projectId,
+        databaseURL: `https://${projectId}.firebaseio.com`,
+        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+      });
+    } else {
+      // For development only: initialize with application default credentials
+      // This requires running `firebase login` on the dev machine
+      adminApp = initializeApp({
+        projectId,
+      });
+    }
     
     console.log('Firebase Admin SDK initialized successfully');
     return adminApp;
   } catch (error) {
     console.error('Failed to initialize Firebase Admin SDK:', error);
+    console.error('Error details:', error.message);
     
     // Fallback mode - log that we're continuing without admin SDK
     console.warn('Continuing without Firebase Admin SDK - some server-side operations may fail');
@@ -88,12 +117,17 @@ export async function initializeAdminApp() {
 // Get Firestore from Admin SDK
 export async function getAdminFirestore() {
   const app = await initializeAdminApp();
-  if (!app) return null;
+  if (!app) {
+    console.error('Cannot get Admin Firestore - Admin App initialization failed');
+    return null;
+  }
   
   try {
+    console.log('Getting Firestore from Admin SDK');
     return getFirestore(app);
   } catch (error) {
     console.error('Failed to initialize Admin Firestore:', error);
+    console.error('Error details:', error.message);
     return null;
   }
 }
@@ -101,12 +135,17 @@ export async function getAdminFirestore() {
 // Get Storage from Admin SDK
 export async function getAdminStorage() {
   const app = await initializeAdminApp();
-  if (!app) return null;
+  if (!app) {
+    console.error('Cannot get Admin Storage - Admin App initialization failed');
+    return null;
+  }
   
   try {
+    console.log('Getting Storage from Admin SDK');
     return getStorage(app);
   } catch (error) {
     console.error('Failed to initialize Admin Storage:', error);
+    console.error('Error details:', error.message);
     return null;
   }
 }
@@ -115,17 +154,24 @@ export async function getAdminStorage() {
 export async function verifyDocumentAccess(documentId, userId) {
   try {
     const adminFirestore = await getAdminFirestore();
-    if (!adminFirestore) return false;
+    if (!adminFirestore) {
+      console.error('Cannot verify document access - Admin Firestore not available');
+      return false;
+    }
     
     const docRef = adminFirestore.collection('documents').doc(documentId);
     const docSnap = await docRef.get();
     
-    if (!docSnap.exists) return false;
+    if (!docSnap.exists) {
+      console.log(`Document ${documentId} not found during access verification`);
+      return false;
+    }
     
     const docData = docSnap.data();
     return docData.userId === userId;
   } catch (error) {
     console.error('Error verifying document access:', error);
+    console.error('Error details:', error.message);
     return false;
   }
 }

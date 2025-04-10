@@ -2,13 +2,33 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { getUserProcessingJobs } from '../../lib/firestoreService';
+import { getUserProcessingJobs, cancelProcessingJob } from '../../lib/firestoreService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Loader2, FileText, AlertCircle, CheckCircle, Download } from 'lucide-react';
+import { 
+  Loader2, 
+  FileText, 
+  AlertCircle, 
+  CheckCircle, 
+  Download, 
+  X,
+  Ban
+} from 'lucide-react';
 import Link from 'next/link';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ProcessingJobs() {
   const { user } = useAuth();
@@ -18,13 +38,14 @@ export default function ProcessingJobs() {
   const intervalRef = useRef(null);
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
   const [jobUpdates, setJobUpdates] = useState({});
+  const [cancellingJob, setCancellingJob] = useState(null);
+  const { toast } = useToast();
 
   // Check if there are any active jobs that need polling
   const checkForActiveJobs = (jobsArray) => {
     return jobsArray.some(job => 
-      job.status !== 'completed' && 
-      job.status !== 'failed' && 
-      job.status !== 'cancelled'
+      job.status === 'processing' || 
+      job.status === 'uploading'
     );
   };
 
@@ -76,6 +97,42 @@ export default function ProcessingJobs() {
     }
   };
 
+  // Cancel a job
+  const handleCancelJob = async (job) => {
+    if (!user) return;
+    
+    setCancellingJob(job.id);
+    
+    try {
+      console.log(`Attempting to cancel job: ${job.id} (jobId: ${job.jobId})`);
+      await cancelProcessingJob(user.uid, job.jobId);
+      
+      toast({
+        title: "Job Deleted",
+        description: `Successfully removed the processing job for ${job.fileName || "document"} from the system`,
+        variant: "default",
+      });
+      
+      // Refresh jobs list
+      loadJobs();
+    } catch (err) {
+      console.error('Error cancelling job:', err);
+      
+      const errorMessage = err.message || "Unknown error";
+      
+      toast({
+        title: "Error Cancelling Job",
+        description: `Failed to cancel job: ${errorMessage}. Please try again or contact support if the issue persists.`,
+        variant: "destructive",
+      });
+      
+      // Optionally, try to refresh the job list to see if the job status changed anyway
+      setTimeout(() => loadJobs(), 2000);
+    } finally {
+      setCancellingJob(null);
+    }
+  };
+
   // Initial load of jobs
   useEffect(() => {
     if (user) {
@@ -95,7 +152,7 @@ export default function ProcessingJobs() {
     }
 
     // Only set up interval if we have a user and active jobs
-    if (user && (jobs.length === 0 || checkForActiveJobs(jobs))) {
+    if (user && checkForActiveJobs(jobs)) {
       console.log('Setting up refresh interval for jobs');
       intervalRef.current = setInterval(() => {
         loadJobs(false);
@@ -141,9 +198,11 @@ export default function ProcessingJobs() {
         return isStalled 
           ? <Badge variant="outline" className="bg-amber-100 text-amber-800">Processing (Stalled)</Badge>
           : <Badge variant="outline" className="bg-blue-100 text-blue-800">Processing</Badge>;
+      case 'complete':
       case 'completed':
         return <Badge variant="outline" className="bg-green-100 text-green-800">Completed</Badge>;
       case 'failed':
+      case 'error':
         return <Badge variant="outline" className="bg-red-100 text-red-800">Failed</Badge>;
       case 'cancelled':
         return <Badge variant="outline" className="bg-gray-100 text-gray-800">Cancelled</Badge>;
@@ -208,7 +267,7 @@ export default function ProcessingJobs() {
                       <h3 className="font-medium">{job.fileName || 'Unnamed Document'}</h3>
                       <div className="flex items-center gap-2 mt-1">
                         {getStatusBadge(job.status, jobUpdates[job.id])}
-                        {job.status !== 'completed' && job.status !== 'failed' && job.status !== 'cancelled' && (
+                        {(job.status === 'processing' || job.status === 'uploading') && (
                           <span className="text-xs text-muted-foreground">
                             Last progress: {jobUpdates[job.id] 
                               ? getTimeSince(jobUpdates[job.id].lastStatusChange)
@@ -221,8 +280,47 @@ export default function ProcessingJobs() {
                   </div>
                   
                   <div className="flex gap-2">
-                    {job.status === 'completed' && job.result && (
-                      <Link href={`/documents/${job.id}`}>
+                    {(job.status === 'processing' || job.status === 'uploading') && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="text-red-600 border-red-200 hover:bg-red-50"
+                          >
+                            <Ban className="h-4 w-4 mr-1" /> Delete
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Processing Job</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete this processing job? This action cannot be undone, and any progress will be lost.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>No, keep this job</AlertDialogCancel>
+                            <AlertDialogAction
+                              className="bg-red-600 hover:bg-red-700"
+                              onClick={() => handleCancelJob(job)}
+                              disabled={cancellingJob === job.id}
+                            >
+                              {cancellingJob === job.id ? (
+                                <>
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                  Deleting...
+                                </>
+                              ) : (
+                                <>Yes, delete job</>
+                              )}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+
+                    {(job.status === 'complete' || job.status === 'completed') && job.result && (
+                      <Link href={`/documents/${job.documentId}`}>
                         <Button size="sm" variant="outline">
                           <FileText className="h-4 w-4 mr-1" /> View
                         </Button>
@@ -231,7 +329,7 @@ export default function ProcessingJobs() {
                   </div>
                 </div>
                 
-                {job.status === 'processing' || job.status === 'uploading' ? (
+                {(job.status === 'processing' || job.status === 'uploading') ? (
                   <div className="mt-2">
                     <div className="flex justify-between text-xs mb-1">
                       <span>Progress</span>
@@ -239,14 +337,14 @@ export default function ProcessingJobs() {
                     </div>
                     <Progress value={job.progress || 0} className="h-2" />
                   </div>
-                ) : job.status === 'failed' ? (
+                ) : (job.status === 'failed' || job.status === 'error') ? (
                   <div className="mt-2 text-sm text-red-600">
-                    {job.error || 'An error occurred during processing'}
+                    {job.errorMessage || job.error || 'An error occurred during processing'}
                   </div>
                 ) : null}
                 
                 <div className="mt-2 text-xs text-gray-500">
-                  Job ID: {job.id}
+                  Job ID: {job.jobId || job.id}
                 </div>
               </div>
             ))}
@@ -255,4 +353,4 @@ export default function ProcessingJobs() {
       </CardContent>
     </Card>
   );
-} 
+}
