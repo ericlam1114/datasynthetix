@@ -23,6 +23,7 @@
     "@ungap/with-resolvers": "^0.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
     "firebase": "^11.6.0",
     "firebase-admin": "^13.2.0",
     "lucide-react": "^0.487.0",

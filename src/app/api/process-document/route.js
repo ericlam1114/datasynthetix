@@ -536,6 +536,58 @@ export async function POST(request) {
       }
     }
 
+    // After text is extracted from file or document, add this check before processing
+    // Look for the part where text extraction happens and add this validation
+
+    // Check if extracted text is empty or too short
+    if (!text || text.length < 50) {  // Minimum threshold of 50 characters
+      console.error(`Text extraction failed or produced insufficient content. Text length: ${text?.length || 0} characters`);
+      
+      // Update status to failed
+      try {
+        const failedJobData = {
+          userId: verifiedUserId,
+          jobId: jobId,
+          fileName: uploadResult?.fileName || file?.name || `document-${documentId}`,
+          status: "failed",
+          progress: 0,
+          error: "Text extraction failed",
+          errorMessage: "No readable text content could be extracted from this document. Please upload a document with clear, selectable text.",
+          documentId: documentId,
+          updatedAt: new Date()
+        };
+        
+        // Use saveProcessingJob which handles create or update
+        await saveProcessingJob(verifiedUserId, failedJobData);
+        
+        // Update in process status endpoint
+        await fetch(`${new URL(request.url).origin}/api/process-status`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...failedJobData,
+            userId: verifiedUserId,
+            fileName: uploadResult?.fileName || file?.name || `document-${documentId}`,
+            jobId: jobId,
+          }),
+        });
+      } catch (statusError) {
+        console.error("Error updating failed status:", statusError);
+      }
+      
+      // Return error response to client
+      return NextResponse.json({
+        error: "Text extraction failed",
+        message: "No readable text content could be extracted from this document. Please upload a document with clear, selectable text.",
+        documentId: documentId,
+        jobId: jobId,
+      }, { status: 400 });
+    }
+    
+    // If text is valid, continue with normal processing
+
     // Process the text using our 3-model pipeline
     let summary = "";
     let documentData = {};
