@@ -180,7 +180,7 @@ export default function DashboardPage() {
             console.error("Error refreshing jobs:", error);
           });
       }
-    }, 15000); // Check every 15 seconds
+    }, 45000); // Check every 45 seconds
     
     return () => {
       clearInterval(refreshInterval);

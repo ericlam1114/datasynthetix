@@ -259,13 +259,13 @@ export default function ProcessingJobs() {
         ) : (
           <div className="space-y-4">
             {jobs.map((job) => (
-              <div key={job.id} className="border rounded-lg p-4">
+              <div key={job.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
                 <div className="flex justify-between items-start mb-2">
-                  <div className="flex items-start gap-3">
-                    <FileText className="h-5 w-5 text-blue-500 mt-1" />
-                    <div>
+                  <Link href={`/dashboard/process?documentId=${job.documentId || job.id}`} className="flex items-start gap-3 flex-grow">
+                    <FileText className="h-5 w-5 text-blue-500 mt-1 flex-shrink-0" />
+                    <div className="min-w-0">
                       <h3 className="font-medium">{job.fileName || 'Unnamed Document'}</h3>
-                      <div className="flex items-center gap-2 mt-1">
+                      <div className="flex items-center gap-2 mt-1 flex-wrap">
                         {getStatusBadge(job.status, jobUpdates[job.id])}
                         {(job.status === 'processing' || job.status === 'uploading') && (
                           <span className="text-xs text-muted-foreground">
@@ -277,7 +277,7 @@ export default function ProcessingJobs() {
                         )}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                   
                   <div className="flex gap-2">
                     {(job.status === 'processing' || job.status === 'uploading') && (
@@ -319,13 +319,11 @@ export default function ProcessingJobs() {
                       </AlertDialog>
                     )}
 
-                    {(job.status === 'complete' || job.status === 'completed') && job.result && (
-                      <Link href={`/documents/${job.documentId}`}>
-                        <Button size="sm" variant="outline">
-                          <FileText className="h-4 w-4 mr-1" /> View
-                        </Button>
-                      </Link>
-                    )}
+                    <Link href={`/dashboard/process?documentId=${job.documentId || job.id}`}>
+                      <Button size="sm" variant="outline">
+                        <FileText className="h-4 w-4 mr-1" /> View
+                      </Button>
+                    </Link>
                   </div>
                 </div>
                 
