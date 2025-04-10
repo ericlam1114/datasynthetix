@@ -1,23 +1,17 @@
-import pdfjs from 'pdfjs-dist';
+// CommonJS version of extractText for testing
+const pdfjs = require('pdfjs-dist');
 
-// Configure pdfjs worker - handle both Node.js and browser environments
+// Configure pdfjs worker
 try {
-  // Check if we're in a Node.js environment
-  if (typeof window === 'undefined') {
-    // Node.js environment
-    const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
-    if (pdfjs && pdfjs.GlobalWorkerOptions) {
-      pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-      console.log("PDF.js worker configured successfully (Node.js)");
-    } else {
-      console.log("Using PDF.js without GlobalWorkerOptions in Node.js");
-    }
+  // Import the worker directly
+  const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
+  
+  // Check if GlobalWorkerOptions exists before setting workerSrc
+  if (pdfjs.GlobalWorkerOptions) {
+    pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+    console.log("PDF.js worker configured successfully (CJS)");
   } else {
-    // Browser environment
-    if (pdfjs && pdfjs.GlobalWorkerOptions) {
-      pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
-      console.log("PDF.js worker configured for browser");
-    }
+    console.log("GlobalWorkerOptions not available in PDF.js");
   }
 } catch (error) {
   console.error("Error configuring PDF.js worker:", error);
@@ -30,7 +24,7 @@ try {
  * @param {boolean} options.useOcr - Whether to use OCR if text extraction fails
  * @returns {Promise<string>} The extracted text
  */
-export async function extractTextFromPdf(buffer, options = {}) {
+async function extractTextFromPdf(buffer, options = {}) {
   try {
     console.log("Starting PDF text extraction");
     const uint8Array = new Uint8Array(buffer);
@@ -80,11 +74,16 @@ export async function extractTextFromPdf(buffer, options = {}) {
  * @param {Buffer} buffer - The text file buffer
  * @returns {string} The extracted text
  */
-export function extractTextFromTxt(buffer) {
+function extractTextFromTxt(buffer) {
   try {
     return buffer.toString('utf-8');
   } catch (error) {
     console.error("Error extracting text from TXT:", error);
     return "";
   }
-} 
+}
+
+module.exports = {
+  extractTextFromPdf,
+  extractTextFromTxt
+}; 

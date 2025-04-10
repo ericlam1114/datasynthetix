@@ -1,7 +1,12 @@
-// test-pdf-extraction.js
-const fs = require('fs');
-const path = require('path');
-const { extractTextFromPdf } = require('./src/app/api/process-document/utils/extractText-cjs');
+// test-pdf-extraction.mjs
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { extractTextFromPdf } from './src/app/api/process-document/utils/extractText.js';
+
+// Get current directory equivalent to __dirname in CommonJS
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /**
  * Test PDF text extraction
