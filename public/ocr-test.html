@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF OCR Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    h1 {
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    button:hover {
+      background-color: #45a049;
+    }
+    
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    
+    .status.processing {
+      background-color: #f8f9fa;
+      border-left: 4px solid #007bff;
+    }
+    
+    .status.success {
+      background-color: #e8f5e9;
+      border-left: 4px solid #4CAF50;
+    }
+    
+    .status.error {
+      background-color: #ffebee;
+      border-left: 4px solid #f44336;
+    }
+    
+    .result-box {
+      margin-top: 20px;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-family: monospace;
+    }
+    
+    .info-box {
+      background-color: #e3f2fd;
+      border-left: 4px solid #2196F3;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+    
+    .config-status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 5px;
+    }
+    
+    .config-status.enabled {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+    }
+    
+    .config-status.disabled {
+      background-color: #ffcdd2;
+      color: #c62828;
+    }
+  </style>
+</head>
+<body>
+  <h1>PDF OCR Testing Tool</h1>
+  <div class="info-box">
+    <p><strong>OCR Configuration Status:</strong> <span id="ocrStatus" class="config-status">Checking...</span></p>
+    <p>This tool tests the PDF text extraction with OCR capability. It will process your PDF and attempt to extract text using standard methods first, then fall back to OCR if needed.</p>
+    <p><strong>Instructions:</strong></p>
+    <ol>
+      <li>Select a PDF file (preferably one with text that might be hard to extract, like a scanned document or form)</li>
+      <li>Enable OCR checkbox if you want to force OCR processing even if standard extraction works</li>
+      <li>Click "Process PDF" and wait for the results</li>
+    </ol>
+  </div>
+  
+  <div class="form-group">
+    <label for="pdfFile">Select PDF File:</label>
+    <input type="file" id="pdfFile" accept=".pdf" />
+  </div>
+  
+  <div class="form-group">
+    <label for="useOcr">
+      <input type="checkbox" id="useOcr" checked />
+      Force OCR (even if standard extraction works)
+    </label>
+  </div>
+  
+  <button id="processBtn">Process PDF</button>
+  
+  <div id="status" class="status" style="display: none;"></div>
+  
+  <div id="resultContainer" style="display: none;">
+    <h2>Results</h2>
+    <div class="result-box" id="resultBox"></div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const processBtn = document.getElementById('processBtn');
+      const pdfFileInput = document.getElementById('pdfFile');
+      const useOcrCheckbox = document.getElementById('useOcr');
+      const statusDiv = document.getElementById('status');
+      const resultContainer = document.getElementById('resultContainer');
+      const resultBox = document.getElementById('resultBox');
+      const ocrStatusElement = document.getElementById('ocrStatus');
+      
+      // Check if OCR is enabled
+      fetch('/api/test-ocr/config')
+        .then(response => response.json())
+        .then(data => {
+          if (data.ocrEnabled) {
+            ocrStatusElement.textContent = 'Enabled';
+            ocrStatusElement.className = 'config-status enabled';
+          } else {
+            ocrStatusElement.textContent = 'Disabled';
+            ocrStatusElement.className = 'config-status disabled';
+          }
+        })
+        .catch(error => {
+          ocrStatusElement.textContent = 'Unknown';
+          ocrStatusElement.className = 'config-status disabled';
+          console.error('Error checking OCR status:', error);
+        });
+      
+      processBtn.addEventListener('click', async function() {
+        // Check if a file is selected
+        if (!pdfFileInput.files || pdfFileInput.files.length === 0) {
+          showStatus('error', 'Please select a PDF file first.');
+          return;
+        }
+        
+        const file = pdfFileInput.files[0];
+        
+        // Check if it's a PDF
+        if (!file.type.includes('pdf') && !file.name.toLowerCase().endsWith('.pdf')) {
+          showStatus('error', 'Please select a PDF file.');
+          return;
+        }
+        
+        // Start processing
+        showStatus('processing', 'Processing PDF file...');
+        resultContainer.style.display = 'none';
+        
+        // Create form data
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('useOcr', useOcrCheckbox.checked);
+        formData.append('userId', 'test-user-' + Date.now());
+        
+        try {
+          // Send request to API
+          const response = await fetch('/api/test-ocr', {
+            method: 'POST',
+            body: formData
+          });
+          
+          const result = await response.json();
+          
+          if (response.ok) {
+            const validationText = result.textValidation.valid ? 
+              'Text validation passed' : 
+              `Text validation failed: ${result.textValidation.reason}`;
+            
+            showStatus(
+              'success', 
+              `Success! Extracted ${result.extractedTextLength} characters of text in ${result.processingTimeMs}ms. ${validationText}`
+            );
+            
+            // Display the result
+            resultContainer.style.display = 'block';
+            resultBox.textContent = JSON.stringify(result, null, 2);
+          } else {
+            showStatus('error', `Error: ${result.error} - ${result.message}`);
+          }
+        } catch (error) {
+          showStatus('error', `Error: ${error.message}`);
+        }
+      });
+      
+      function showStatus(type, message) {
+        statusDiv.className = `status ${type}`;
+        statusDiv.textContent = message;
+        statusDiv.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html> 

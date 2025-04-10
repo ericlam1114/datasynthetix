@@ -458,16 +458,110 @@ export async function POST(request) {
 
       // Extract content from the file
       const fileName = file.name.toLowerCase();
+      console.log(`Processing file: ${fileName}, size: ${buffer.length} bytes`);
 
-      if (fileName.endsWith(".pdf")) {
-        text = await extractTextFromPdf(buffer);
-      } else if (fileName.endsWith(".txt")) {
-        text = buffer.toString("utf-8");
-      } else {
-        return NextResponse.json(
-          { error: "Unsupported file type" },
-          { status: 400 }
-        );
+      try {
+        if (fileName.endsWith(".pdf")) {
+          console.log("Detected PDF file, starting extraction");
+          const ocrEnabled = process.env.ENABLE_OCR === 'true' || process.env.NODE_ENV === 'production';
+          
+          try {
+            // First attempt without OCR
+            text = await extractTextFromPdf(buffer, { 
+              useOcr: false,
+              attemptAlternativeMethods: true
+            });
+            
+            // Validate the extracted text
+            const validation = validateExtractedText(text);
+            
+            // If validation fails and OCR is enabled, try with OCR
+            if (!validation.valid && ocrEnabled) {
+              console.log(`PDF text validation failed: ${validation.reason}`);
+              console.log("Attempting extraction with OCR");
+              
+              // Try again with OCR enabled
+              text = await extractTextFromPdf(buffer, { 
+                useOcr: true,
+                attemptAlternativeMethods: true
+              });
+              
+              // Validate again
+              const secondValidation = validateExtractedText(text);
+              if (!secondValidation.valid) {
+                console.error(`OCR extraction also failed: ${secondValidation.reason}`);
+                throw new Error(`Failed to extract readable text from PDF, even with OCR: ${secondValidation.reason}`);
+              } else {
+                console.log("OCR extraction successful");
+              }
+            } else if (!validation.valid && !ocrEnabled) {
+              // OCR is disabled but would be helpful
+              console.warn("OCR is disabled but might help with this PDF. Enable with ENABLE_OCR=true");
+              throw new Error(`Failed to extract readable text from PDF. OCR might help but is disabled.`);
+            }
+          } catch (err) {
+            console.error("PDF extraction error:", err);
+            throw err;
+          }
+        } else if (fileName.endsWith(".txt")) {
+          console.log("Detected text file, starting extraction");
+          text = buffer.toString("utf-8");
+          
+          // Validate text content 
+          const validation = validateExtractedText(text);
+          if (!validation.valid) {
+            console.error(`TXT file validation failed: ${validation.reason}`);
+            throw new Error(`Text file appears to be invalid or corrupt: ${validation.reason}`);
+          }
+        } else {
+          return NextResponse.json(
+            { 
+              error: "Unsupported file type",
+              message: "Please upload a PDF or TXT file with readable text content"
+            },
+            { status: 400 }
+          );
+        }
+      } catch (extractionError) {
+        console.error("Text extraction error:", extractionError);
+        
+        // Update status to failed
+        try {
+          const failedJobData = {
+            userId: verifiedUserId,
+            jobId: jobId,
+            fileName: file.name,
+            status: "failed",
+            progress: 0,
+            error: "Text extraction failed",
+            errorMessage: "No readable text content could be extracted from this document. Please upload a document with clear, selectable text.",
+            documentId: documentId,
+            updatedAt: new Date()
+          };
+          
+          await saveProcessingJob(verifiedUserId, failedJobData);
+          
+          // Update in process status endpoint
+          await fetch(`${new URL(request.url).origin}/api/process-status`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...failedJobData,
+              updatedAt: new Date().toISOString(),
+            }),
+          });
+        } catch (statusError) {
+          console.error("Error updating failed status:", statusError);
+        }
+        
+        return NextResponse.json({
+          error: "Text extraction failed",
+          message: "No readable text content could be extracted from this document. Please upload a document with clear, selectable text.",
+          documentId: documentId,
+          jobId: jobId,
+        }, { status: 400 });
       }
 
       // Save the file to Firebase Storage
@@ -1011,7 +1105,7 @@ export async function GET(request) {
 /**
  * Process an existing document from Firestore
  */
-async function processExistingDocument(userId, documentId, processingOptions, jobId, hasAdminCredentials) {
+async function processExistingDocument(userId, documentId, processingOptions = {}, jobId, hasAdminCredentials) {
   console.log(`Processing existing document with ID: ${documentId}`);
   
   try {
@@ -1065,7 +1159,7 @@ async function processExistingDocument(userId, documentId, processingOptions, jo
     console.log(`Content field name: ${documentData.content ? 'content' : (documentData.text ? 'text' : 'neither')}`);
     
     // If there's a file path but no content, try to get from storage
-    if ((!text || text.length < 10) && documentData.filePath) {
+    if ((!text || text.length < 25) && documentData.filePath) {
       console.log(`Document has filePath: ${documentData.filePath}. Attempting to retrieve from storage.`);
       
       try {
@@ -1130,46 +1224,69 @@ async function processExistingDocument(userId, documentId, processingOptions, jo
           
           console.log(`File name: ${fileName}, type: ${fileType}`);
           
-          // Extract text based on file type
-          if (fileType.includes('pdf') || fileName.toLowerCase().endsWith('.pdf')) {
-            console.log("Extracting text from PDF");
-            text = await extractTextFromPdf(fileBuffer, { useOcr: processingOptions.ocr });
-          } else if (fileType.includes('text/plain') || fileName.toLowerCase().endsWith('.txt')) {
-            console.log("Extracting text from plain text");
-            text = extractTextFromTxt(fileBuffer);
-          } else if (fileType.includes('word') || fileName.toLowerCase().endsWith('.docx')) {
-            console.log("Extracting text from Word document");
-            const result = await mammoth.extractRawText({ buffer: fileBuffer });
-            text = result.value;
-          } else {
-            console.warn(`Unsupported file type: ${fileType}`);
-          }
+          const useOcr = processingOptions?.useOcr === true || processingOptions?.ocr === true;
           
-          console.log(`Text extracted from file: ${text.length} characters`);
-          
-          // Update the document with the extracted text if we got some
-          if (text && text.length > 25) {
-            console.log("Updating document with extracted text");
-            if (hasAdminCredentials) {
+          try {
+            // Extract text based on file type
+            if (fileType.includes('pdf') || fileName.toLowerCase().endsWith('.pdf')) {
+              console.log(`Extracting text from PDF (OCR enabled: ${useOcr})`);
+              text = await extractTextFromPdf(fileBuffer, { 
+                useOcr: useOcr,
+                attemptAlternativeMethods: true 
+              });
+
+              // If text extraction failed and OCR wasn't already enabled, try again with OCR
+              if ((!text || text.trim().length < 25) && !useOcr) {
+                console.log("Initial extraction failed, retrying with OCR enabled");
+                text = await extractTextFromPdf(fileBuffer, { 
+                  useOcr: true, 
+                  attemptAlternativeMethods: true 
+                });
+              }
+            } else if (fileType.includes('text/plain') || fileName.toLowerCase().endsWith('.txt')) {
+              console.log("Extracting text from plain text");
+              text = extractTextFromTxt(fileBuffer);
+            } else if (fileType.includes('word') || fileName.toLowerCase().endsWith('.docx')) {
+              console.log("Extracting text from Word document");
+              const result = await mammoth.extractRawText({ buffer: fileBuffer });
+              text = result.value;
+            } else {
+              console.warn(`Unsupported file type: ${fileType}`);
+            }
+            
+            console.log(`Text extracted from file: ${text?.length || 0} characters`);
+            
+            // Update the document with the extracted text if we got some
+            if (text && text.length > 25) {
+              console.log("Updating document with extracted text");
               try {
-                const adminDb = await getAdminFirestore();
-                if (adminDb) {
-                  await adminDb.collection("documents").doc(documentId).update({
+                if (hasAdminCredentials) {
+                  const adminDb = await getAdminFirestore();
+                  if (adminDb) {
+                    await adminDb.collection("documents").doc(documentId).update({
+                      content: text,
+                      updatedAt: new Date()
+                    });
+                  }
+                } else {
+                  const db = getFirestore();
+                  await updateDoc(doc(db, "documents", documentId), {
                     content: text,
-                    updatedAt: new Date()
+                    updatedAt: serverTimestamp()
                   });
                 }
+                console.log("Document updated with extracted text");
               } catch (updateError) {
                 console.error("Failed to update document with extracted text:", updateError);
               }
             } else {
-              const db = getFirestore();
-              await updateDoc(doc(db, "documents", documentId), {
-                content: text,
-                updatedAt: serverTimestamp()
-              });
+              console.warn("Extracted text was too short or empty, document not updated");
             }
+          } catch (extractionError) {
+            console.error("Error during text extraction:", extractionError);
           }
+        } else {
+          console.warn("No file buffer obtained, cannot extract text");
         }
       } catch (storageError) {
         console.error("Error retrieving file from storage:", storageError);
@@ -1180,7 +1297,16 @@ async function processExistingDocument(userId, documentId, processingOptions, jo
     const textValidation = validateExtractedText(text);
     if (!textValidation.valid) {
       console.error(`Text extraction failed or produced insufficient content. Text length: ${text?.length || 0} characters`);
-      return null;
+      console.error(`Text validation failed reason: ${textValidation.reason}`);
+      
+      // Return failure message
+      return {
+        documentId,
+        error: "Text extraction failed",
+        message: "No readable text content could be extracted from this document. Please upload a document with clear, selectable text.",
+        fileName: documentData.fileName || documentData.name || "",
+        fileType: documentData.contentType || documentData.type || "",
+      };
     }
     
     return {
@@ -1192,6 +1318,10 @@ async function processExistingDocument(userId, documentId, processingOptions, jo
     
   } catch (error) {
     console.error("Error processing existing document:", error);
-    return null;
+    return {
+      documentId,
+      error: "Processing failed",
+      message: error.message || "Failed to process document",
+    };
   }
 }
