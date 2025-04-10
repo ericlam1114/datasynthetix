@@ -153,6 +153,24 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
       setProgress(0);
       setProcessingState('uploading');
       
+      // Get the auth token for passing to the API
+      let authToken = null;
+      try {
+        if (!user) {
+          throw new Error('User not authenticated');
+        }
+        
+        // Get the ID token from Firebase Auth
+        authToken = await user.getIdToken(true);
+        console.log('Got auth token for API request');
+      } catch (tokenError) {
+        console.warn('Failed to get auth token:', tokenError);
+        setError('Authentication error: ' + (tokenError.message || 'Failed to get authentication token. Try refreshing the page.'));
+        setProcessingState('auth-error');
+        setLoading(false);
+        return;
+      }
+      
       // Create form data with all parameters
       const formData = new FormData();
       
@@ -180,9 +198,17 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
       formData.append('outputFormat', outputFormat);
       formData.append('classFilter', classFilter);
       
+      // Add auth token if available
+      if (authToken) {
+        formData.append('authToken', authToken);
+      }
+      
       // Upload and process document
       const response = await fetch('/api/process-document', {
         method: 'POST',
+        headers: authToken ? {
+          'Authorization': `Bearer ${authToken}`
+        } : undefined,
         body: formData
       });
       
@@ -196,7 +222,24 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
       
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to process document');
+        
+        // Handle specific Firebase auth errors
+        if (response.status === 403 && errorData.status === 'firebase-auth-error') {
+          setError(
+            `Authentication Error: ${errorData.error} ${errorData.details || ''} ${errorData.solution || 'Please try again.'}`
+          );
+          
+          console.warn('Firebase authentication error details:', errorData);
+          
+          // Set a more specific error state
+          setProcessingState('auth-error');
+        } else {
+          // Handle generic errors
+          throw new Error(errorData.error || 'Failed to process document');
+        }
+        
+        setLoading(false);
+        return;
       }
       
       // Add these lines after the successful response from the API:
@@ -393,6 +436,32 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
               <Download className="h-4 w-4 mr-2" />
               Download {outputFormat === 'csv' ? 'CSV' : 'JSONL'}
             </Button>
+          </div>
+        );
+      
+      case 'auth-error':
+        return (
+          <div className="text-center py-6">
+            <div className="text-amber-500 mb-4">
+              <AlertCircle className="h-12 w-12 mx-auto" />
+            </div>
+            <h3 className="text-lg font-medium mb-2">Authentication Failed</h3>
+            <p className="text-sm text-amber-600 mb-4">{error}</p>
+            <div className="space-y-4">
+              <Button variant="outline" onClick={() => setProcessingState('idle')}>
+                Try Again
+              </Button>
+              {process.env.NODE_ENV === 'development' && (
+                <div className="text-xs text-gray-500 p-4 bg-gray-50 rounded-md">
+                  <p className="font-semibold mb-2">Developer Note:</p>
+                  <p>This error occurs when the server-side API route can't authenticate with Firebase. To fix this:</p>
+                  <ul className="list-disc list-inside mt-2 space-y-1">
+                    <li>Configure Firebase Admin SDK in your environment variables</li>
+                    <li>Or update your Firestore security rules to allow authenticated server access</li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         );
       

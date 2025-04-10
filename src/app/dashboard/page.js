@@ -9,6 +9,8 @@ import {
   getUserDataSetsSafe,
 } from "../../lib/firestoreService";
 import { Button } from "@/components/ui/button";
+import DocumentList from "../../components/DocumentList";
+import DocumentCard from "../../components/DocumentCard";
 import {
   Card,
   CardContent,
@@ -75,7 +77,7 @@ export default function DashboardPage() {
 
   const handleDownloadDataset = (filePath) => {
     // Open the download in a new tab/window
-    window.open(`/api/process-document?file=${filePath}`, '_blank');
+    window.open(`/api/process-document?file=${filePath}`, "_blank");
   };
 
   if (loading) {
@@ -164,56 +166,7 @@ export default function DashboardPage() {
         </TabsList>
 
         <TabsContent value="documents" className="mt-6">
-          {documents.length === 0 ? (
-            <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No documents yet
-              </h3>
-              <p className="text-sm text-gray-500 mb-4">
-                Upload your first document to get started with synthetic data
-                generation
-              </p>
-              <Button asChild>
-                <Link href="/dashboard/upload">Upload Document</Link>
-              </Button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {documents.map((doc) => (
-                <Card key={doc.id}>
-                  <CardHeader>
-                    <CardTitle className="truncate">
-                      {doc.name || "Untitled Document"}
-                    </CardTitle>
-                    <CardDescription className="flex items-center text-xs">
-                      <Clock className="h-3 w-3 mr-1" />
-                      {doc.createdAt
-                        ? new Date(
-                            doc.createdAt.seconds * 1000
-                          ).toLocaleDateString()
-                        : "Date unavailable"}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-500 line-clamp-2">
-                      {doc.description || "No description provided"}
-                    </p>
-                  </CardContent>
-                  <CardFooter className="pt-0">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => handleProcessDocument(doc.id)}
-                    >
-                      Generate Data
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
+          <DocumentList />
         </TabsContent>
 
         <TabsContent value="datasets" className="mt-6">
@@ -258,9 +211,9 @@ export default function DashboardPage() {
                     </div>
                   </CardContent>
                   <CardFooter className="pt-0">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="w-full"
                       onClick={() => handleDownloadDataset(dataset.filePath)}
                     >

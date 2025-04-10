@@ -107,6 +107,17 @@ export function AuthProvider({ children }) {
     return sendPasswordResetEmail(auth, email);
   }
 
+  // Get ID token for API requests
+  async function getIdToken() {
+    if (!user) return null;
+    try {
+      return await user.getIdToken(true); // Force refresh the token
+    } catch (error) {
+      console.error('Error getting ID token:', error);
+      return null;
+    }
+  }
+
   // Listen for auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -125,7 +136,8 @@ export function AuthProvider({ children }) {
     login,
     loginWithGoogle,
     logout,
-    resetPassword
+    resetPassword,
+    getIdToken
   };
 
   return (

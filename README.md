@@ -20,6 +20,39 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Firebase Configuration
+
+### Client-Side Firebase
+
+The application uses Firebase for authentication and data storage. You'll need to set up Firebase credentials in your `.env.local` file:
+
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-auth-domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
+```
+
+### Firebase Admin SDK (Server-Side)
+
+For server-side API routes to properly authenticate with Firebase, you need to set up Firebase Admin SDK credentials. Create a service account in the Firebase console and add the following to your `.env.local` file:
+
+```
+FIREBASE_ADMIN_PROJECT_ID=your-project-id
+FIREBASE_ADMIN_CLIENT_EMAIL=your-service-account-email
+FIREBASE_ADMIN_PRIVATE_KEY="your-private-key"
+```
+
+Note: The private key should include the full key including `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----`, and must be enclosed in quotes.
+
+To create a Firebase service account:
+1. Go to the Firebase Console > Project Settings > Service Accounts
+2. Click "Generate new private key"
+3. Download the JSON file
+4. Extract the values and add them to your `.env.local` file
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
