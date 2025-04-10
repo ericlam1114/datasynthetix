@@ -243,7 +243,7 @@ export async function POST(request) {
     }
 
     // Check if we're running in simulation mode
-    if (useSimulation || process.env.NODE_ENV === "development") {
+    if (useSimulation) {
       console.log("Using simulation mode for document processing");
 
       // Create a simulated document ID if not provided

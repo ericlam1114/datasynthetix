@@ -467,6 +467,32 @@ export async function getUserCreditHistory(userId) {
 
 // Add this function to handle saving processing job status to Firestore
 
+function sanitizeForFirestore(obj) {
+  if (!obj) return null;
+  
+  if (typeof obj !== 'object') return obj;
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => sanitizeForFirestore(item));
+  }
+  
+  const sanitized = {};
+  
+  Object.entries(obj).forEach(([key, value]) => {
+    // Skip undefined values
+    if (value === undefined) return;
+    
+    // Recursively sanitize nested objects
+    if (typeof value === 'object' && value !== null) {
+      sanitized[key] = sanitizeForFirestore(value);
+    } else {
+      sanitized[key] = value;
+    }
+  });
+  
+  return sanitized;
+}
+
 // Save processing job status
 export async function saveProcessingJob(userId, jobData) {
   try {
@@ -476,9 +502,12 @@ export async function saveProcessingJob(userId, jobData) {
     // Create a unique job ID if not provided
     const jobId = jobData.jobId || `job-${Date.now()}`;
     
+    // Sanitize the job data to remove undefined values
+    const sanitizedJobData = sanitizeForFirestore(jobData);
+    
     // Add user ID and timestamps
     const jobWithMeta = {
-      ...jobData,
+      ...sanitizedJobData,
       userId,
       jobId,
       createdAt: jobData.createdAt || serverTimestamp(),
