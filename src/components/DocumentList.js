@@ -3,8 +3,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../contexts/AuthContext';
 import { getUserDocumentsSafe, deleteDocument } from '../lib/firestoreService';
 import DocumentCard from './DocumentCard'; // Using the enhanced component we created
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '../components/ui/button';
+import { Alert, AlertDescription } from '../components/ui/alert';
 import { RefreshCw, FileText, AlertCircle } from 'lucide-react';
 
 export default function DocumentList() {

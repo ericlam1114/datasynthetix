@@ -13,6 +13,7 @@ import {
   limit,
   serverTimestamp,
   runTransaction,
+  getFirestore,
 } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { firestore, storage } from "./firebase";
@@ -461,5 +462,140 @@ export async function getUserCreditHistory(userId) {
   } catch (error) {
     console.error("Error getting credit history:", error);
     throw error;
+  }
+}
+
+// Add this function to handle saving processing job status to Firestore
+
+// Save processing job status
+export async function saveProcessingJob(userId, jobData) {
+  try {
+    const db = getFirestore();
+    const jobsRef = collection(db, 'processingJobs');
+    
+    // Create a unique job ID if not provided
+    const jobId = jobData.jobId || `job-${Date.now()}`;
+    
+    // Add user ID and timestamps
+    const jobWithMeta = {
+      ...jobData,
+      userId,
+      jobId,
+      createdAt: jobData.createdAt || serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+    
+    // Check if job already exists
+    const existingJobQuery = query(
+      jobsRef, 
+      where('jobId', '==', jobId),
+      where('userId', '==', userId),
+      limit(1)
+    );
+    
+    const existingJobs = await getDocs(existingJobQuery);
+    
+    if (!existingJobs.empty) {
+      // Update existing job
+      const jobDoc = existingJobs.docs[0];
+      await updateDoc(doc(db, 'processingJobs', jobDoc.id), {
+        ...jobWithMeta,
+        id: jobDoc.id,
+      });
+      return jobDoc.id;
+    } else {
+      // Create new job
+      const docRef = await addDoc(jobsRef, jobWithMeta);
+      await updateDoc(docRef, { id: docRef.id });
+      return docRef.id;
+    }
+  } catch (error) {
+    console.error('Error saving processing job:', error);
+    return null;
+  }
+}
+
+// Add caching variables at the top of the file
+let cachedJobs = {};
+let cachedJobsTime = {};
+const CACHE_TTL = 5000; // 5 seconds TTL for job caching
+
+// Optimize the getUserProcessingJobs function with caching
+export const getUserProcessingJobs = async (userId) => {
+  try {
+    if (!userId) {
+      console.warn("getUserProcessingJobs called without userId");
+      return [];
+    }
+
+    // Check if we have a recent cache for this user
+    const now = Date.now();
+    if (
+      cachedJobs[userId] && 
+      cachedJobsTime[userId] && 
+      now - cachedJobsTime[userId] < CACHE_TTL
+    ) {
+      console.log(`Using cached jobs for user ${userId}, age: ${now - cachedJobsTime[userId]}ms`);
+      return cachedJobs[userId];
+    }
+
+    console.log(`Fetching fresh jobs for user ${userId} from Firestore`);
+    
+    // Get jobs from Firestore with a limit to avoid excessive data transfer
+    const jobsRef = collection(firestore, "processingJobs");
+    const q = query(
+      jobsRef,
+      where("userId", "==", userId),
+      orderBy("createdAt", "desc"),
+      limit(20) // Limit to 20 most recent jobs
+    );
+    
+    const querySnapshot = await getDocs(q);
+    const jobs = [];
+    
+    querySnapshot.forEach((doc) => {
+      jobs.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+    
+    // Update the cache
+    cachedJobs[userId] = jobs;
+    cachedJobsTime[userId] = now;
+    
+    return jobs;
+  } catch (error) {
+    // Gracefully handle permission errors by returning empty array instead of throwing
+    console.warn(`Error fetching processing jobs for user ${userId}:`, error);
+    return [];
+  }
+};
+
+// Update processing job status
+export async function updateProcessingJobStatus(jobId, status, progress, result) {
+  try {
+    const db = getFirestore();
+    const jobsRef = collection(db, 'processingJobs');
+    const jobQuery = query(jobsRef, where('jobId', '==', jobId), limit(1));
+    
+    const snapshot = await getDocs(jobQuery);
+    if (snapshot.empty) {
+      console.warn(`No job found with ID: ${jobId}`);
+      return false;
+    }
+    
+    const jobDoc = snapshot.docs[0];
+    await updateDoc(doc(db, 'processingJobs', jobDoc.id), {
+      status,
+      progress,
+      result: result || null,
+      updatedAt: serverTimestamp()
+    });
+    
+    return true;
+  } catch (error) {
+    console.error('Error updating processing job status:', error);
+    return false;
   }
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '../components/ui/card';
+import { Button } from '../components/ui/button';
 import { 
   AlertDialog, 
   AlertDialogAction, 
@@ -11,7 +11,7 @@ import {
   AlertDialogHeader, 
   AlertDialogTitle, 
   AlertDialogTrigger 
-} from '@/components/ui/alert-dialog';
+} from '../components/ui/alert-dialog';
 import { Trash2, FileText } from 'lucide-react';
 
 // This component adds a delete button and confirmation dialog to document cards

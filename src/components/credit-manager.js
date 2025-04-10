@@ -7,8 +7,8 @@ import {
   addCreditsToUser,
   getUserCreditHistory,
 } from "../lib/firestoreService";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import {
   Card,
   CardContent,
@@ -16,8 +16,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+} from "../components/ui/card";
+import { Alert, AlertDescription } from "../components/ui/alert";
 import { CreditCard, Plus, RefreshCw, Clock } from "lucide-react";
 
 export default function CreditManager() {

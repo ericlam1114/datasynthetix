@@ -5,8 +5,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import AdminGuard from '@/components/auth/admin-guard';
-import { Button } from '@/components/ui/button';
+import AdminGuard from '../../components/auth/admin-guard';
+import { Button } from '../../components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '../../components/ui/dropdown-menu';
 import { 
   Database, Home, Users, CreditCard, Settings, 
   User, LogOut, Bell, Search, Shield, FileText 

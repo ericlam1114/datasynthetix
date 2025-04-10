@@ -5,7 +5,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import { 
   doc, 
-  getDoc, 
+  getDoc,
+  getFirestore, 
   updateDoc, 
   runTransaction, 
   serverTimestamp,
@@ -13,10 +14,10 @@ import {
   setDoc,
   addDoc
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { firestore, storage } from '../../../lib/firebase';
+import { ref, uploadBytes, getDownloadURL, getStorage } from 'firebase/storage';
+import { firestore } from '../../../lib/firebase';
 import { initializeAdminApp, getAdminFirestore, getAdminStorage, verifyDocumentAccess } from '../../../lib/firebase-admin'; // Import admin Firebase app and admin Firestore
-import { addDataSet } from '../../../lib/firestoreService';
+import { addDataSet, saveProcessingJob } from '../../../lib/firestoreService';
 import mammoth from 'mammoth';
 import OpenAI from 'openai';
 import { auth } from '../../../lib/firebase';
@@ -163,6 +164,8 @@ export async function POST(request) {
     const documentId = formData.get('documentId');
     const authToken = formData.get('authToken') || request.headers.get('authorization')?.split('Bearer ')[1] || null;
     const userId = formData.get('userId');
+    const jobId = formData.get('jobId') || `job-${Date.now()}`;
+    const useSimulation = formData.get('useSimulation') === 'true' || process.env.NEXT_PUBLIC_USE_SIMULATION === 'true';
     
     console.log(`Auth token provided: ${!!authToken}`);
     if (authToken) {
@@ -171,6 +174,65 @@ export async function POST(request) {
       console.warn("No authentication token provided - may result in permission issues");
     }
     
+    // Check if we're running in simulation mode
+    if (useSimulation || process.env.NODE_ENV === 'development') {
+      console.log("Using simulation mode for document processing");
+      
+      // Create a simulated document ID if not provided
+      const simulatedDocumentId = documentId || `simulated-${Date.now()}`;
+      
+      // Extract file name if available
+      const fileName = file ? file.name : (documentId ? `document-${documentId}` : `simulated-document-${Date.now()}.pdf`);
+      
+      // Prepare status tracking
+      const statusJobId = jobId;
+      
+      try {
+        // Update status in Firestore to show processing has started
+        const processingJob = {
+          userId: userId,
+          jobId: statusJobId,
+          fileName: fileName,
+          status: 'processing',
+          progress: 5, // Initial progress
+          documentId: simulatedDocumentId,
+          updatedAt: new Date()
+        };
+        
+        await saveProcessingJob(userId, processingJob);
+        
+        // Create initial status in the process status endpoint
+        await fetch(`${new URL(request.url).origin}/api/process-status`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId,
+            fileName,
+            jobId: statusJobId,
+            status: 'processing',
+            processedChunks: 5,
+            totalChunks: 100,
+            updatedAt: new Date().toISOString()
+          })
+        });
+      } catch (error) {
+        console.error("Error creating status entry:", error);
+        // Non-critical, continue
+      }
+      
+      // Return simulation response
+      return NextResponse.json({
+        documentId: simulatedDocumentId,
+        summary: "This is a simulated summary of the document for testing purposes.",
+        textLength: file ? await file.size : 5000,
+        fileName,
+        jobId: statusJobId
+      });
+    }
+    
+    // Normal processing continues below...
     // Initialize a user ID variable for tracking ownership
     let verifiedUserId = null;
     
@@ -370,7 +432,7 @@ export async function POST(request) {
     let documentData = {
       summary: summary,
       content: text.substring(0, 100000), // Limit text length
-      updatedAt: hasAdminCredentials ? new Date() : serverTimestamp()
+      updatedAt: new Date() // Use standard Date object instead of serverTimestamp()
     };
     
     // Add file info if we uploaded a file
@@ -380,7 +442,7 @@ export async function POST(request) {
         fileName: uploadResult.fileName,
         filePath: uploadResult.path,
         fileUrl: uploadResult.url,
-        createdAt: docData?.createdAt || (hasAdminCredentials ? new Date() : serverTimestamp())
+        createdAt: docData?.createdAt || new Date() // Use standard Date object
       };
     }
     
@@ -395,11 +457,14 @@ export async function POST(request) {
           // Try to use Admin SDK
           const adminDb = await getAdminFirestore();
           if (adminDb) {
-            docRef = adminDb.collection('documents').doc(documentId);
-            await docRef.update({
+            // Convert any serverTimestamp to regular Date objects to avoid serialization issues
+            const cleanedData = { 
               ...documentData,
-              id: documentId
-            });
+              id: documentId 
+            };
+            
+            docRef = adminDb.collection('documents').doc(documentId);
+            await docRef.update(cleanedData);
           }
         } catch (error) {
           console.error("Admin Firestore update failed:", error);
@@ -413,7 +478,8 @@ export async function POST(request) {
         docRef = doc(db, 'documents', documentId);
         await updateDoc(docRef, {
           ...documentData,
-          id: documentId
+          id: documentId,
+          updatedAt: serverTimestamp() // Use serverTimestamp for client SDK
         });
       }
     } else {
@@ -450,11 +516,82 @@ export async function POST(request) {
     // Create a dataset record for the processed document
     await createDatasetRecord(documentId, text, summary, hasAdminCredentials, documentData.userId);
     
-    // Return the results
+    // After processing has started, save initial status to Firestore
+    try {
+      const processingJob = {
+        userId: verifiedUserId,
+        jobId,
+        fileName: documentData.fileName || 'document-' + documentId,
+        status: 'processing',
+        progress: 0,
+        createdAt: new Date(),
+        documentId: documentId || null,
+        processingOptions: {
+          chunkSize: 1000,
+          overlap: 100,
+          outputFormat: 'jsonl',
+          classFilter: 'all'
+        }
+      };
+      
+      await saveProcessingJob(verifiedUserId, processingJob);
+    } catch (error) {
+      console.error("Error saving initial job status to Firestore:", error);
+      // Continue processing even if saving to Firestore fails
+    }
+    
+    // Generate unique job ID for status tracking
+    const statusJobId = jobId;
+    
+    // Create initial processing status entry
+    try {
+      // Update status in Firestore to show processing has started
+      const processingJob = {
+        userId: verifiedUserId,
+        jobId: statusJobId,
+        fileName: documentData.fileName || 'document-' + documentId,
+        status: 'processing',
+        progress: 10, // Initial progress after document is saved
+        documentId,
+        updatedAt: new Date()
+      };
+      
+      await saveProcessingJob(verifiedUserId, processingJob);
+      
+      // Also create status entry in the process-status API
+      await fetch('/api/process-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: verifiedUserId,
+          fileName: documentData.fileName || 'document-' + documentId,
+          jobId: statusJobId,
+          status: 'processing',
+          processedChunks: 10,
+          totalChunks: 100,
+          result: {
+            documentId,
+            summary: summary,
+            textLength: text.length,
+            filePath: `${verifiedUserId}/${documentData.fileName || 'document.txt'}`
+          },
+          updatedAt: new Date().toISOString()
+        })
+      });
+    } catch (error) {
+      console.error("Error creating status entry:", error);
+      // Non-critical, continue even if fails
+    }
+    
+    // Return the results with job ID
     return NextResponse.json({
       documentId,
       summary: summary,
       textLength: text.length,
+      fileName: documentData.fileName || 'document-' + documentId,
+      jobId: statusJobId
     });
     
   } catch (error) {
@@ -488,7 +625,7 @@ async function createDatasetRecord(documentId, text, summary, hasAdminCredential
       documentId,
       length: text.length,
       summary,
-      createdAt: hasAdminCredentials ? new Date() : serverTimestamp(),
+      createdAt: new Date(), // Use standard Date object instead of serverTimestamp
       processed: false, // will be processed by the training pipeline later
       userId  // Always include the userId
     };
@@ -499,10 +636,10 @@ async function createDatasetRecord(documentId, text, summary, hasAdminCredential
         const adminDb = await getAdminFirestore();
         if (adminDb) {
           const datasetRef = adminDb.collection('datasets').doc();
+          // Create clean data object to avoid serialization issues
           await datasetRef.set({
             ...datasetData,
-            id: datasetRef.id,
-            createdAt: hasAdminCredentials ? new Date() : serverTimestamp()
+            id: datasetRef.id
           });
           console.log(`Created dataset record ${datasetRef.id} using Admin SDK`);
           return datasetRef.id;
@@ -514,12 +651,24 @@ async function createDatasetRecord(documentId, text, summary, hasAdminCredential
     }
     
     // Fall back to client method
-    const db = getFirestore();
-    const datasetRef = await addDoc(collection(db, 'datasets'), datasetData);
-    await updateDoc(datasetRef, { id: datasetRef.id });
-    console.log(`Created dataset record ${datasetRef.id} using client SDK`);
-    return datasetRef.id;
-    
+    try {
+      const db = getFirestore();
+      if (!db) {
+        throw new Error("Firestore client not initialized");
+      }
+      
+      const datasetRef = await addDoc(collection(db, 'datasets'), {
+        ...datasetData,
+        createdAt: serverTimestamp() // Use serverTimestamp for client SDK
+      });
+      
+      await updateDoc(datasetRef, { id: datasetRef.id });
+      console.log(`Created dataset record ${datasetRef.id} using client SDK`);
+      return datasetRef.id;
+    } catch (error) {
+      console.error("Client Firestore dataset creation failed:", error);
+      return null;
+    }
   } catch (error) {
     console.error("Error creating dataset record:", error);
     // Continue without throwing - this is a non-critical operation

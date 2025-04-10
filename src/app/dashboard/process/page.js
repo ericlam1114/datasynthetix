@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import DocumentProcessor from '../../../components/document-processor';
 import { getDocument } from '../../../lib/firestoreService';
