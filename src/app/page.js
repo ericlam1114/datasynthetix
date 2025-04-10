@@ -69,7 +69,7 @@ export default function Home() {
               <div className="p-6">
                 <div className="grid grid-cols-5 gap-4">
                   <div className="col-span-2 bg-gray-50 rounded-lg p-4 border border-gray-200 shadow-sm">
-                    <div className="text-sm font-medium mb-3">Upload Documents</div>
+                    <div className="text-sm font-medium mb-3">Create Dataset</div>
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center">
                       <Upload className="h-10 w-10 text-gray-400 mb-2" />
                       <div className="text-sm text-gray-500">Drag & drop files or click to browse</div>

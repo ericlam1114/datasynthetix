@@ -2,6 +2,8 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { getDoc, doc } from 'firebase/firestore';
+import { firestore } from '@/lib/firebase';
 
 // Store processing status in memory (would use a database in production)
 const processingJobs = new Map();
@@ -24,6 +26,19 @@ export async function GET(request) {
   // Check if we have a job in memory
   if (processingJobs.has(jobId)) {
     const jobStatus = processingJobs.get(jobId);
+    
+    // Add user's current credits
+    try {
+      const userRef = doc(firestore, 'users', userId);
+      const userDoc = await getDoc(userRef);
+      
+      if (userDoc.exists() && userDoc.data().credits !== undefined) {
+        jobStatus.creditsRemaining = userDoc.data().credits;
+      }
+    } catch (error) {
+      console.error('Error getting user credits:', error);
+    }
+    
     return NextResponse.json(jobStatus);
   }
   
@@ -41,14 +56,43 @@ export async function GET(request) {
     const lines = fileContent.trim().split('\n');
     const resultCount = lines.length;
     
+    // Get classification stats
+    const classificationStats = { Critical: 0, Important: 0, Standard: 0 };
+    
+    try {
+      for (const line of lines.slice(0, Math.min(100, lines.length))) {
+        const entry = JSON.parse(line);
+        if (entry.classification && classificationStats[entry.classification] !== undefined) {
+          classificationStats[entry.classification]++;
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing JSONL for classification stats:', error);
+    }
+    
+    // Get user's current credits
+    let creditsRemaining = 0;
+    try {
+      const userRef = doc(firestore, 'users', userId);
+      const userDoc = await getDoc(userRef);
+      
+      if (userDoc.exists() && userDoc.data().credits !== undefined) {
+        creditsRemaining = userDoc.data().credits;
+      }
+    } catch (error) {
+      console.error('Error getting user credits:', error);
+    }
+    
     // Return complete status
     return NextResponse.json({
       status: 'complete',
       result: {
         fileName: jsonlFileName,
         filePath: `${userId}/${jsonlFileName}`,
-        resultCount
-      }
+        resultCount,
+        classificationStats
+      },
+      creditsRemaining
     });
   } catch (error) {
     // File doesn't exist or error accessing it
@@ -63,7 +107,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { userId, fileName, status, processedChunks, totalChunks, result } = data;
+    const { userId, fileName, status, processedChunks, totalChunks, result, creditsUsed, creditsRemaining } = data;
     
     if (!userId || !fileName) {
       return NextResponse.json(
@@ -81,6 +125,8 @@ export async function POST(request) {
       processedChunks,
       totalChunks,
       result,
+      creditsUsed,
+      creditsRemaining,
       updatedAt: new Date().toISOString()
     });
     

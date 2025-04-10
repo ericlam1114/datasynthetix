@@ -25,6 +25,7 @@
     "next": "15.2.5",
     "openai": "^4.93.0",
     "pdf-parse": "^1.1.1",
+    "radix-ui": "^1.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",

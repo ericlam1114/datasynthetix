@@ -1,9 +1,11 @@
+// Create this file at: src/app/admin/layout.js
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '../../contexts/AuthContext';
-import RouteGuard from '../../components/auth/route-guard';
+import { useAuth } from '@/contexts/AuthContext';
+import AdminGuard from '@/components/auth/admin-guard';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,11 +16,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { 
-  Database, Home, Upload, FileText, Settings, 
-  User, LogOut, Bell, Search, CreditCard
+  Database, Home, Users, CreditCard, Settings, 
+  User, LogOut, Bell, Search, Shield, FileText 
 } from 'lucide-react';
 
-export default function DashboardLayout({ children }) {
+export default function AdminLayout({ children }) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   
@@ -31,21 +33,21 @@ export default function DashboardLayout({ children }) {
   };
   
   const routes = [
-    { path: '/dashboard', label: 'Dashboard', icon: Home },
-    { path: '/dashboard/upload', label: 'Create Synthetic Data', icon: Upload },
-    { path: '/dashboard/datasets', label: 'My Datasets', icon: FileText },
-    { path: '/dashboard/credits', label: 'Credits', icon: CreditCard },
-    { path: '/dashboard/settings', label: 'Settings', icon: Settings },
+    { path: '/admin', label: 'Admin Dashboard', icon: Shield },
+    { path: '/admin/users', label: 'User Management', icon: Users },
+    { path: '/admin/credits', label: 'Credit Management', icon: CreditCard },
+    { path: '/admin/datasets', label: 'All Datasets', icon: FileText },
+    { path: '/admin/settings', label: 'System Settings', icon: Settings },
   ];
 
   return (
-    <RouteGuard>
+    <AdminGuard>
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
         <aside className="w-64 bg-white shadow-md hidden md:block">
           <div className="p-6 flex items-center space-x-2">
-            <Database className="h-6 w-6 text-indigo-600" />
-            <span className="text-xl font-bold">SynthData AI</span>
+            <Shield className="h-6 w-6 text-red-600" />
+            <span className="text-xl font-bold">Admin Panel</span>
           </div>
           
           <nav className="mt-6">
@@ -60,7 +62,7 @@ export default function DashboardLayout({ children }) {
                       href={route.path}
                       className={`flex items-center px-4 py-3 text-sm rounded-md transition-colors ${
                         isActive 
-                          ? 'bg-indigo-50 text-indigo-700 font-medium' 
+                          ? 'bg-red-50 text-red-700 font-medium' 
                           : 'text-gray-700 hover:bg-gray-100'
                       }`}
                     >
@@ -70,6 +72,16 @@ export default function DashboardLayout({ children }) {
                   </li>
                 );
               })}
+              
+              <li className="mt-8">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center px-4 py-3 text-sm rounded-md transition-colors text-gray-700 hover:bg-gray-100"
+                >
+                  <Home className="h-5 w-5 mr-3" />
+                  Return to Dashboard
+                </Link>
+              </li>
             </ul>
           </nav>
         </aside>
@@ -79,8 +91,8 @@ export default function DashboardLayout({ children }) {
           {/* Header */}
           <header className="h-16 bg-white border-b flex items-center justify-between px-6">
             <div className="md:hidden flex items-center">
-              <Database className="h-6 w-6 text-indigo-600" />
-              <span className="text-xl font-bold ml-2">SynthData AI</span>
+              <Shield className="h-6 w-6 text-red-600" />
+              <span className="text-xl font-bold ml-2">Admin Panel</span>
             </div>
             
             <div className="md:flex items-center hidden">
@@ -90,7 +102,7 @@ export default function DashboardLayout({ children }) {
                 </div>
                 <input
                   type="text"
-                  placeholder="Search..."
+                  placeholder="Search users..."
                   className="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm"
                 />
               </div>
@@ -108,7 +120,7 @@ export default function DashboardLayout({ children }) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuLabel>Admin Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <User className="mr-2 h-4 w-4" />
@@ -134,6 +146,6 @@ export default function DashboardLayout({ children }) {
           </main>
         </div>
       </div>
-    </RouteGuard>
+    </AdminGuard>
   );
 }

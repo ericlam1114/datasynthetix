@@ -1,13 +1,31 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { useAuth } from '../../contexts/AuthContext';
-import { getUserDocumentsSafe, getUserDataSetsSafe } from '../../lib/firestoreService';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowRight, FileText, Database, Upload, Clock, AlertCircle, RefreshCw } from 'lucide-react';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useAuth } from "../../contexts/AuthContext";
+import {
+  getUserDocumentsSafe,
+  getUserDataSetsSafe,
+} from "../../lib/firestoreService";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  ArrowRight,
+  FileText,
+  Database,
+  Upload,
+  Clock,
+  AlertCircle,
+  RefreshCw,
+} from "lucide-react";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -22,25 +40,25 @@ export default function DashboardPage() {
       try {
         setLoading(true);
         setError(null);
-        
+
         if (user) {
           const [fetchedDocuments, fetchedDatasets] = await Promise.all([
             getUserDocumentsSafe(user.uid),
-            getUserDataSetsSafe(user.uid)
+            getUserDataSetsSafe(user.uid),
           ]);
-          
+
           setDocuments(fetchedDocuments);
           setDatasets(fetchedDatasets);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Failed to load data. Please try again later.');
+        console.error("Error fetching data:", error);
+        setError("Failed to load data. Please try again later.");
       } finally {
         setLoading(false);
         setIsRetrying(false);
       }
     }
-    
+
     fetchData();
   }, [user, isRetrying]);
 
@@ -76,7 +94,12 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleRetry} size="icon" title="Refresh data">
+          <Button
+            variant="outline"
+            onClick={handleRetry}
+            size="icon"
+            title="Refresh data"
+          >
             <RefreshCw className="h-4 w-4" />
           </Button>
           <Button asChild>
@@ -87,7 +110,7 @@ export default function DashboardPage() {
           </Button>
         </div>
       </div>
-      
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
@@ -105,7 +128,9 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{datasets.length}</div>
-            <p className="text-xs text-gray-500">Generated training data sets</p>
+            <p className="text-xs text-gray-500">
+              Generated training data sets
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -118,21 +143,24 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Tabs for Documents and Datasets */}
       <Tabs defaultValue="documents" className="mt-6">
         <TabsList>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="datasets">Generated Data Sets</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="documents" className="mt-6">
           {documents.length === 0 ? (
             <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
               <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No documents yet</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No documents yet
+              </h3>
               <p className="text-sm text-gray-500 mb-4">
-                Upload your first document to get started with synthetic data generation
+                Upload your first document to get started with synthetic data
+                generation
               </p>
               <Button asChild>
                 <Link href="/dashboard/upload">Upload Document</Link>
@@ -143,10 +171,16 @@ export default function DashboardPage() {
               {documents.map((doc) => (
                 <Card key={doc.id}>
                   <CardHeader>
-                    <CardTitle className="truncate">{doc.name || "Untitled Document"}</CardTitle>
+                    <CardTitle className="truncate">
+                      {doc.name || "Untitled Document"}
+                    </CardTitle>
                     <CardDescription className="flex items-center text-xs">
                       <Clock className="h-3 w-3 mr-1" />
-                      {doc.createdAt ? new Date(doc.createdAt.seconds * 1000).toLocaleDateString() : "Date unavailable"}
+                      {doc.createdAt
+                        ? new Date(
+                            doc.createdAt.seconds * 1000
+                          ).toLocaleDateString()
+                        : "Date unavailable"}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -155,7 +189,14 @@ export default function DashboardPage() {
                     </p>
                   </CardContent>
                   <CardFooter className="pt-0">
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={() =>
+                        router.push(`/dashboard/process?documentId=${doc.id}`)
+                      }
+                    >
                       Generate Data
                     </Button>
                   </CardFooter>
@@ -164,12 +205,14 @@ export default function DashboardPage() {
             </div>
           )}
         </TabsContent>
-        
+
         <TabsContent value="datasets" className="mt-6">
           {datasets.length === 0 ? (
             <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
               <Database className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No data sets yet</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No data sets yet
+              </h3>
               <p className="text-sm text-gray-500 mb-4">
                 Process a document to generate your first synthetic data set
               </p>
@@ -182,18 +225,26 @@ export default function DashboardPage() {
               {datasets.map((dataset) => (
                 <Card key={dataset.id}>
                   <CardHeader>
-                    <CardTitle className="truncate">{dataset.name || "Untitled Dataset"}</CardTitle>
+                    <CardTitle className="truncate">
+                      {dataset.name || "Untitled Dataset"}
+                    </CardTitle>
                     <CardDescription className="flex items-center text-xs">
                       <Clock className="h-3 w-3 mr-1" />
-                      {dataset.createdAt ? new Date(dataset.createdAt.seconds * 1000).toLocaleDateString() : "Date unavailable"}
+                      {dataset.createdAt
+                        ? new Date(
+                            dataset.createdAt.seconds * 1000
+                          ).toLocaleDateString()
+                        : "Date unavailable"}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="text-sm text-gray-500 mb-2">
-                      <span className="font-medium">Entries:</span> {dataset.entryCount || 0}
+                      <span className="font-medium">Entries:</span>{" "}
+                      {dataset.entryCount || 0}
                     </div>
                     <div className="text-sm text-gray-500">
-                      <span className="font-medium">Source:</span> {dataset.sourceDocument || "Unknown"}
+                      <span className="font-medium">Source:</span>{" "}
+                      {dataset.sourceDocument || "Unknown"}
                     </div>
                   </CardContent>
                   <CardFooter className="pt-0">
@@ -207,7 +258,7 @@ export default function DashboardPage() {
           )}
         </TabsContent>
       </Tabs>
-      
+
       {/* Quick Start Guide */}
       {documents.length === 0 && datasets.length === 0 && (
         <Card className="mt-6 bg-indigo-50 border-indigo-100">
@@ -225,11 +276,12 @@ export default function DashboardPage() {
               <div>
                 <h3 className="font-medium mb-1">Upload a Document</h3>
                 <p className="text-sm text-gray-600">
-                  Start by uploading a document such as a contract, SOP, or any text-based file.
+                  Start by uploading a document such as a contract, SOP, or any
+                  text-based file.
                 </p>
               </div>
             </div>
-            
+
             <div className="flex">
               <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mr-4 flex-shrink-0">
                 2
@@ -237,11 +289,12 @@ export default function DashboardPage() {
               <div>
                 <h3 className="font-medium mb-1">Generate Synthetic Data</h3>
                 <p className="text-sm text-gray-600">
-                  Our AI will extract key statements and generate synthetic variants.
+                  Our AI will extract key statements and generate synthetic
+                  variants.
                 </p>
               </div>
             </div>
-            
+
             <div className="flex">
               <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mr-4 flex-shrink-0">
                 3
