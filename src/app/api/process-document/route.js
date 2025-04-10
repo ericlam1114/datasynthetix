@@ -15,7 +15,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 import ModelApiClient from "../../../../lib/ModelApiClient";
-import SyntheticDataPipeline from "../../../../lib/SyntheticDataPipeline";
+import { SyntheticDataPipeline } from "../../../../lib/SyntheticDataPipeline";
 import { ref, uploadBytes, getDownloadURL, getStorage } from "firebase/storage";
 import { firestore } from "../../../lib/firebase";
 import {
@@ -28,6 +28,7 @@ import { addDataSet, saveProcessingJob } from "../../../lib/firestoreService";
 import mammoth from "mammoth";
 import OpenAI from "openai";
 import { auth } from "../../../lib/firebase";
+import { extractTextFromPdf, extractTextFromTxt } from "./utils/extractText";
 
 // Dynamically import Firebase Admin Auth - this prevents build errors if the module is not available
 let adminAuthModule;
@@ -151,37 +152,28 @@ async function verifyAuthToken(token) {
   }
 }
 
-// Simple PDF text extraction - does not rely on external libraries
-async function extractTextFromPdf(buffer) {
-  try {
-    // Import pdf.js dynamically
-    const pdfjs = await import("pdfjs-dist");
-    const pdfjsWorker = await import("pdfjs-dist/build/pdf.worker.entry");
-
-    // Configure worker
-    pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-
-    // Load document
-    const loadingTask = pdfjs.getDocument({ data: buffer });
-    const pdf = await loadingTask.promise;
-
-    let extractedText = "";
-
-    // Process each page
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-
-      // Extract text items and join with proper spacing
-      const pageText = textContent.items.map((item) => item.str).join(" ");
-
-      extractedText += pageText + "\n\n";
-    }
-
-    return extractedText;
-  } catch (error) {
-    console.error("Error extracting text from PDF:", error);
-    throw new Error(`PDF extraction failed: ${error.message}`);
+// Function to check if text extraction worked
+export function validateExtractedText(text) {
+  if (!text || text.length < 25) {  // Reduced from 50 to 25 characters for minimum threshold
+    console.log("❌ Text extraction failed or produced insufficient content");
+    console.log(`Text length: ${text?.length || 0} characters`);
+    return { valid: false, reason: "insufficient_content" };
+  }
+  
+  // Check for common indicators of successful extraction
+  const containsWords = /\b\w{3,}\b/.test(text); // Has words of at least 3 chars
+  const hasPunctuation = /[.,;:?!]/.test(text); // Has punctuation
+  const hasSpaces = /\s/.test(text); // Has whitespace
+  
+  console.log(`Text validation: Has words: ${containsWords}, Has punctuation: ${hasPunctuation}, Has spaces: ${hasSpaces}`);
+  console.log(`Text length: ${text.length} characters`);
+  
+  if (containsWords && (hasPunctuation || hasSpaces)) {
+    console.log("✅ Text extraction appears successful");
+    return { valid: true };
+  } else {
+    console.log("⚠️ Text extraction may have issues - content doesn't look like normal text");
+    return { valid: false, reason: "text_quality_issues" };
   }
 }
 
@@ -540,7 +532,7 @@ export async function POST(request) {
     // Look for the part where text extraction happens and add this validation
 
     // Check if extracted text is empty or too short
-    if (!text || text.length < 50) {  // Minimum threshold of 50 characters
+    if (!text || text.length < 25) {  // Reduced from 50 to 25 characters minimum threshold
       console.error(`Text extraction failed or produced insufficient content. Text length: ${text?.length || 0} characters`);
       
       // Update status to failed

@@ -32,6 +32,24 @@ const { getStorage } = adminStorageModule;
 // Initialize Firebase Admin with environment variables
 let adminApp;
 
+/**
+ * Check if Firebase Admin credentials are available in environment variables
+ * @returns {Promise<boolean>} True if credentials are available, false otherwise
+ */
+export async function checkFirebaseAdminCredentials() {
+  try {
+    if (process.env.FIREBASE_ADMIN_PROJECT_ID && 
+        process.env.FIREBASE_ADMIN_CLIENT_EMAIL && 
+        process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error checking Firebase Admin credentials:', error);
+    return false;
+  }
+}
+
 export async function initializeAdminApp() {
   // If Firebase Admin modules not available, return null immediately
   if (!adminAppModule.initializeApp || typeof adminAppModule.initializeApp !== 'function') {

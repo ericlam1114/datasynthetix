@@ -66,7 +66,7 @@ export default function RegisterPage() {
           <div className="flex justify-center">
             <Database className="h-12 w-12 text-indigo-600" />
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">SynthData AI</h2>
+          <h2 className="mt-6 text-3xl font-bold text-gray-900">data synthetix</h2>
           <p className="mt-2 text-gray-600">Create your account</p>
         </div>
         

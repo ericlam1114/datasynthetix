@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/sonner"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "SynthData AI - Generate High-Quality Synthetic Training Data",
+  title: "data synthetix - Generate High-Quality Synthetic Training Data",
   description:
     "Transform your documents into fine-tuning ready synthetic data with our AI-powered platform. No manual cleanup required.",
 };

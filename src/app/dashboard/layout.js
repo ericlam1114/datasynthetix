@@ -45,7 +45,7 @@ export default function DashboardLayout({ children }) {
         <aside className="w-64 bg-white shadow-md hidden md:block">
           <div className="p-6 flex items-center space-x-2">
             <Database className="h-6 w-6 text-indigo-600" />
-            <span className="text-xl font-bold">SynthData AI</span>
+            <span className="text-xl font-bold">data synthetix</span>
           </div>
           
           <nav className="mt-6">
@@ -80,7 +80,7 @@ export default function DashboardLayout({ children }) {
           <header className="h-16 bg-white border-b flex items-center justify-between px-6">
             <div className="md:hidden flex items-center">
               <Database className="h-6 w-6 text-indigo-600" />
-              <span className="text-xl font-bold ml-2">SynthData AI</span>
+              <span className="text-xl font-bold ml-2">data synthetix</span>
             </div>
             
             <div className="md:flex items-center hidden">

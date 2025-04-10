@@ -388,7 +388,7 @@ export default function DashboardPage() {
             <CardHeader>
               <CardTitle>Quick Start Guide</CardTitle>
               <CardDescription>
-                Follow these steps to get started with SynthData AI
+                Follow these steps to get started with data synthetix
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
