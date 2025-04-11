@@ -3,8 +3,14 @@
  * This module is dynamically imported only on the server side
  */
 
+// Ensure this file is only executed on the server side
+if (typeof window !== 'undefined') {
+  throw new Error('OCR extractor should only be used on the server side');
+}
+
+// Import server-only dependencies
 import { createCanvas } from 'canvas';
-import * as Tesseract from 'tesseract.js';
+import { createWorker } from 'tesseract.js';
 import * as pdfjs from 'pdfjs-dist';
 
 // Configure PDF.js for server environment
@@ -33,7 +39,9 @@ export async function extractTextWithOCR(buffer) {
     let fullText = '';
     
     // Initialize Tesseract worker
-    const worker = await Tesseract.createWorker('eng');
+    console.log('Initializing Tesseract worker...');
+    const worker = await createWorker('eng');
+    console.log('Tesseract worker initialized');
     
     // Process each page
     for (let i = 1; i <= pagesToProcess; i++) {
@@ -60,6 +68,7 @@ export async function extractTextWithOCR(buffer) {
         const imageBuffer = canvas.toBuffer('image/png');
         
         // Perform OCR on the image
+        console.log(`Running OCR on page ${i} image...`);
         const { data } = await worker.recognize(imageBuffer);
         const pageText = data.text;
         
@@ -71,7 +80,9 @@ export async function extractTextWithOCR(buffer) {
     }
     
     // Terminate Tesseract worker
+    console.log('Terminating Tesseract worker...');
     await worker.terminate();
+    console.log('Tesseract worker terminated');
     
     console.log(`OCR extraction completed with ${fullText.length} total characters`);
     return fullText.trim();

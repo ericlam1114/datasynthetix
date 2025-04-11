@@ -2,6 +2,7 @@
 const nextConfig = {
   env: {
     USE_OCR: process.env.USE_OCR || 'true',
+    ENABLE_OCR: process.env.ENABLE_OCR || 'true',
   },
   // Use the correct property for Next.js 14+
   experimental: {
@@ -9,7 +10,7 @@ const nextConfig = {
     serverActions: true,
   },
   // Specify packages that should be transpiled
-  transpilePackages: ['pdf-parse'],
+  transpilePackages: ['pdf-parse', 'tesseract.js', 'canvas'],
   webpack: (config, { isServer }) => {
     // Only exclude node-specific modules on the client side
     if (!isServer) {

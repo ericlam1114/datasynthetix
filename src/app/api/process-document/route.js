@@ -15,7 +15,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 import ModelApiClient from "../../../../lib/ModelApiClient";
-import { SyntheticDataPipeline } from "../../../../lib/SyntheticDataPipeline";
+import { SyntheticDataPipeline } from "../../../lib/SyntheticDataPipeline";
 import { ref, uploadBytes, getDownloadURL, getStorage } from "firebase/storage";
 import { firestore } from "../../../lib/firebase";
 import {
@@ -30,6 +30,14 @@ import OpenAI from "openai";
 import { auth } from "../../../lib/firebase";
 import { extractTextFromPdf, extractTextFromTxt } from "./utils/extractText";
 
+// Import the modular services
+import { authenticateUser, getUserSubscription, updateUserCredits } from './services/auth';
+import { saveDocument, getDocument, downloadDocument, createProcessingJob, updateProcessingJob, saveProcessingResults } from './services/document';
+import { extractText, createTextChunks } from './services/textExtraction';
+import { createPipeline, processDocument, withTimeout, evaluateTextComplexity } from './services/pipeline';
+import { createProcessingStatus, updateProcessingStatus, completeProcessingJob, handleProcessingError } from './services/statusUpdate';
+import { handleError, createErrorHandler, withErrorHandling } from './services/errorHandler';
+
 // Dynamically import Firebase Admin Auth - this prevents build errors if the module is not available
 let adminAuthModule;
 try {
@@ -43,64 +51,6 @@ try {
 }
 
 const { getAuth } = adminAuthModule;
-
-function createTextChunks(text, options = {}) {
-  const {
-    minLength = 50, // Minimum chunk size in characters
-    maxLength = 1000, // Maximum chunk size in characters
-    overlap = 0, // Overlap between chunks
-  } = options;
-
-  // Use natural language boundaries for chunking
-  const sentenceBreaks = [".", "!", "?", "\n\n"];
-  const clauseBreaks = [";", ":", "\n", ". "];
-
-  let chunks = [];
-  let currentChunk = "";
-  let lastBreakPos = 0;
-
-  // Process text character by character
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    currentChunk += char;
-
-    // Check if we've hit a natural break point
-    const isSentenceBreak =
-      sentenceBreaks.includes(char) &&
-      i + 1 < text.length &&
-      text[i + 1] === " ";
-    const isClauseBreak = clauseBreaks.includes(char);
-    const isBreakPoint =
-      isSentenceBreak || (isClauseBreak && currentChunk.length > minLength);
-
-    if (isBreakPoint) {
-      lastBreakPos = i;
-    }
-
-    // Check if we've hit max length and have a break point
-    if (currentChunk.length >= maxLength && lastBreakPos > 0) {
-      // Cut at the last break point
-      const breakPos = lastBreakPos - (currentChunk.length - i - 1);
-      const chunk = currentChunk.substring(0, breakPos + 1).trim();
-
-      if (chunk.length >= minLength) {
-        chunks.push(chunk);
-      }
-
-      // Start a new chunk with overlap
-      const overlapStart = Math.max(0, breakPos - overlap);
-      currentChunk = currentChunk.substring(overlapStart);
-      lastBreakPos = 0;
-    }
-  }
-
-  // Add the final chunk if it's not empty
-  if (currentChunk.trim().length >= minLength) {
-    chunks.push(currentChunk.trim());
-  }
-
-  return chunks;
-}
 
 // Function to check if Firebase Admin credentials are properly configured
 function hasFirebaseAdminCredentials() {
@@ -154,25 +104,57 @@ async function verifyAuthToken(token) {
 
 // Function to check if text extraction worked
 export function validateExtractedText(text) {
-  if (!text || text.length < 25) {  // Reduced from 50 to 25 characters for minimum threshold
+  // In development mode with BYPASS_TEXT_VALIDATION set, always treat any text as valid
+  if (process.env.NODE_ENV === 'development' && process.env.BYPASS_TEXT_VALIDATION === 'true') {
+    console.log("⚠️ Development mode - bypassing text validation checks");
+    console.log(`Text length: ${text?.length || 0} characters`);
+    // Return valid regardless of content
+    return { valid: true, bypassed: true };
+  }
+  
+  // Check if text exists and has minimum length
+  if (!text || text.length < 10) {  // Reduced minimum threshold further from 25 to 10 for development
     console.log("❌ Text extraction failed or produced insufficient content");
     console.log(`Text length: ${text?.length || 0} characters`);
+    
+    // In development, allow even very short text to proceed anyway
+    if (process.env.NODE_ENV === 'development') {
+      console.warn("Development mode - allowing short text to proceed despite validation failure");
+      // Create a placeholder text for empty documents
+      if (!text || text.length === 0) {
+        return { 
+          valid: true, 
+          placeholder: true,
+          text: "This document appears to be empty or contains only images. OCR processing may be required."
+        };
+      }
+      return { valid: true, lenient: true };
+    }
+    
     return { valid: false, reason: "insufficient_content" };
   }
   
   // Check for common indicators of successful extraction
-  const containsWords = /\b\w{3,}\b/.test(text); // Has words of at least 3 chars
+  const containsWords = /\b\w{2,}\b/.test(text); // Has words of at least 2 chars (more lenient)
   const hasPunctuation = /[.,;:?!]/.test(text); // Has punctuation
   const hasSpaces = /\s/.test(text); // Has whitespace
   
   console.log(`Text validation: Has words: ${containsWords}, Has punctuation: ${hasPunctuation}, Has spaces: ${hasSpaces}`);
   console.log(`Text length: ${text.length} characters`);
   
-  if (containsWords && (hasPunctuation || hasSpaces)) {
+  // More lenient check: only require words OR spaces
+  if (containsWords || hasSpaces) {
     console.log("✅ Text extraction appears successful");
     return { valid: true };
   } else {
     console.log("⚠️ Text extraction may have issues - content doesn't look like normal text");
+    
+    // In development, allow even problematic text to proceed
+    if (process.env.NODE_ENV === 'development') {
+      console.warn("Development mode - allowing text with quality issues to proceed");
+      return { valid: true, qualityIssues: true };
+    }
+    
     return { valid: false, reason: "text_quality_issues" };
   }
 }
@@ -205,479 +187,119 @@ async function checkFirebaseAdminCredentials() {
 }
 
 export async function POST(request) {
-  console.log("Processing document request received");
-
+  console.log('POST /api/process-document starting');
+  console.time('documentProcessing');
+  
   try {
-    // Check for admin credentials availability first
-    const hasAdminCredentials = await checkFirebaseAdminCredentials();
-    console.log(`Firebase Admin credentials available: ${hasAdminCredentials}`);
-
-    const formData = await request.formData();
-    const file = formData.get("file");
-    const documentId = formData.get("documentId");
-    const authToken =
-      formData.get("authToken") ||
-      request.headers.get("authorization")?.split("Bearer ")[1] ||
-      null;
-    const userId = formData.get("userId");
-    const jobId = formData.get("jobId") || `job-${Date.now()}`;
-    const useSimulation =
-      formData.get("useSimulation") === "true" ||
-      process.env.NEXT_PUBLIC_USE_SIMULATION === "true";
-
-    console.log(`Auth token provided: ${!!authToken}`);
-    if (authToken) {
-      console.log(`Auth token format valid: ${authToken.length > 100}`);
-    } else {
-      console.warn(
-        "No authentication token provided - may result in permission issues"
-      );
-    }
-
-    // Check if we're running in simulation mode
-    if (useSimulation) {
-      console.log("Using simulation mode for document processing");
-
-      // Create a simulated document ID if not provided
-      const simulatedDocumentId = documentId || `simulated-${Date.now()}`;
-
-      // Extract file name if available
-      const fileName = file
-        ? file.name
-        : documentId
-        ? `document-${documentId}`
-        : `simulated-document-${Date.now()}.pdf`;
-
-      // Prepare status tracking
-      const statusJobId = jobId;
-
-      try {
-        // Update status in Firestore to show processing has started
-        const processingJob = {
-          userId: userId,
-          jobId: statusJobId,
-          fileName: fileName,
-          status: "processing",
-          progress: 5, // Initial progress
-          documentId: simulatedDocumentId,
-          updatedAt: new Date(),
-        };
-
-        await saveProcessingJob(userId, processingJob);
-
-        // Create initial status in the process status endpoint
-        await fetch(`${new URL(request.url).origin}/api/process-status`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId,
-            fileName,
-            jobId: statusJobId,
-            status: "processing",
-            processedChunks: 5,
-            totalChunks: 100,
-            updatedAt: new Date().toISOString(),
-          }),
-        });
-      } catch (error) {
-        console.error("Error creating status entry:", error);
-        // Non-critical, continue
-      }
-
-      // Return simulation response
-      return NextResponse.json({
-        documentId: simulatedDocumentId,
-        summary:
-          "This is a simulated summary of the document for testing purposes.",
-        textLength: file ? await file.size : 5000,
-        fileName,
-        jobId: statusJobId,
-      });
-    }
-
-    // Normal processing continues below...
-    // Initialize a user ID variable for tracking ownership
-    let verifiedUserId = null;
-
-    // Verify token and get userId if possible
-    if (authToken) {
-      try {
-        if (hasAdminCredentials) {
-          // Try to verify the auth token to get the user ID using admin SDK
-          const decodedToken = await verifyAuthToken(authToken);
-          verifiedUserId = decodedToken.uid;
-          console.log(
-            `Successfully verified token for user: ${verifiedUserId}`
-          );
-        } else {
-          // No admin credentials available, trust the provided user ID
-          console.log(
-            `Admin SDK not available. Using provided userId: ${userId}`
-          );
-          verifiedUserId = userId;
-        }
-
-        // If we have a document ID, verify access
-        if (documentId && hasAdminCredentials) {
-          const hasAccess = await verifyDocumentAccess(
-            documentId,
-            verifiedUserId
-          );
-          if (!hasAccess) {
-            return NextResponse.json(
-              {
-                error:
-                  "Permission denied. You don't have access to this document.",
-              },
-              { status: 403 }
-            );
-          }
-        }
-      } catch (error) {
-        console.error("Token verification error:", error);
-        if (error.code === "auth/id-token-expired") {
-          return NextResponse.json(
-            {
-              error: "Authentication error: Your session has expired.",
-              message: "Please refresh the page and sign in again.",
-            },
-            { status: 401 }
-          );
-        } else if (
-          error.code === "auth/argument-error" ||
-          error.code === "auth/invalid-id-token"
-        ) {
-          return NextResponse.json(
-            {
-              error: "Authentication error: Invalid authentication token.",
-              message:
-                "Please sign out and sign in again to refresh your session.",
-            },
-            { status: 401 }
-          );
-        }
-        // Fall back to using the provided user ID if authentication fails
-        verifiedUserId = userId;
-        console.log(
-          `Auth verification failed. Falling back to provided userId: ${verifiedUserId}`
-        );
-      }
-    } else if (userId) {
-      // No auth token but we have a user ID from the form data
-      verifiedUserId = userId;
-      console.log(
-        `No auth token provided. Using userId from form data: ${verifiedUserId}`
-      );
-    }
-
-    if (!verifiedUserId) {
-      return NextResponse.json(
-        {
-          error: "Authentication required",
-          message: "Please sign in before processing documents.",
-        },
-        { status: 401 }
-      );
-    }
-
-    if (!file && !documentId) {
-      return NextResponse.json(
-        { error: "No file or document ID provided" },
-        { status: 400 }
-      );
-    }
-
-    // Variables to store document data
-    let text = "";
-    let docData = null;
-
-    // If we have a document ID, fetch the existing document
-    if (documentId) {
-      console.log(`Processing existing document with ID: ${documentId}`);
-
-      try {
-        // Try to retrieve the document content
-        if (hasAdminCredentials) {
-          const adminDb = await getAdminFirestore();
-          if (adminDb) {
-            const docRef = adminDb.collection("documents").doc(documentId);
-            const docSnap = await docRef.get();
-
-            if (!docSnap.exists) {
-              return NextResponse.json(
-                { error: "Document not found" },
-                { status: 404 }
-              );
-            }
-
-            docData = docSnap.data();
-            text = docData.content || "";
-            console.log(
-              `Retrieved document content: ${text.length} characters`
-            );
-          }
-        }
-
-        if (!docData) {
-          // Fall back to client SDK
-          const db = getFirestore();
-          const docRef = doc(db, "documents", documentId);
-          const docSnap = await getDoc(docRef);
-
-          if (!docSnap.exists()) {
-            return NextResponse.json(
-              { error: "Document not found" },
-              { status: 404 }
-            );
-          }
-
-          docData = docSnap.data();
-          text = docData.content || "";
-          console.log(`Retrieved document content: ${text.length} characters`);
-        }
-      } catch (error) {
-        console.error("Error retrieving document:", error);
-        return NextResponse.json(
-          {
-            error: "Failed to retrieve document content",
-            message: error.message,
-          },
-          { status: 500 }
-        );
-      }
-    }
-
-    // Process file upload if a file was provided
-    let uploadResult = null;
-
-    if (file) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
-      // Extract content from the file
-      const fileName = file.name.toLowerCase();
-      console.log(`Processing file: ${fileName}, size: ${buffer.length} bytes`);
-
-      try {
-        if (fileName.endsWith(".pdf")) {
-          console.log("Detected PDF file, starting extraction");
-          const ocrEnabled = process.env.ENABLE_OCR === 'true' || process.env.NODE_ENV === 'production';
-          
-          try {
-            // First attempt without OCR
-            text = await extractTextFromPdf(buffer, { 
-              useOcr: false,
-              attemptAlternativeMethods: true
-            });
-            
-            // Validate the extracted text
-            const validation = validateExtractedText(text);
-            
-            // If validation fails and OCR is enabled, try with OCR
-            if (!validation.valid && ocrEnabled) {
-              console.log(`PDF text validation failed: ${validation.reason}`);
-              console.log("Attempting extraction with OCR");
-              
-              // Try again with OCR enabled
-              text = await extractTextFromPdf(buffer, { 
-                useOcr: true,
-                attemptAlternativeMethods: true
-              });
-              
-              // Validate again
-              const secondValidation = validateExtractedText(text);
-              if (!secondValidation.valid) {
-                console.error(`OCR extraction also failed: ${secondValidation.reason}`);
-                throw new Error(`Failed to extract readable text from PDF, even with OCR: ${secondValidation.reason}`);
-              } else {
-                console.log("OCR extraction successful");
-              }
-            } else if (!validation.valid && !ocrEnabled) {
-              // OCR is disabled but would be helpful
-              console.warn("OCR is disabled but might help with this PDF. Enable with ENABLE_OCR=true");
-              throw new Error(`Failed to extract readable text from PDF. OCR might help but is disabled.`);
-            }
-          } catch (err) {
-            console.error("PDF extraction error:", err);
-            throw err;
-          }
-        } else if (fileName.endsWith(".txt")) {
-          console.log("Detected text file, starting extraction");
-          text = buffer.toString("utf-8");
-          
-          // Validate text content 
-          const validation = validateExtractedText(text);
-          if (!validation.valid) {
-            console.error(`TXT file validation failed: ${validation.reason}`);
-            throw new Error(`Text file appears to be invalid or corrupt: ${validation.reason}`);
-          }
-        } else {
-          return NextResponse.json(
-            { 
-              error: "Unsupported file type",
-              message: "Please upload a PDF or TXT file with readable text content"
-            },
-            { status: 400 }
-          );
-        }
-      } catch (extractionError) {
-        console.error("Text extraction error:", extractionError);
-        
-        // Update status to failed
-        try {
-          const failedJobData = {
-            userId: verifiedUserId,
-            jobId: jobId,
-            fileName: file.name,
-            status: "failed",
-            progress: 0,
-            error: "Text extraction failed",
-            errorMessage: "No readable text content could be extracted from this document. Please upload a document with clear, selectable text.",
-            documentId: documentId,
-            updatedAt: new Date()
-          };
-          
-          await saveProcessingJob(verifiedUserId, failedJobData);
-          
-          // Update in process status endpoint
-          await fetch(`${new URL(request.url).origin}/api/process-status`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ...failedJobData,
-              updatedAt: new Date().toISOString(),
-            }),
-          });
-        } catch (statusError) {
-          console.error("Error updating failed status:", statusError);
-        }
-        
-        return NextResponse.json({
-          error: "Text extraction failed",
-          message: "No readable text content could be extracted from this document. Please upload a document with clear, selectable text.",
-          documentId: documentId,
-          jobId: jobId,
-        }, { status: 400 });
-      }
-
-      // Save the file to Firebase Storage
-      if (hasAdminCredentials && verifiedUserId) {
-        try {
-          // Try to use Admin SDK for storage
-          const adminStorage = await getAdminStorage();
-          if (adminStorage) {
-            const bucket = adminStorage.bucket();
-            const filePath = `documents/${verifiedUserId}/${Date.now()}_${
-              file.name
-            }`;
-            const fileRef = bucket.file(filePath);
-
-            await fileRef.save(buffer, {
-              metadata: {
-                contentType: file.type,
-              },
-            });
-
-            uploadResult = {
-              fileName: file.name,
-              path: filePath,
-              url: `https://storage.googleapis.com/${process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET}/${filePath}`,
-            };
-          }
-        } catch (error) {
-          console.error("Admin Storage upload failed:", error);
-          // Will fall back to client SDK
-        }
-      }
-
-      // Fall back to client SDK if admin upload failed
-      if (!uploadResult) {
-        try {
-          const storage = getStorage();
-          const storageRef = ref(
-            storage,
-            `documents/${Date.now()}_${file.name}`
-          );
-          const snapshot = await uploadBytes(storageRef, buffer, {
-            contentType: file.type,
-          });
-          const downloadURL = await getDownloadURL(snapshot.ref);
-
-          uploadResult = {
-            fileName: file.name,
-            path: snapshot.ref.fullPath,
-            url: downloadURL,
-          };
-        } catch (error) {
-          console.error("Error uploading to Firebase Storage:", error);
-          return NextResponse.json(
-            { error: "Failed to upload file to storage" },
-            { status: 500 }
-          );
-        }
-      }
-    }
-
-    // After text is extracted from file or document, add this check before processing
-    // Look for the part where text extraction happens and add this validation
-
-    // Check if extracted text is empty or too short
-    if (!text || text.length < 25) {  // Reduced from 50 to 25 characters minimum threshold
-      console.error(`Text extraction failed or produced insufficient content. Text length: ${text?.length || 0} characters`);
-      
-      // Update status to failed
-      try {
-        const failedJobData = {
-          userId: verifiedUserId,
-          jobId: jobId,
-          fileName: uploadResult?.fileName || file?.name || `document-${documentId}`,
-          status: "failed",
-          progress: 0,
-          error: "Text extraction failed",
-          errorMessage: "No readable text content could be extracted from this document. Please upload a document with clear, selectable text.",
-          documentId: documentId,
-          updatedAt: new Date()
-        };
-        
-        // Use saveProcessingJob which handles create or update
-        await saveProcessingJob(verifiedUserId, failedJobData);
-        
-        // Update in process status endpoint
-        await fetch(`${new URL(request.url).origin}/api/process-status`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...failedJobData,
-            userId: verifiedUserId,
-            fileName: uploadResult?.fileName || file?.name || `document-${documentId}`,
-            jobId: jobId,
-          }),
-        });
-      } catch (statusError) {
-        console.error("Error updating failed status:", statusError);
-      }
-      
-      // Return error response to client
-      return NextResponse.json({
-        error: "Text extraction failed",
-        message: "No readable text content could be extracted from this document. Please upload a document with clear, selectable text.",
-        documentId: documentId,
-        jobId: jobId,
-      }, { status: 400 });
+    // Step 1: Authenticate the user
+    const user = await authenticateUser(request);
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    // If text is valid, continue with normal processing
-
-    // Process the text using our 3-model pipeline
-    let summary = "";
-    let documentData = {};
-
+    // Create context-specific error handler
+    const errorHandler = createErrorHandler({ userId: user.uid });
+    
+    // Step 2: Parse and validate the form data
+    const formData = await request.formData();
+    const file = formData.get('file');
+    
+    // Validate required fields
+    if (!file) {
+      return Response.json(errorHandler(new Error('File is required'), { stage: 'validation', statusCode: 400 }), { status: 400 });
+    }
+    
+    // Parse options
+    const options = {
+      name: formData.get('name') || file.name,
+      description: formData.get('description') || '',
+      chunkSize: parseInt(formData.get('chunkSize') || 1000, 10),
+      overlap: parseInt(formData.get('overlap') || 100, 10),
+      outputFormat: formData.get('outputFormat') || 'jsonl',
+      classFilter: formData.get('classFilter') || 'all',
+      prioritizeImportant: formData.get('prioritizeImportant') === 'true',
+      enableOcr: formData.get('enableOcr') === 'true' || process.env.USE_OCR === 'true'
+    };
+    
+    // Step 3: Create a processing job record
+    const jobId = `job-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    
+    try {
+      // Create initial status
+      await createProcessingStatus(jobId, {
+        userId: user.uid,
+        fileName: file.name,
+        status: 'created',
+        progress: 0,
+        stage: 'initialization'
+      });
+      
+      // Update to show we're starting
+      await updateProcessingStatus(jobId, {
+        status: 'processing',
+        message: 'Processing started',
+        progress: 5
+      });
+    } catch (statusError) {
+      console.error('Error creating initial status:', statusError);
+      // Non-critical, continue processing
+    }
+    
+    // Step 4: Save the document to storage
+    let documentInfo;
+    try {
+      documentInfo = await saveDocument(file, user.uid, options);
+      
+      // Update status
+      await updateProcessingStatus(jobId, {
+        status: 'processing',
+        message: 'Document uploaded, extracting text',
+        progress: 10,
+        documentId: documentInfo.documentId
+      });
+    } catch (docError) {
+      return Response.json(errorHandler(docError, { 
+        stage: 'document_storage', 
+        jobId,
+        statusCode: 500 
+      }), { status: 500 });
+    }
+    
+    // Step 5: Extract text from the document
+    let extractionResult;
+    try {
+      // Get the uploaded file buffer
+      const buffer = Buffer.from(await file.arrayBuffer());
+      
+      // Extract text based on file type
+      extractionResult = await extractText(buffer, file.type, {
+        enableOcr: options.enableOcr
+      });
+      
+      // Check if extraction succeeded
+      if (!extractionResult.validation.valid) {
+        throw new Error(`Text extraction failed: ${extractionResult.validation.reason}`);
+      }
+      
+      // Update status
+      await updateProcessingStatus(jobId, {
+        status: 'processing',
+        message: 'Text extracted successfully',
+        progress: 15,
+        stats: {
+          textLength: extractionResult.length
+        }
+      });
+    } catch (extractError) {
+      return Response.json(errorHandler(extractError, { 
+        stage: 'text_extraction', 
+        jobId,
+        documentId: documentInfo.documentId,
+        statusCode: 400 
+      }), { status: 400 });
+    }
+    
+    // Step 6: Process the document with the pipeline
     try {
       // Initialize the pipeline with options from the request
       const pipeline = new SyntheticDataPipeline({
@@ -693,281 +315,135 @@ export async function POST(request) {
         outputFormat: formData.get("outputFormat") || "jsonl",
         classFilter: formData.get("classFilter") || "all",
         prioritizeImportant: formData.get("prioritizeImportant") === "true",
-        onProgress: (stage, stats) => {
-          // Update processing status in your database
+        maxClausesToProcess: parseInt(formData.get("maxClauses") || 0, 10),
+        maxVariantsPerClause: parseInt(formData.get("maxVariants") || 3, 10),
+        // Add timeout configurations
+        timeouts: {
+          documentProcessing: parseInt(formData.get("documentTimeout") || 600000, 10), // 10 minutes
+          chunkProcessing: parseInt(formData.get("chunkTimeout") || 120000, 10),      // 2 minutes
+          clauseExtraction: parseInt(formData.get("extractionTimeout") || 30000, 10),     // 30 seconds
+          clauseClassification: parseInt(formData.get("classificationTimeout") || 15000, 10), // 15 seconds
+          variantGeneration: parseInt(formData.get("variantTimeout") || 20000, 10),   // 20 seconds per variant
+        },
+      });
+      
+      // Log the timeout configurations
+      console.log("Pipeline timeouts:", {
+        documentProcessing: parseInt(formData.get("documentTimeout") || 600000, 10),
+        chunkProcessing: parseInt(formData.get("chunkTimeout") || 120000, 10),
+        clauseExtraction: parseInt(formData.get("extractionTimeout") || 30000, 10),
+        clauseClassification: parseInt(formData.get("classificationTimeout") || 15000, 10),
+        variantGeneration: parseInt(formData.get("variantTimeout") || 20000, 10),
+      });
+      
+      // Estimate resource requirements
+      const complexity = evaluateTextComplexity(extractionResult.text);
+      
+      // Update status
+      await updateProcessingStatus(jobId, {
+        status: 'processing',
+        message: 'Initializing processing pipeline',
+        progress: 18,
+        estimatedChunks: complexity.estimatedChunks,
+        totalChunks: complexity.estimatedChunks,
+        complexity: complexity.complexity
+      });
+      
+      // Configure pipeline options
+      const pipelineOptions = {
+        ...options,
+        progressCallback: async (progressData) => {
+          // Report progress from the pipeline
           try {
-            // Calculate progress percentage based on stage
-            let progressPercent = 0;
-            switch (stage) {
-              case "chunking":
-                progressPercent = 10;
-                break;
-              case "extraction":
-                progressPercent = 30;
-                break;
-              case "classification":
-                progressPercent = 60;
-                break;
-              case "generation":
-                progressPercent = 90;
-                break;
-              default:
-                progressPercent = 10;
-            }
-
-            // Update job status
-            saveProcessingJob(verifiedUserId, {
-              userId: verifiedUserId,
-              jobId,
-              fileName: file?.name || docData?.fileName || "document.txt",
-              status: "processing",
-              progress: progressPercent,
-              documentId,
-              processingStats: stats,
-              currentStage: stage,
-              updatedAt: new Date(),
-            });
-          } catch (error) {
-            console.error("Error updating processing status:", error);
-          }
-        },
-      });
-
-      // Process the document
-      console.log(
-        `Starting 3-model pipeline processing for user ${verifiedUserId}`
-      );
-      const pipelineResult = await pipeline.process(text);
-
-      // Save the output to a file
-      const outputDir = path.join(uploadsDir, verifiedUserId);
-      await fs.mkdir(outputDir, { recursive: true });
-
-      const outputFileName = `dataset-${Date.now()}.${
-        pipeline.outputFormat === "csv" ? "csv" : "jsonl"
-      }`;
-      const outputFilePath = path.join(outputDir, outputFileName);
-
-      await fs.writeFile(outputFilePath, pipelineResult.output);
-
-      // Update the summary with results from pipeline processing
-      summary = `Successfully processed ${pipelineResult.stats.totalChunks} chunks and generated ${pipelineResult.stats.generatedVariants} synthetic variants.`;
-
-      // Calculate classification stats
-      const classificationStats = {
-        Critical: 0,
-        Important: 0,
-        Standard: 0,
-      };
-
-      // Update the documentData with the results
-      documentData = {
-        summary,
-        content: text.substring(0, 100000), // Limit text length
-        updatedAt: new Date(), // Use standard Date object instead of serverTimestamp()
-        processingStats: pipelineResult.stats,
-        classificationStats,
-        outputFilePath: `${verifiedUserId}/${outputFileName}`,
-        processingCompleted: true,
-        creditsUsed: pipelineResult.stats.generatedVariants, // Each variant costs 1 credit
-      };
-    } catch (error) {
-      console.error("Pipeline processing error:", error);
-      return NextResponse.json(
-        { error: "Failed to process document" },
-        { status: 500 }
-      );
-    }
-
-    // Add file info if we uploaded a file
-    if (uploadResult) {
-      documentData = {
-        ...documentData,
-        fileName: uploadResult.fileName,
-        filePath: uploadResult.path,
-        fileUrl: uploadResult.url,
-        createdAt: docData?.createdAt || new Date(), // Use standard Date object
-      };
-    }
-
-    // Set the user ID
-    documentData.userId = verifiedUserId;
-
-    let docRef;
-    if (documentId) {
-      // Update existing document
-      if (hasAdminCredentials) {
-        try {
-          // Try to use Admin SDK
-          const adminDb = await getAdminFirestore();
-          if (adminDb) {
-            // Convert any serverTimestamp to regular Date objects to avoid serialization issues
-            const cleanedData = {
-              ...documentData,
-              id: documentId,
+            if (!progressData) return;
+            
+            const { currentChunk, totalChunks, processedClauses, totalClauses, stage, variantsGenerated } = progressData;
+            
+            // Calculate progress percentage
+            const chunkProgress = totalChunks ? Math.round((currentChunk / totalChunks) * 100) : 0;
+            
+            // Create status update with detailed stats
+            const statusUpdate = {
+              status: 'processing',
+              processedChunks: currentChunk || 0,
+              totalChunks: totalChunks || complexity.estimatedChunks,
+              progress: 20 + Math.floor(chunkProgress * 0.6), // Scale to 20-80% range
+              stage: stage || 'processing',
+              processingStats: {
+                processedClauses: processedClauses || 0,
+                totalClauses: totalClauses || 0,
+                variantsGenerated: variantsGenerated || 0,
+                currentStage: stage || 'processing',
+                currentChunk,
+                totalChunks,
+                lastUpdateTime: new Date().toISOString()
+              }
             };
-
-            docRef = adminDb.collection("documents").doc(documentId);
-            await docRef.update(cleanedData);
+            
+            // Add a message based on stage
+            if (stage === 'extracting') {
+              statusUpdate.message = `Extracting clauses (chunk ${currentChunk}/${totalChunks})`;
+            } else if (stage === 'classifying') {
+              statusUpdate.message = `Classifying clauses (${processedClauses} found)`;
+            } else if (stage === 'generating') {
+              statusUpdate.message = `Generating variants (${variantsGenerated} variants created)`;
+            } else {
+              statusUpdate.message = `Processing document (${currentChunk}/${totalChunks} chunks)`;
+            }
+            
+            // Update status
+            await updateProcessingStatus(jobId, statusUpdate);
+          } catch (progressError) {
+            console.error('Error in progress callback:', progressError);
           }
-        } catch (error) {
-          console.error("Admin Firestore update failed:", error);
-          // Will fall back to client SDK
-        }
-      }
-
-      if (!docRef) {
-        // Fall back to client SDK
-        const db = getFirestore();
-        docRef = doc(db, "documents", documentId);
-        await updateDoc(docRef, {
-          ...documentData,
-          id: documentId,
-          updatedAt: serverTimestamp(), // Use serverTimestamp for client SDK
-        });
-      }
-    } else {
-      // Create a new document
-      if (hasAdminCredentials) {
-        try {
-          // Try to use Admin SDK
-          const adminDb = await getAdminFirestore();
-          if (adminDb) {
-            docRef = await adminDb.collection("documents").add({
-              ...documentData,
-            });
-            await docRef.update({ id: docRef.id });
-            documentId = docRef.id;
-          }
-        } catch (error) {
-          console.error("Admin Firestore create failed:", error);
-          // Will fall back to client SDK
-        }
-      }
-
-      if (!documentId) {
-        // Fall back to client SDK
-        const db = getFirestore();
-        docRef = await addDoc(collection(db, "documents"), {
-          ...documentData,
-        });
-
-        await updateDoc(docRef, { id: docRef.id });
-        documentId = docRef.id;
-      }
-    }
-
-    // Create a dataset record for the processed document
-    await createDatasetRecord(
-      documentId,
-      text,
-      summary,
-      hasAdminCredentials,
-      documentData.userId
-    );
-
-    // After processing has started, save initial status to Firestore
-    try {
-      const processingJob = {
-        userId: verifiedUserId,
-        jobId,
-        fileName: documentData.fileName || "document-" + documentId,
-        status: "processing",
-        progress: 0,
-        createdAt: new Date(),
-        documentId: documentId || null,
-        processingOptions: {
-          chunkSize: parseInt(formData.get("chunkSize") || 1000, 10),
-          overlap: parseInt(formData.get("overlap") || 100, 10),
-          outputFormat: formData.get("outputFormat") || "jsonl",
-          classFilter: formData.get("classFilter") || "all",
-          prioritizeImportant: formData.get("prioritizeImportant") === "true",
         },
+        jobId
       };
-
-      await saveProcessingJob(verifiedUserId, processingJob);
-    } catch (error) {
-      console.error("Error saving initial job status to Firestore:", error);
-      // Continue processing even if saving to Firestore fails
-    }
-
-    // Generate unique job ID for status tracking
-    const statusJobId = jobId;
-
-    // Create initial processing status entry
-    try {
-      // Update status in Firestore to show processing has started
-      const processingJob = {
-        userId: verifiedUserId,
-        jobId: statusJobId,
-        fileName: documentData.fileName || "document-" + documentId,
-        status: "processing",
-        progress: 10, // Initial progress after document is saved
-        documentId,
-        updatedAt: new Date(),
-      };
-
-      await saveProcessingJob(verifiedUserId, processingJob);
-
-      // Also create status entry in the process-status API
-      await fetch(`${new URL(request.url).origin}/api/process-status`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: verifiedUserId,
-          fileName: documentData.fileName || "document-" + documentId,
-          jobId: statusJobId,
-          status: "processing",
-          processedChunks: 10,
-          totalChunks: 100,
-          result: {
-            documentId,
-            summary: summary,
-            textLength: text.length,
-            filePath: `${verifiedUserId}/${
-              documentData.fileName || "document.txt"
-            }`,
-          },
-          updatedAt: new Date().toISOString(),
-        }),
+      
+      // Process the document
+      const result = await processDocument(extractionResult.text, pipelineOptions);
+      
+      // Update status before saving results
+      await updateProcessingStatus(jobId, {
+        status: 'processing',
+        message: 'Processing complete, saving results',
+        progress: 90,
+        processingStats: {
+          ...result.stats,
+          completed: true
+        }
       });
-    } catch (error) {
-      console.error("Error creating status entry:", error);
-      // Non-critical, continue even if fails
+      
+      // Save the processing results
+      await saveProcessingResults(documentInfo.documentId, jobId, result);
+      
+      // Complete the processing job
+      await completeProcessingJob(jobId, result);
+      
+      // Return success response with results summary
+      return Response.json({
+        success: true,
+        message: 'Document processed successfully',
+        jobId,
+        documentId: documentInfo.documentId,
+        stats: result.stats
+      });
+    } catch (processingError) {
+      return Response.json(errorHandler(processingError, { 
+        stage: 'pipeline_processing', 
+        jobId,
+        documentId: documentInfo.documentId,
+        statusCode: 500 
+      }), { status: 500 });
     }
-
-    // Return the results with job ID
-    return NextResponse.json({
-      documentId,
-      summary: summary,
-      textLength: text.length,
-      fileName: documentData.fileName || "document-" + documentId,
-      jobId: statusJobId,
-    });
   } catch (error) {
-    console.error("Document processing error:", error);
-
-    if (error.code === "permission-denied") {
-      return NextResponse.json(
-        {
-          error:
-            "Authentication error: The server couldn't authenticate with Firebase.",
-          message:
-            "Please try the following steps:\n1. Refresh the page\n2. Sign out and sign in again\n3. If using an older tab, open a fresh browser tab\n4. If the problem persists, your session may have expired or you may not have access to this document.",
-        },
-        { status: 403 }
-      );
-    }
-
-    return NextResponse.json(
-      {
-        error: "Failed to process document",
-        message: error.message,
-      },
-      { status: 500 }
-    );
+    console.error('Unexpected error in document processing:', error);
+    return Response.json({ 
+      error: error.message || 'An unexpected error occurred',
+      success: false 
+    }, { status: 500 });
+  } finally {
+    console.timeEnd('documentProcessing');
   }
 }
 

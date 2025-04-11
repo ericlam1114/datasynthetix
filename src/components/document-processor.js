@@ -294,6 +294,13 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
       formData.append("prioritizeImportant", prioritizeImportant);
       formData.append("jobId", jobId); // Add job ID to form data
 
+      // Add timeout configurations for document processing
+      formData.append("documentTimeout", "600000"); // 10 minutes overall timeout
+      formData.append("chunkTimeout", "120000");    // 2 minutes per chunk
+      formData.append("extractionTimeout", "30000"); // 30 seconds for extraction
+      formData.append("classificationTimeout", "15000"); // 15 seconds for classification
+      formData.append("variantTimeout", "20000");   // 20 seconds for variant generation
+
       // Add auth token if available
       if (authToken) {
         formData.append("authToken", authToken);
@@ -397,11 +404,16 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
         // Set up polling to check progress
         const pollingInterval = setInterval(async () => {
           try {
+            // Skip polling if we don't have a jobId or polling has been running too long
+            if (!processAttempts || processAttempts > 300) {
+              clearInterval(pollingInterval);
+              return;
+            }
+
             setLastPollingTime(new Date());
-            // Use the jobId if available, otherwise fallback to fileName
-            const progressResponse = await fetch(
-              `/api/process-status?userId=${user.uid}&jobId=${responseJobId}`
-            );
+            const progressEndpoint = `/api/process-status?${jobId ? `jobId=${jobId}` : `userId=${user.uid}&fileName=${fileName}`}`;
+            const progressResponse = await fetch(progressEndpoint);
+
             if (progressResponse.ok) {
               const progressData = await progressResponse.json();
 
@@ -427,11 +439,29 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
                 }
               }
 
+              // Update processing stats if available 
+              if (progressData.processingStats) {
+                // Extract stats from the response
+                const stats = progressData.processingStats;
+                
+                // Update current stage if available
+                if (stats.currentStage) {
+                  setCurrentStage(stats.currentStage);
+                }
+                
+                // Update processing stats
+                setProcessingStats({
+                  totalChunks: stats.totalChunks || totalChunks || 0,
+                  extractedClauses: stats.totalClauses || stats.processedClauses || 0,
+                  classifiedClauses: stats.classifiedClauses || stats.processedClauses || 0,
+                  generatedVariants: stats.variantsGenerated || 0,
+                  lastUpdateTime: stats.lastUpdateTime || new Date().toISOString()
+                });
+              }
+
               // Update job status in Firestore on significant progress changes (every 10%)
               if (progressData.status === "processing") {
                 // Calculate progress percentage safely
-                const processedChunks = progressData.processedChunks || 0;
-                const totalChunks = progressData.totalChunks || 100;
                 const progressPercent = Math.round(
                   (processedChunks / totalChunks) * 100
                 );
@@ -447,6 +477,7 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
                     progress: progressPercent,
                     documentId: responseData.documentId,
                     updatedAt: new Date().toISOString(),
+                    processingStats: progressData.processingStats || {}
                   });
                 }
 
@@ -476,6 +507,7 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
                     documentId: responseData.documentId,
                     creditsUsed: progressData.creditsUsed || 0,
                     updatedAt: new Date().toISOString(),
+                    processingStats: progressData.processingStats || {}
                   });
 
                   setActiveTab("preview");
@@ -506,6 +538,7 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
                   documentId: responseData.documentId,
                   creditsUsed: progressData.creditsUsed || 0,
                   updatedAt: new Date().toISOString(),
+                  processingStats: progressData.processingStats || {}
                 });
 
                 // Load preview data if available, otherwise use placeholder data
@@ -681,9 +714,9 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
             <div className="animate-pulse text-indigo-600 mb-4">
               <Upload className="h-12 w-12 mx-auto" />
             </div>
-            <h3 className="text-lg font-medium mb-2">Uploading Document</h3>
+            <h3 className="text-lg font-medium mb-2">Ingesting Document</h3>
             <p className="text-sm text-gray-500 mb-4">
-              Please wait while we upload your document
+              Please wait while we ingest your document
             </p>
             <Progress value={30} className="h-2 w-full max-w-md mx-auto" />
           </div>
@@ -699,7 +732,7 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
               <p className="text-sm text-gray-500 mb-2">
                 {currentStage 
                   ? `${currentStage.charAt(0).toUpperCase() + currentStage.slice(1)} in progress...` 
-                  : `Processing document (${progress}% complete)`}
+                  : `Processing data (${progress}% complete)`}
               </p>
               <p className="text-xs text-indigo-600 mb-2">
                 {`Credits used: ${creditsUsed} / ${creditsAvailable} available`}
@@ -710,29 +743,25 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
               />
         
               {/* Activity status indicator */}
-              <div className="flex justify-center items-center mb-4">
+              <div className="flex items-center justify-center text-xs text-gray-500 mb-4">
+                <span className="mr-2">Status:</span>
                 {isProcessingActive ? (
-                  <div className="flex items-center text-sm text-green-600">
-                    <div className="animate-pulse h-2 w-2 rounded-full bg-green-600 mr-2"></div>
-                    Active processing
-                  </div>
+                  <>
+                    <span className="flex items-center text-green-600">
+                      <span className="animate-pulse h-2 w-2 bg-green-500 rounded-full mr-2"></span>
+                      Active
+                    </span>
+                  </>
                 ) : (
-                  <div className="flex items-center text-sm text-amber-600">
-                    <AlertCircle className="h-4 w-4 mr-2" />
-                    Processing appears stalled
-                  </div>
-                )}
-        
-                {lastPollingTime && (
-                  <div className="text-xs text-gray-500 ml-3">
-                    Last checked:{" "}
-                    {new Date().getSeconds() - lastPollingTime.getSeconds()}{" "}
-                    seconds ago
-                  </div>
+                  <>
+                    <span className="flex items-center text-orange-600">
+                      <span className="h-2 w-2 bg-orange-500 rounded-full mr-2"></span>
+                      Waiting...
+                    </span>
+                  </>
                 )}
               </div>
         
-              {/* Stats indicators */}
               <div className="max-w-md mx-auto mt-4 text-left bg-gray-50 p-3 rounded-md border text-sm">
                 <h4 className="font-medium text-sm mb-2 text-gray-700">
                   Processing Stats:
@@ -754,10 +783,14 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
                     <span>Generated Variants:</span>
                     <span>{processingStats.generatedVariants || 0}</span>
                   </div>
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>Last Update:</span>
+                    <span>{processingStats.lastUpdateTime ? new Date(processingStats.lastUpdateTime).toLocaleTimeString() : 'N/A'}</span>
+                  </div>
                 </div>
               </div>
         
-              {/* Status indicators */}
+              {/* Processing Status */}
               <div className="max-w-md mx-auto mt-4 text-left bg-gray-50 p-3 rounded-md border text-sm">
                 <h4 className="font-medium text-sm mb-2 text-gray-700">
                   Processing Status:
@@ -771,43 +804,73 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
                     <CheckCircle className="h-3 w-3 mr-2 inline" /> Text
                     extraction complete
                   </div>
-                  {progress >= 30 && (
+                  
+                  {/* Dynamic status indicators based on current stage */}
+                  {(currentStage === 'complete' || progress >= 30) && (
                     <div className="flex items-center text-green-600">
                       <CheckCircle className="h-3 w-3 mr-2 inline" /> Clause
                       extraction complete
                     </div>
                   )}
-                  {progress >= 60 && (
+                  {(currentStage === 'complete' || progress >= 60) && (
                     <div className="flex items-center text-green-600">
                       <CheckCircle className="h-3 w-3 mr-2 inline" />{" "}
                       Classification complete
                     </div>
                   )}
-                  {progress >= 90 && (
+                  {(currentStage === 'complete' || progress >= 90) && (
                     <div className="flex items-center text-green-600">
                       <CheckCircle className="h-3 w-3 mr-2 inline" /> Synthetic
                       generation complete
                     </div>
                   )}
-                  {progress < 30 && (
+                  
+                  {/* Active processing stage indicator based on currentStage */}
+                  {currentStage === 'extracting' && (
                     <div className="flex items-center text-indigo-600">
                       <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
                       Extracting clauses...
                     </div>
                   )}
-                  {progress >= 30 && progress < 60 && (
+                  {currentStage === 'classifying' && (
                     <div className="flex items-center text-indigo-600">
                       <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
-                      Classifying contract clauses...
+                      Classifying clauses...
                     </div>
                   )}
-                  {progress >= 60 && progress < 90 && (
+                  {currentStage === 'generating' && (
                     <div className="flex items-center text-indigo-600">
                       <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
                       Generating synthetic variants...
                     </div>
                   )}
-                  {progress >= 90 && progress < 100 && (
+                  {currentStage === 'formatting' && (
+                    <div className="flex items-center text-indigo-600">
+                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
+                      Finalizing output...
+                    </div>
+                  )}
+                  
+                  {/* Default stage indicators if currentStage is not provided */}
+                  {!currentStage && progress < 30 && (
+                    <div className="flex items-center text-indigo-600">
+                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
+                      Extracting clauses...
+                    </div>
+                  )}
+                  {!currentStage && progress >= 30 && progress < 60 && (
+                    <div className="flex items-center text-indigo-600">
+                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
+                      Classifying clauses...
+                    </div>
+                  )}
+                  {!currentStage && progress >= 60 && progress < 90 && (
+                    <div className="flex items-center text-indigo-600">
+                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
+                      Generating synthetic variants...
+                    </div>
+                  )}
+                  {!currentStage && progress >= 90 && progress < 100 && (
                     <div className="flex items-center text-indigo-600">
                       <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
                       Finalizing output...
@@ -815,7 +878,7 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
                   )}
                 </div>
               </div>
-        
+              
               <div className="max-w-md mx-auto mt-4 text-xs text-gray-500">
                 You can safely navigate away from this page. Processing will
                 continue in the background and results will be available on your
@@ -1347,10 +1410,9 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
             </CardContent>
             <CardFooter className="border-t bg-gray-50 flex justify-center p-6">
               <div className="space-y-2 text-center max-w-md">
-                <h3 className="font-medium">Three-Step Processing Pipeline</h3>
+                <h3 className="font-medium">Multi-Step Processing Pipeline</h3>
                 <p className="text-sm text-gray-600">
-                  Our AI uses three specialized models to extract clauses,
-                  classify their importance, and generate synthetic variants
+                  Our AI uses multiple modular AI models to generate synthetic variants
                   that match your organization's exact language style. The
                   output is formatted for fine-tuning various AI models.
                 </p>

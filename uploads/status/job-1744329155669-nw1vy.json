@@ -1,0 +1,19 @@
+{
+  "status": "complete",
+  "processedChunks": 100,
+  "totalChunks": 100,
+  "result": {
+    "documentId": "TK7KzNPzYHZ18k8nNm5M",
+    "summary": "Successfully processed 1 chunks and generated 1 synthetic variants.",
+    "textLength": 113,
+    "filePath": "YlCzr5g4Xjc45c7z8fLtnO9LR1F3/document.txt"
+  },
+  "creditsUsed": 0,
+  "creditsRemaining": 100,
+  "updatedAt": "2025-04-10T23:55:52.597Z",
+  "lastProgressChange": "2025-04-10T23:52:41.952Z",
+  "isActive": false,
+  "jobId": "job-1744329155669-nw1vy",
+  "fileName": "document-TK7KzNPzYHZ18k8nNm5M",
+  "lastChecked": "2025-04-10T23:55:50.931Z"
+}
