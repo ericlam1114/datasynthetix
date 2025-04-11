@@ -1,0 +1,1334 @@
+ection 202 of the Unfunded Mandates Reform Act of 1995 (UMRA) requires that 
+agencies assess anticipated costs and benefits and take certain other actions before 
+issuing a final rule that includes any Federal mandate that may result in expenditures in 
+any one year by a State, local, or Indian tribal government, in the aggregate, or by the 
+private sector, of $100 million (updated annually for inflation).  These final regulations 
+do not include any Federal mandate that may result in expenditures by State, local, or 
+Indian tribal governments, or by the private sector in excess of that threshold.
+V. Executive Order 13132:  Federalism
+Executive Order 13132 (Federalism) prohibits an agency from publishing any rule 
+that has federalism implications if the rule either imposes substantial, direct compliance 
+costs on State and local governments, and is not required by statute, or preempts State 
+law, unless the agency meets the consultation and funding requirements of section 6 of 
+the Executive Order.  These final regulations do not have federalism implications and do 
+not impose substantial direct compliance costs on State and local governments or 
+preempt State law within the meaning of the Executive Order.
+VI. Executive Order 13175: Consultation and Coordination with Indian Tribal 
+Governments
+Executive Order 13175 (Consultation and Coordination with Indian Tribal 
+Governments) prohibits an agency from publishing any rule that has Tribal implications 
+if the rule either imposes substantial, direct compliance costs on Indian tribal 
+governments, and is not required by statute, or preempts Tribal law, unless the agency 
+
+meets the consultation and funding requirements of section 5 of the Executive Order.  
+These final regulations do not have substantial direct effects on one or more federally 
+recognized Indian tribes and do not impose substantial direct compliance costs on 
+Indian tribal governments within the meaning of the Executive Order.
+Nevertheless, on July 17, 2023, the Treasury Department and the IRS held a 
+consultation with Tribal leaders requesting assistance in addressing questions related to 
+the proposed rules published on June 21, 2023, which informed the development of 
+these final regulations.
+VII. Congressional Review Act
+Pursuant to the Congressional Review Act (5 U.S.C. 801 et seq.), the Office of 
+Information and Regulatory Affairs designated this rule as a major rule as defined by 5 
+U.S.C. 804(2).
+Statement of Availability of IRS Documents
+Guidance cited in this preamble is published in the Internal Revenue Bulletin and 
+is available from the Superintendent of Documents, U.S. Government Publishing Office, 
+Washington, DC 20402, or by visiting the IRS website at www.irs.gov.
+Drafting Information
+The principal authors of these final regulations are Jeremy Milton and James 
+Holmes, Office of the Associate Chief Counsel (Passthroughs and Special Industries), 
+IRS.  However, other personnel from the Treasury Department and the IRS participated 
+in their development.
+List of Subjects
+26 CFR Part 1
+Income taxes, Reporting and recordkeeping requirements.
+26 CFR Part 301
+Employment taxes, Estate taxes, Excise taxes, Gift taxes, Income taxes, 
+
+Penalties, Reporting and recordkeeping requirements.
+Amendments to the Regulations
+Accordingly, the Treasury Department and the IRS amend 26 CFR parts 1 and 
+301 as follows:
+PART 1—INCOME TAXES
+Paragraph 1.  The authority citation for part 1 continues to read in part as 
+follows:
+Authority:  26 U.S.C. 7805 * * *
+* * * * *
+Sections 1.6417-0 through 1.6417-6 also issued under 26 U.S.C. 6417(h).
+* * * * *
+Par. 2.  Sections 1.6417-0 through 1.6417-6 are added to read as follows:
+Sec.
+* * * * *
+1.6417-0 Table of contents. 
+1.6417-1 Elective payment of applicable credits.
+1.6417-2 Rules for making elective payment elections.
+1.6471-3 Special rules for electing taxpayers.
+1.6417-4 Elective payment election for electing taxpayers that are partnerships or 
+S corporations.
+1.6417-5 Additional information and registration.
+1.6417-6 Special rules.
+* * * * *
+§1.6417-0 Table of contents.
+This section lists the table of contents for §§1.6417-1 through 1.6417-6.
+§1.6417-1 Elective payment election of applicable credits.
+(a) In general.
+(b) Annual Tax Return.
+(c) Applicable entity.
+(d) Applicable credit.
+(e) Applicable credit property.
+(f) Disregarded entity.
+(g) Electing taxpayer.
+(h) Elective payment amount.
+
+(i) Elective payment election.
+(j) Guidance.
+(k) Indian tribal government.
+(l) Partnership.
+(m) S corporation.
+(n) Section 6417 regulations. 
+(o) Statutory references.
+(p) U.S. territory.
+(q) Applicability date.
+§1.6417-2 Rules for making elective payment elections.
+(a) Elective payment elections.
+(b) Manner of making election.
+(c) Determination of applicable credit.
+(d) Timing of payment.
+(e) Denial of double benefit.
+(f) Applicability date.
+§1.6417-3 Special rules for electing taxpayers.
+(a) In general.
+(b) Elections with respect to the credit for production of clean hydrogen.
+(c) Election with respect to the credit for carbon oxide sequestration.
+(d) Election with respect to the advanced manufacturing production credit.
+(e) Election for electing taxpayers.
+(f) Applicability date.
+§1.6417-4 Elective payment election for electing taxpayers that are partnerships 
+or S corporations.
+(a) In general.
+(b) Elections.
+(c) Effect of election.
+(d) Determination of amount of the credit.
+(e) Partnerships subject to subchapter C of chapter 63. 
+(f) Applicability date.
+§1.6417-5 Additional information and registration.
+(a) Pre-filing registration and election. 
+(b) Pre-filing registration requirements.
+(c) Registration number.
+(d) Applicability date.
+§1.6417-6 Special rules.
+(a) Excessive payment.
+(b) Basis reduction and recapture.
+(c) Mirror code territories.
+(d) Partnerships subject to subchapter C of chapter 63 of the Code. 
+(e) Applicability date.
+§1.6417-1 Elective payment election of applicable credits.
+(a) In general.  An applicable entity may make an elective payment election with 
+
+respect to any applicable credit determined with respect to such applicable entity in 
+accordance with section 6417 of the Code and the section 6417 regulations.  
+Paragraphs (b) through (p) of this section provide definitions applicable to the section 
+6417 regulations.  See §1.6417-2 for rules and procedures under which all elective 
+payment elections must be made, rules for determining the amount and the timing of 
+payments, and statutory rules denying double benefits.  See §1.6417-3 for special rules 
+pertaining to electing taxpayers.  See §1.6417-4 for special rules pertaining to electing 
+taxpayers that are partnerships or S corporations.  See §1.6417-5 for pre-filing 
+registration requirements and other information required to make any elective payment 
+election effective.  See §1.6417-6 for special rules related to excessive payments, basis 
+reduction and recapture, any U.S. territory with a mirror code tax system, and payments 
+made to partnerships subject to subchapter C of chapter 63 of the Code.
+(b) Annual tax return.  The term annual tax return means the following returns 
+(and for each, any successor return)—
+(1) For any taxpayer normally required to file a tax return with the IRS on an 
+annual basis, such return (including the Form 1040 for individuals; the Form 1120 for 
+corporations, certain rural electric cooperatives, and certain agencies and 
+instrumentalities; the Form 1120-S for S corporations; the Form 1065 for partnerships; 
+and the Form 990-T for organizations subject to tax imposed by section 511 of the Code 
+or a proxy tax under section 6033(e) or that are required to file a Form 990 pursuant to 
+section 6033(a));
+(2) For any taxpayer that is not normally required to file a tax return with the IRS 
+on an annual basis (such as taxpayers located in the U.S. territories), the return they 
+would be required to file if they were located in the United States, or, if no such return is 
+required (such as for governmental entities), the Form 990-T; and
+(3) For taxpayers filing a return for a taxable year of less than 12 months (short 
+
+year), the short year tax return.
+(c) Applicable entity.  The term applicable entity means--
+(1) Any organization exempt from the tax imposed by subtitle A of the Code--
+(i) By reason of subchapter F of chapter 1 of subtitle A; or
+(ii) Because it is the government of any U.S. territory or a political subdivision 
+thereof;
+(2) Any State, the District of Columbia, or political subdivision thereof;
+(3) An Indian Tribal government or a subdivision thereof;
+(4) Any Alaska Native Corporation (as defined in section 3 of the Alaska Native 
+Claims Settlement Act, 43 U.S.C. 1602(m));
+(5) The Tennessee Valley Authority;
+(6) Any corporation operating on a cooperative basis that is engaged in 
+furnishing electric energy to persons in rural areas as described in section 1381(a)(2)(C) 
+of the Code; and
+(7) An agency or instrumentality of any applicable entity described in paragraph 
+(c)(1)(ii) or (c)(2) or (3) of this section.
+(d) Applicable credit.  The term applicable credit means each of the following:
+(1) So much of the credit for alternative fuel vehicle refueling property determined 
+under section 30C of the Code that, pursuant to section 30C(d)(1), is treated as a credit 
+listed in section 38(b) of the Code (section 30C credit).
+(2) So much of the renewable electricity production credit determined under 
+section 45(a) of the Code as is attributable to qualified facilities that are originally placed 
+in service after December 31, 2022 (section 45 credit).
+(3) So much of the credit for carbon oxide sequestration determined under 
+section 45Q(a) of the Code as is attributable to carbon capture equipment that is 
+originally placed in service after December 31, 2022 (section 45Q credit).
+
+(4) The zero-emission nuclear power production credit determined under section 
+45U(a) of the Code (section 45U credit).
+(5) So much of the credit for production of clean hydrogen determined under 
+section 45V(a) of the Code as is attributable to qualified clean hydrogen production 
+facilities that are originally placed in service after December 31, 2012 (section 45V 
+credit).
+(6) In the case of a tax-exempt entity described in section 168(h)(2)(A)(i), (ii), or 
+(iv) of the Code, the credit for qualified commercial vehicles determined under section 
+45W of the Code by reason of section 45W(d)(2) (section 45W credit).
+(7) The credit for advanced manufacturing production determined under section 
+45X(a) of the Code (section 45X credit).
+(8) The clean electricity production credit determined under section 45Y(a) of the 
+Code (section 45Y credit).
+(9) The clean fuel production credit determined under section 45Z(a) of the Code 
+(section 45Z credit).
+(10) The energy credit determined under section 48 of the Code (section 48 
+credit).
+(11) The qualifying advanced energy project credit determined under section 48C 
+of the Code (section 48C credit).
+(12) The clean electricity investment credit determined under section 48E of the 
+Code (section 48E credit).
+(e) Applicable credit property.  The term applicable credit property means each of 
+the following units of property with respect to which the amount of an applicable credit is 
+determined:
+(1) In the case of a section 30C credit, a qualified alternative fuel vehicle 
+refueling property described in section 30C(c).
+
+(2) In the case of a section 45 credit, a qualified facility described in section 
+45(d).
+(3) In the case of a section 45Q credit, a component of carbon capture 
+equipment within a single process train described in §1.45Q-2(c)(3).
+(4) In the case of a section 45U credit, a qualified nuclear power facility described 
+in section 45U(b)(1).
+(5) In the case of a section 45V credit, a qualified clean hydrogen production 
+facility described in section 45V(c)(3).
+(6) In the case of a section 45W credit, a qualified commercial clean vehicle 
+described in section 45W(c).
+(7) In the case of a section 45X credit, a facility that produces eligible 
+components, as described in guidance under sections 48C and 45X.
+(8) In the case of a section 45Y credit, a qualified facility described in section 
+45Y(b)(1).
+(9) In the case of a section 45Z credit, a qualified facility described in section 
+45Z(d)(4).
+(10) Section 48 credit property--(i) In general.  In the case of a section 48 credit 
+and except as provided in paragraph (d)(10)(ii) of this section, an energy property 
+described in section 48.
+(ii) Pre-filing registration and elections.  At the option of an applicable entity or 
+electing taxpayer, and to the extent consistently applied for purposes of the pre-filing 
+registration requirements of §1.6417-5 and the elective payment election requirements 
+of §§1.6417-2 through 1.6417-4, an energy project as described in section 
+48(a)(9)(A)(ii) and defined in guidance.
+(11) In the case of a section 48C credit, an eligible property described in section 
+48C(c)(2).
+
+(12) In the case of a section 48E credit, a qualified facility described in section 
+48E(b)(3) or, in the case of a section 48E credit relating to a qualified investment with 
+respect to energy storage technology, an energy storage technology described in 
+section 48E(c)(2).
+(f) Disregarded entity.  The term disregarded entity means an entity that is 
+disregarded as an entity separate from its owner for Federal income tax purposes under 
+§§301.7701-1 through 301.7701-3 of this chapter.  The term includes a Tribal 
+corporation incorporated under section 17 of the Indian Reorganization Act of 1934, as 
+amended, 25 U.S.C. 5124, or under section 3 of the Oklahoma Indian Welfare Act, as 
+amended, 25 U.S.C. 5203, that is not recognized as an entity separate from the tribe for 
+Federal tax purposes, and therefore is disregarded as an entity separate from its owner 
+for purposes of section 6417.
+(g) Electing taxpayer.  The term electing taxpayer means any taxpayer that is not 
+an applicable entity described in paragraph (c) of this section but makes an election in 
+accordance with §§1.6417-2(b), 1.6417-3, and, if applicable, 1.6417-4, to be treated as 
+an applicable entity for a taxable year with respect to applicable credits determined with 
+respect to an applicable credit property described in paragraph (e)(3), (5), or (7) of this 
+section.
+(h) Elective payment amount--(1) In general.  The term elective payment amount 
+means, with respect to an applicable entity or an electing taxpayer that is not a 
+partnership or an S corporation, the applicable credit(s) for which an applicable entity or 
+electing taxpayer makes an elective payment election to be treated as making a 
+payment against the tax imposed by subtitle A for the taxable year, which is equal to the 
+sum of--
+(i) The amount (if any) of the current year applicable credit(s) allowed as a 
+general business credit under section 38 for the taxable year, as provided in §1.6417-
+
+2(e)(2)(iii), and
+(ii) The amount (if any) of unused current year applicable credits that would 
+otherwise be carried back or carried forward from the unused credit year under section 
+39 and that are treated as a payment against tax, as provided in §1.6417-2(e)(2)(iv).
+(2) Elective payment amount with respect to partnerships and S corporations.  
+With respect to an electing taxpayer that is a partnership or an S corporation, the term 
+elective payment amount means the sum of the applicable credit(s) for which the 
+partnership or S corporation makes an elective payment election and that results in a 
+payment to such partnership or S corporation equal to the amount of such credit(s) 
+(unless the partnership owes a Federal tax liability, in which case the payment may be 
+reduced by such tax liability).
+(i) Elective payment election.  The term elective payment election means an 
+election made in accordance with §1.6417-2(b) for applicable credit(s) determined with 
+respect to an applicable entity or electing taxpayer.
+(j) Guidance.  The term guidance means guidance published in the Federal 
+Register or Internal Revenue Bulletin, as well as administrative guidance such as forms, 
+instructions, publications, or other guidance on the IRS.gov website.  See §§601.601 
+and 601.602 of this chapter.
+(k) Indian Tribal government.  The term Indian Tribal government means the 
+recognized governing body of any Indian or Alaska Native Tribe, band, nation, pueblo, 
+village, community, component band, or component reservation, individually identified 
+(including parenthetically) in the most recent list published by the Department of the 
+Interior in the Federal Register pursuant to section 104 of the Federally Recognized 
+Indian Tribe List Act of 1994 (25 U.S.C. 5131) prior to the date on which a relevant 
+elective payment election is made.
+(l) Partnership.  The term partnership has the meaning provided in section 761 of 
+
+the Code.
+(m) S corporation.  The term S corporation has the meaning provided in section 
+1361(a)(1) of the Code.
+(n) Section 6417 regulations.  The term section 6417 regulations means 
+§§1.6417-1 through 1.6417-6.
+(o) Statutory references--(1) Chapter 1.  The term chapter 1 means chapter 1 of 
+the Code.
+(2) Code.  The term Code means the Internal Revenue Code.
+(3) Subchapter K.  The term subchapter K means subchapter K of chapter 1.
+(4) Subtitle A.  The term subtitle A means subtitle A of the Code.
+(p) U.S. territory.  The term U.S. territory means the Commonwealth of Puerto 
+Rico, Guam, the U.S. Virgin Islands, American Samoa, and the Commonwealth of the 
+Northern Mariana Islands.
+(q) Applicability date.  This section applies to taxable years ending on or after 
+[INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER].  For taxable years 
+ending before [INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER], 
+taxpayers, however, may choose to apply the rules of §§1.6417-1 through 1.6417-4 and 
+1.6417-6, provided the taxpayers apply the rules in their entirety and in a consistent 
+manner.
+§1.6417-2 Rules for making elective payment elections.
+(a) Elective payment elections--(1) Elections by applicable entities--(i) In general.  
+An applicable entity that makes an elective payment election in the manner provided in 
+paragraph (b) of this section will be treated as making a payment against the Federal 
+income taxes imposed by subtitle A for the taxable year with respect to which an 
+applicable credit is determined in the amount determined under paragraph (c) of this 
+section.
+
+(ii) Disregarded entities.  If an applicable entity is the owner (directly or indirectly) 
+of a disregarded entity that directly holds an applicable credit property, the applicable 
+entity may make an elective payment election in the manner provided in paragraph (b) 
+of this section for applicable credits determined with respect to the applicable credit 
+property held directly by the disregarded entity.
+(iii) Undivided ownership interests.  If an applicable entity is a co-owner in an 
+applicable credit property through an arrangement properly treated as a tenancy-in-
+common for Federal income tax purposes, or through an organization that has made a 
+valid election under section 761(a) of the Code to be excluded from the application of 
+subchapter K of the Code, then the applicable entity’s undivided ownership share of the 
+applicable credit property will be treated as a separate applicable credit property owned 
+by such applicable entity, and the applicable entity may make an elective payment 
+election in the manner provided in paragraph (b) of this section for the applicable credits 
+determined with respect to such applicable credit property.
+(iv) Partnerships and S corporations not applicable entities.  Partnerships and 
+S corporations are not applicable entities described in §1.6417-1(c), and thus are not 
+eligible to make any election under paragraph (b) of this section, unless the partnership 
+or S corporation is an electing taxpayer.  This is the case no matter how many of the 
+partners of a partnership are described in §1.6417-1(c), including if all of a partnership’s 
+partners are so described.
+(v) Members of a consolidated group of which an applicable entity is the common 
+parent.  In the case of a consolidated group (as defined in §1.1502-1) the common 
+parent of which is an applicable entity, any member that is an electing taxpayer may 
+make an elective payment election with respect to applicable credits determined with 
+respect to the member.  See §1.1502-77 (providing rules regarding the status of the 
+common parent as agent for its members).
+
+(2) Electing taxpayers--(i) Electing taxpayers that are not partnerships or 
+S corporations.  An electing taxpayer other than a partnership or an S corporation that 
+has made an elective payment election in accordance with §1.6417-3 and paragraph (b) 
+of this section will be treated as making a payment against the Federal income taxes 
+imposed by subtitle A of the Code for the taxable year with respect to which the 
+applicable credit is determined, in the amount determined under paragraph (c) of this 
+section.
+(ii) Electing taxpayers that are partnerships or S corporations.  In the case of an 
+electing taxpayer that is a partnership or S corporation that has made an elective 
+payment election in accordance with §§1.6417-3 and 1.6417-4 and paragraph (b) of this 
+section, the Internal Revenue Service will make a payment to such partnership or 
+S corporation equal to the amount of such credit determined under paragraph (c) of this 
+section and §1.6417-4(d) (unless the partnership owes any Federal income tax liability, 
+in which case the payment may be reduced by such tax liability).
+(iii) Partners and S corporation shareholders prohibited from making any elective 
+payment election.  Under section 6417(c)(1) of the Code, any elective payment election 
+with respect to applicable credit property held directly by a partnership or S corporation 
+must be made by the partnership or S corporation.  As provided under section 
+6417(c)(2), no partner in a partnership, or shareholder of an S corporation, may make 
+an elective payment election with respect to any applicable credit determined with 
+respect to such applicable credit property.
+(iv) Disregarded entities.  If an electing taxpayer is the owner (directly or 
+indirectly) of a disregarded entity that directly holds any applicable credit property, the 
+electing taxpayer may make an elective payment election in the manner provided in 
+paragraph (b) of this section for applicable credits determined with respect to the 
+applicable credit property held directly by the disregarded entity.
+
+(v) Undivided ownership interests.  If an electing taxpayer is a co-owner in an 
+applicable credit property through an arrangement properly treated as a tenancy-in-
+common for Federal income tax purposes, or through an organization that has made a 
+valid election under section 761(a) to be excluded from the application of subchapter K 
+of the Code, then the electing taxpayer's undivided ownership interest in or share of the 
+applicable credit property will be treated as a separate applicable credit property owned 
+by such electing taxpayer, and the electing taxpayer may make an elective payment 
+election in the manner provided in paragraph (b) of this section for the applicable credits 
+determined with respect to such applicable credit property.
+(vi) Members of a consolidated group.  A member of a consolidated group may 
+make an elective payment election with respect to applicable credits determined with 
+respect to the member. See §1.1502-77 (providing rules regarding the status of the 
+common parent as agent for its members).
+(3) Special rules for certain credits—(i) Renewable electricity production credit.  
+Any election under this paragraph (a) with respect to a section 45 credit—
+(A) Applies separately with respect to each qualified facility;
+(B) Must be made in the manner provided in paragraph (b) of this section for the 
+taxable year in which such qualified facility is originally placed in service; and 
+(C) Applies to such taxable year and to any subsequent taxable year that is 
+within the period described in section 45(a)(2)(A)(ii) with respect to such qualified 
+facility.
+(ii) Credit for carbon oxide sequestration.  Except as provided in §1.6417-3(c), 
+which provides a special rule for electing taxpayers, any election under this paragraph 
+(a) with respect to a section 45Q credit--
+(A) Applies separately with respect to the carbon capture equipment originally 
+placed in service by the applicable entity during a taxable year;
+
+(B) Must be made in the manner provided in paragraph (b) of this section for the 
+taxable year in which such carbon capture equipment is originally placed in service; and
+(C) Applies to such taxable year and to any subsequent taxable year that is 
+within the period described in section 45Q(3)(A) or (4)(A) with respect to such 
+equipment.
+(iii) Credit for production of clean hydrogen.  Except as provided in §1.6417-3(b), 
+which provides a special rule for electing taxpayers, any election under this paragraph 
+(a) with respect to a section 45V credit--
+(A) Applies separately with respect to each qualified clean hydrogen production 
+facility;
+(B) Must be made in the manner provided in paragraph (b) of this section for the 
+taxable year in which such facility is placed in service (or within the 1-year period after 
+August 16, 2022, for facilities placed in service before December 31, 2022); and
+(C) Applies to such taxable year and all subsequent taxable years with respect to 
+such facility.
+(iv) Clean electricity production credit.  Any elective payment election with 
+respect to a section 45Y credit--
+(A) Applies separately with respect to each qualified facility;
+(B) Must be made in the manner provided in paragraph (b) of this section for the 
+taxable year in which such facility is placed in service; and
+(C) Applies to such taxable year and to any subsequent taxable year that is 
+within the period described in section 45Y(b)(1)(B) with respect to such facility.
+(v) Advanced manufacturing production credit.  Any elective payment election 
+with respect to a section 45X credit applies separately with respect to each facility 
+(whether the facility existed on or before, or after, December 31, 2022) at which a 
+taxpayer produces, after December 31, 2022, eligible components (as defined in section 
+
+45X(c)(1)) during the taxable year.
+(b) Manner of making election--(1) In general--(i) Election is made on the annual 
+tax return.  An elective payment election is made on the annual tax return, as defined in 
+§1.6417-1(b), in the manner prescribed by the IRS in guidance, along with any required 
+completed source credit form(s) with respect to the applicable credit property, a 
+completed Form 3800, General Business Credit, (or its successor), and any additional 
+information, including supporting calculations, required in instructions.
+(ii) Election must be made on original return.  An election must be made on an 
+original return (including any revisions on a superseding return) filed not later than the 
+due date (including extensions of time) for the original return for the taxable year for 
+which the applicable credit is determined.  No elective payment election may be made 
+for the first time on an amended return, withdrawn on an amended return, or made or 
+withdrawn by filing an administrative adjustment request under section 6227 of the 
+Code.  A numerical error with respect to a properly claimed elective payment election 
+may be corrected on an amended return or by filing an administrative adjustment 
+request under section 6227 if necessary; however, the applicable entity or electing 
+taxpayer’s original return, which must be signed under penalties of perjury, must contain 
+all of the information, including a registration number, required by these final 
+regulations.  To properly correct an error on an amended return or administrative 
+adjustment request under section 6227, an applicable entity or electing taxpayer must 
+have made an error in the information included on the original return such that there is a 
+substantive item to correct; an applicable entity or electing taxpayer may not correct a 
+blank item or an item that is described as being “available upon request.”  There is no 
+relief available under §301.9100-1 or §301.9100-3 of this chapter for an elective 
+payment election that is not timely filed; however, relief under §301.9100-2(b) may 
+apply if the applicable entity or electing taxpayer has not received an extension of time 
+
+to file a return after the original due date, has timely filed a return, takes corrective 
+action under §301.9100-2(c) within the six-month extension period, and meets the 
+procedural requirements outlined in §301.9100-2(d).
+(2) Pre-filing registration required.  Pre-filing registration in accordance with 
+§1.6417-5 is a condition for making an elective payment election.  An elective payment 
+election will not be effective with respect to credits determined with respect to an 
+applicable credit property unless the applicable entity or electing taxpayer received a 
+valid registration number for the applicable credit property in accordance with §1.6417-
+5(c) and provided the registration number for each applicable credit property on its Form 
+3800 (or its successor), and on any required completed source form(s) with respect to 
+the applicable credit property, attached to the tax return, in accordance with guidance.
+(3) Due date for making the election.  To be effective, an elective payment 
+election must be made no later than:
+(i) In the case of any taxpayer for which no Federal income tax return is required 
+under sections 6011 or no Federal return is required under 6033(a) of the Code (such 
+as a State; the District of Columbia; an Indian Tribal government; any U.S. territory; a 
+political subdivision of a State, the District of Columbia, or a U.S. territory, or a 
+subdivision of an Indian Tribal government; certain agencies or instrumentalities of a 
+State, the District of Columbia, an Indian Tribal government, or a U.S. territory; or a 
+taxpayer excluded from filing pursuant to section 6033(a)(3)), the 15th day of the fifth 
+month after the end of the taxable year.  For purposes of section 6417, an applicable 
+entity that is not required to file a Federal income tax return pursuant to sections 6011 
+or a Federal return pursuant to 6033(a), but is filing solely to make an elective payment 
+election, may choose whether to file its first return (and thus adopt a taxable year for 
+purposes of section 6417) based upon a calendar or fiscal year, provided that such 
+entity maintains adequate book and records, including a reconciliation of any difference 
+
+between its regular books of account and its chosen taxable year, to support making an 
+elective payment election on the basis of its chosen taxable year.  Subject to issuance 
+of guidance that specifies the manner in which an entity for which no Federal income 
+tax return is required under sections 6011 or no Federal return is required pursuant to 
+6033(a) could request an extension of time to file and make the elective payment 
+election, an automatic paperless six-month extension from the 15th day of the fifth 
+month after the end of the taxable year is deemed to be allowed.
+(ii) In the case of any taxpayer located in a U.S. territory, the due date (including 
+extensions of time) that would apply if the taxpayer were located in the United States.
+(iii) In any other case, the due date (including extensions of time) for the original 
+return for the taxable year for which the election is made, but in no event earlier than 
+February 13, 2023.
+(4) Election is not revocable—(i) In general.  Except as provided in paragraphs 
+(b)(4)(ii) and (iii) of this section, any elective payment election, once made, is 
+irrevocable and applies with respect to any applicable credit for the taxable year for 
+which the election is made.
+(ii) Election lasts for a period of years for certain credits.  For applicable entities 
+making elective payment elections with respect to section 45 credits described in 
+§1.6417-1(d)(2) or section 45Y credits described in §1.6417-1(d)(8), the election applies 
+to each taxable year in the 10-year period provided in section 45(a)(2)(A)(ii) or 
+45Y(b)(1)(B), respectively, beginning on the date the facility was originally placed in 
+service.  For applicable entities making elective payment elections with respect to 
+section 45Q credits described in §1.6417-1(d)(3), the election applies to each taxable 
+year in the 12-year period provided in section 45Q(a)(3)(A) or (4)(A) beginning on the 
+date the carbon capture equipment was originally placed in service.  For applicable 
+entities making elective payment elections with respect to section 45V credits described 
+
+in §1.6417-1(d)(5), the election applies to the taxable year in which the qualified clean 
+hydrogen production facility was originally placed in service and all subsequent taxable 
+years.
+(iii) Electing taxpayers.  For electing taxpayers who make an elective payment 
+election, the election applies for one five-year period per applicable credit property, but 
+such election may be revoked once per applicable credit property, as provided in 
+§1.6417-3.
+(5) Scope of election.  An elective payment election applies to the entire amount 
+of applicable credit(s) determined with respect to each applicable credit property that 
+was properly registered for the taxable year, resulting in an elective payment amount 
+that is the entire amount of applicable credit(s) determined with respect to the applicable 
+entity or electing taxpayer for a taxable year.
+(c) Determination of applicable credit--(1) In general.  In the case of any 
+applicable entity making an elective payment election, any applicable credit is 
+determined--
+(i) Without regard to section 50(b)(3) and (4)(A)(i) of the Code, and
+(ii) By treating any property with respect to which such credit is determined as 
+used in a trade or business of the applicable entity.
+(2) Effect of trade or business rule.  The trade or business rule in paragraph 
+(c)(1)(ii) of this section--
+(i) Allows the applicable entity to treat an item of property as if it is: of a character 
+subject to an allowance of depreciation (such as under sections 30C and 45W); one for 
+which depreciation (or amortization in lieu of depreciation) is allowable (such as in 
+sections 48, 48C, and 48E); and used to produce items in the ordinary course of a trade 
+or business of the taxpayer (such as in sections 45V and 45X);
+(ii) Allows the applicable entity to apply the capitalization and accelerated 
+
+depreciation rules (such as sections 167, 168, 263, 263A, and 266 of the Code) that 
+apply to determining the basis and the depreciation allowance for property used in a 
+trade or business;
+(iii) Makes applicable those credit limitations generally applicable to persons 
+engaged in the conduct of a trade or business, such as section 49 of the Code in the 
+context of investment tax credits and section 469 of the Code for all applicable credits;
+(iv) Does not create any presumption that the trade or business is related (or 
+unrelated) to a tax-exempt entity’s exempt purpose; and
+(v) Subjects the applicable entity to the credit limitation in paragraph (c)(3)(ii) of 
+this section.
+(3) Special rule for investment-related credit property acquired with amounts, 
+including income from certain grants and forgivable loans, that are exempt from 
+taxation--(i) Amounts included in basis.  Subject to paragraph (c)(3)(ii) of this section, for 
+purposes of section 6417, amounts that are exempt from taxation under subtitle A or 
+otherwise excluded from taxation (such as income from certain grants and forgivable 
+loans), and used to purchase, construct, reconstruct, erect, or otherwise acquire an 
+applicable credit property described in section 30C, 45W, 48, 48C, or 48E (investment-
+related credit property) are included in basis for purposes of computing the applicable 
+credit amount determined with respect to the applicable credit property, regardless of 
+whether basis is required to be reduced (in whole or in part) by such amounts under 
+general tax principles.
+(ii) No excess benefit from restricted tax exempt amounts.  If an applicable entity 
+receives a grant, forgivable loan, or other income exempt from taxation under subtitle A 
+or otherwise excluded from taxation (tax exempt amount) for the specific purpose of 
+purchasing, constructing, reconstructing, erecting, or otherwise acquiring an investment-
+related credit property (restricted tax exempt amount), and the sum of any restricted tax 
+
+exempt amounts plus the applicable credit otherwise determined with respect to that 
+investment-related credit property exceeds the cost of the investment-related credit 
+property, then the amount of the applicable credit is reduced so that the total amount of 
+applicable credit plus the amount of any restricted tax exempt amounts equals the cost 
+of investment-related credit property.  The determination of whether a tax exempt grant 
+is made for the specific purpose of purchasing, constructing, reconstructing, erecting, or 
+otherwise acquiring an investment-related credit property is made at the time the grant 
+is awarded to the applicable entity.  A tax exempt grant awarded after the investment-
+related credit property is purchased, constructed, reconstructed, erected, or otherwise 
+acquired is generally not a restricted tax exempt amount unless approval of the grant 
+was perfunctory and the amount of the grant was virtually assured at the time of 
+application.  The determination of whether a loan is made for the specific purpose of 
+purchasing, constructing, reconstructing, erecting, or otherwise acquiring an investment-
+related credit property and whether forgiveness of that loan is dependent on satisfying 
+that specific purpose is made at the time the loan is approved.  This paragraph does not 
+apply if a tax exempt amount is not received for the specific purpose of purchasing, 
+constructing, reconstructing, erecting, or otherwise acquiring a property eligible for an 
+investment-related credit; for example, if the tax exempt amount is from the 
+organization’s general funds or if such amount’s use is not restricted to the purpose of 
+purchasing, constructing, reconstructing, erecting, or otherwise acquiring an investment-
+related credit property (such as purchasing an electric vehicle) and could be used for 
+any of several different applicable credit properties (such as purchasing an electric 
+vehicle or purchasing solar panels) or can be put to other purposes (such as purchasing 
+an electric vehicle or making a building more energy efficient).
+(4) Credits must be determined with respect to the applicable entity or electing 
+taxpayer.  Any credits for which an elective payment election is made must have been 
+
+determined with respect to the applicable entity or electing taxpayer.  An applicable 
+credit is determined with respect to an applicable entity or electing taxpayer if the 
+applicable entity or electing taxpayer owns the underlying applicable credit property and 
+conducts the activities giving rise to the credit or, in the case of section 45X (under 
+which ownership of applicable credit property is not required), to be considered (under 
+the section 45X regulations) the taxpayer with respect to which the section 45X credit is 
+determined.  Thus, no election may be made under this section for any credits 
+transferred pursuant to section 6418, allowed pursuant to section 45Q(f)(3), acquired by 
+a lessee from a lessor by means of an election to pass through the credit to a lessee 
+under former section 48(d) (pursuant to section 50(d)(5)), owned by a third party, or 
+otherwise not determined with respect to the applicable entity or electing taxpayer.
+(5) Examples.  The following examples illustrate the rules of this paragraph (c).
+(i) Example 1.  School district A receives a tax exempt grant in the amount of 
+$400,000 from the Environmental Protection Agency to purchase electric school bus B.  
+The grant is a restricted tax exempt amount described in paragraph (c)(3)(ii) of this 
+section. A purchases B for $400,000.  Pursuant to paragraph (c)(3)(i) of this section, A’s 
+basis in B is $400,000.  B qualifies for the maximum section 45W credit, $40,000.  
+However, because the amount of the restricted tax exempt grant plus the amount of the 
+section 45W credit exceeds the cost of B, the no excess benefit rule found in paragraph 
+(c)(3)(ii) of this section applies.  A’s section 45W credit is reduced by the amount 
+necessary so that the total amount of the section 45W credit plus the restricted tax 
+exempt amount equals the cost of B.  A’s section 45W credit is therefore reduced by 
+$40,000 to zero.
+(ii) Example 2.  Assume the same facts as in paragraph (c)(5)(i) of this section 
+(Example 1), except that the grant is in the amount of $300,000.  This grant is still a 
+restricted tax exempt amount described in paragraph (c)(3)(ii) of this section.  A 
+purchases B using the grant and $100,000 of A’s unrestricted funds.  A’s basis in B is 
+still $400,000 and A’s section 45W credit is $40,000.  Since the amount of the restricted 
+tax exempt amount plus the amount of the section 45W credit ($340,000) is less than 
+the cost of B, A’s 45W credit under section 6417(b)(6) is not subject to the no excess 
+benefit rule found in paragraph (c)(3)(ii) of this section.
+(iii) Example 3.  Public charity B receives a $60,000 grant from a private 
+foundation to build energy property, P, a qualified investment credit property that costs 
+$80,000.  The $60,000 grant is a restricted tax exempt amount described in paragraph 
+(c)(3)(ii) of this section.  B uses $20,000 of its own funds plus the $60,000 grant to build 
+P.  Pursuant to paragraph (c)(3)(i) of this section, B’s basis in P is $80,000.  Assume 
+that, based upon acquisition cost, B can earn a section 48 investment credit (with bonus 
+credit amounts) of $40,000 (50% of basis).  However, because the amount of the 
+
+restricted tax exempt amount ($60,000) plus the section 48 credit ($40,000) exceeds 
+P’s cost by $20,000, the no excess benefit rule found in paragraph (c)(3)(ii) of this 
+section applies to reduce B’s section 48 applicable credit by $20,000 so that the total 
+amount of the section 48 investment credit plus the restricted tax exempt amount equals 
+the cost of P.
+(iv) Example 4.  The U.S. Department of Housing and Urban Development 
+annually provides Capital Funds to Public Housing Agencies (PHAs) for the 
+development, financing, and modernization of public housing developments and for 
+management improvements.  Public Housing Authority H uses its annual allotment of 
+Capital Funds to purchase rooftop solar panels for its property and to pay for the related 
+equipment and labor to install the panels. These purchases are considered among the 
+list of eligible uses, but are not the exclusive uses, of H’s Capital Funds.  Although the 
+Capital Funds are exempt from taxation under subtitle A and used to purchase, 
+construct, reconstruct, erect, or otherwise acquire an investment-related credit property, 
+pursuant to paragraph (c)(3)(i) of this section, they are included in basis for purposes of 
+computing the applicable credit amount determined with respect to the applicable credit 
+property.  In addition, because the Capital Funds were not given for the specific purpose 
+of purchasing, constructing, reconstructing, erecting, or otherwise acquiring an 
+investment-related credit property, they are not considered restricted tax exempt 
+amounts and the no excess benefit rule found in paragraph (c)(3)(ii) of this section does 
+not apply.
+(v) Example 5.  Taxpayer Q is engaged in the business of capturing carbon 
+oxide.  Q properly elects to be treated as an applicable entity with respect to the section 
+45Q credit determined with respect to single process trains A, B, and C for 2024.  In the 
+same year, Q also purchases section 45Q credits under section 6418 from an unrelated 
+taxpayer and has section 45Q credits allowed to itself pursuant to section 45Q(f)(3).  Q 
+can make an elective payment election only with respect to section 45Q applicable 
+credits determined with respect to A, B, and C.  Q cannot make an elective payment 
+election with respect to any credits transferred to Q pursuant to section 6418 or allowed 
+to Q pursuant to section 45Q(f)(3).
+(d) Timing of payment.  Except as provided in §1.6417-4(d) (relating to payments 
+to partnerships and S corporations), the elective payment amount will be treated as 
+made--
+(1) In the case of any taxpayer for which no Federal income tax return is required 
+under section 6011 or no Federal return is required under 6033(a), on the later of—
+(i) The date that is the 15th day of the fifth month after the end of the taxable 
+year, or 
+(ii) The date on which such taxpayer submits a claim for credit or refund in 
+accordance with paragraph (b) of this section.
+(2) In any other case, on the later of—
+
+(i) The due date (determined without regard to extensions) of the return for the 
+taxable year, or 
+(ii) The date on which such return is filed.
+(e) Denial of double benefit--(1) In general.  Under section 6417(e), in the case of 
+an applicable entity or electing taxpayer making an elective payment election with 
+respect to an applicable credit, such credit is reduced to zero and is, for any other 
+purposes of the Code, deemed to have been allowed as a credit to such entity or 
+taxpayer for such taxable year.  Paragraph (e)(2) and (3) of this section explain the 
+application of the section 6417(e) denial of double benefit rule to an applicable entity or 
+electing taxpayer (other than a partnership or S corporation).  The application of section 
+6417(e) for an electing taxpayer that is a partnership or S corporation is provided in 
+§1.6417-4(c)(1)(ii).
+(2) Application of the denial of double benefit rule.  An applicable entity or 
+electing taxpayer (other than an electing taxpayer that is a partnership or S corporation) 
+making an elective payment election applies section 6417(e) by taking the following 
+steps:
+(i) Compute the amount of the Federal income tax liability (if any) for the taxable 
+year, without regard to the general business credit allowed by section 38 of the Code 
+(GBC), that is payable on the due date of the return (without regard to extensions), and 
+the amount of the Federal income tax liability that may be offset by GBCs pursuant to 
+the limitation based on amount of tax under section 38.
+(ii) Compute the allowed amount of GBC carryforwards carried to the taxable 
+year under section 38(a)(1) plus the amount of current year GBCs (including current 
+applicable credits) for the taxable year under section 38(a)(2) and (b).  Because the 
+election is made on an original return for the taxable year for which the applicable credit 
+is determined, any business credit carrybacks are not considered in determining the 
+
+elective payment amount for the taxable year.
+(iii) Calculate the net elective payment amount for all applicable credits, which 
+equals the lesser of the sum of all applicable credits for which an elective payment 
+election is made or the excess (if any, otherwise the excess is zero) of the total GBC 
+credits described in paragraph (e)(2)(ii) of this section over the amount of the Federal 
+income tax liability that may be offset by GBCs pursuant to the limitation based on 
+amount of tax under section 38 computed in paragraph (e)(2)(i) of this section.  Treat 
+the net elective payment amount of all applicable credits for which an elective payment 
+election is made as a payment against the tax imposed by subtitle A for the taxable year 
+with respect to which such credits are determined.
+(iv) Excluding the net elective payment amount determined under paragraph 
+(e)(2)(iii) of this section, but including any applicable credits that are not part of the net 
+elective payment amount, compute the allowed amount of GBC carryforwards carried to 
+the taxable year plus the amount of current year GBCs allowed for the taxable year 
+under section 38 (including, for clarity purposes, the ordering rules in section 38(d)). 
+Apply these GBCs against the tax liability computed in paragraph (e)(2)(i) of this 
+section.
+(v) Reduce the applicable credits for which an elective payment election is made 
+by the net elective payment amount, as provided in paragraph (e)(2)(iii) of this section, 
+and by the amount (if any) allowed as a GBC under section 38 for the taxable year, as 
+provided in paragraph (e)(2)(iv) of this section, which results in the applicable credits 
+being reduced to zero.
+(3) Use of applicable credit for other purposes.  The full amount of the applicable 
+credits for which an elective payment election is made is deemed to have been allowed 
+for all other purposes of the Code, including, but not limited to, the basis reduction and 
+recapture rules imposed by section 50 and calculation of tax, calculation of the amount 
+
+of any underpayment of estimated tax under sections 6654 and 6655 of the Code, and 
+the addition to tax for the failure to pay under section 6651(a)(2) of the Code (if any).
+(4) Examples.  The following examples illustrate the rules of this paragraph (e).
+(i) Example 1.  U is a tax-exempt university that is not a trust subject to section 
+469 and is described in section 501(c)(3).  U’s fiscal year runs from July 1 to June 30.  
+U places in service P, energy property eligible for a section 48 credit, in June 2024.  P is 
+an asset used in connection with its unrelated business.  U completes the pre-filing 
+registration in accordance with §1.6417-5 as an applicable entity that has placed P into 
+service and intends to make an elective payment election with respect to section 48 
+credits determined with respect to P.  U timely files its 2024 Form 990-T on November 
+15, 2024.  On its return, U properly determines that it has $500,000 of Unrelated 
+Business Income Tax (UBIT) under section 512. On its Form 3800 attached to its return, 
+U calculates its limitation of GBC under section 38(c) (simplified) is $375,000 
+(paragraph (e)(2)(i) of this section).  U attaches Form 3468 to claim a section 48 credit 
+of $100,000 with respect to P (its GBC for the taxable year) (paragraph (e)(2)(ii) of this 
+section).  Under paragraph (e)(2)(iii) of this section, the net elective payment amount is 
+$0, so the section 48 credit is considered a credit that reduces U’s UBIT liability to 
+$400,000 under paragraph (e)(2)(iv) of this section.  U pays its $400,000 tax liability on 
+November 15, 2024.   Under paragraph (e)(2)(v) of this section, the $100,000 of section 
+48 credit is reduced by the $100,000 of applicable credits claimed as GBCs for the 
+taxable year, which results in the applicable credits being reduced to zero.  However, 
+the $100,000 of current year section 48 credit is deemed to have been allowed to U for 
+2024 for all other purposes of the Code (paragraph (e)(3) of this section).
+(ii) Example 2.  Assume the same facts as in paragraph (e)(4)(i) of this section 
+(Example 1), except that U has $80,000 of Unrelated Business Income Tax (UBIT) 
+under section 512 and calculates its limitation of GBC under section 38(c) (simplified) is 
+$60,000 (paragraph (e)(2)(i) of this section).  Under paragraph (e)(2)(iii) of this section, 
+the net elective payment amount is $40,000 (lesser of $100,000 applicable section 48 
+credit or $100,000 of total GBC credits described in paragraph (e)(2)(ii) of this section  
+minus $60,000 of section 38(c) limitation). Under paragraph (e)(2)(iv) of this section, U 
+uses $60,000 of its $100,000 of section 48 credit against its tax liability.  U reduces its 
+applicable credit by the $40,000 net elective payment amount determined in paragraph 
+(e)(2)(iii) of this section and by the $60,000 section 48 credit claimed against tax in 
+paragraph (e)(2)(iv) of this section, resulting in the applicable credit being reduced to 
+zero (paragraph (e)(2)(v) of this section).  When the IRS processes U’s 2024 Form 990-
+T, the net elective payment amount results in a $20,000 refund to U (after applying 
+$20,000 of the $40,000 net elective payment amount to cover U’s tax shown on the 
+return).  However, for other purposes of the Code, the $100,000 section 48 credit is 
+deemed to have been allowed to U for 2024 (paragraph (e)(3) of this section).
+(iii) Example 3.  V is a city located in the United States that never has Federal 
+income tax liability, so paragraph (e)(2)(i) of this section does not apply.  V timely 
+completes pre-filing registration in accordance with §1.6417-5 as an applicable entity 
+that will be eligible to make an elective payment election, with regard to its annual 
+accounting period ending in 2024, for the credit determined under section 30C(a) from 
+properties A, B, and C; the credit determined under section 45(a) for facility D; the credit 
+determined under section 45U(a) for facility E; the credit determined under section 
+45W(a) with respect to vehicles F, G, and H; and the credit determined under section 
+
+48(a) with respect to property I and J.  V timely files its 2024 Form 990-T.  V properly 
+completes and attaches the relevant source credit forms and Form 3800 with 
+registration numbers and all required information in the instructions, properly making the 
+elective payment election for all of the credits, and properly determining that the amount 
+of applicable credits determined with respect to A, B, C, D, E, F, G, H, I, and J is 
+$500,000 (its GBC for the taxable year) (paragraph (e)(2)(ii) of this section).  Under 
+paragraph (e)(2)(iii) of this section, the net elective payment amount is $500,000.  
+Under paragraph (e)(2)(iii) of this section, the entire $500,000 net elective payment 
+amount is a payment against the tax imposed by subtitle A for the taxable year with 
+respect to which such credits are determined.  When the IRS processes V’s 2024 Form 
+990-T, the net elective payment amount results in a $500,000 refund to V.  V’s elective 
+payment amount is reduced by the net elective payment amount, so all applicable 
+credits for 2024 are reduced to zero (paragraph (e)(2)(v) of this section).  However, for 
+other purposes of the Code, the $500,000 of applicable credits are deemed to have 
+been allowed to V for its annual accounting period ending in 2024 (paragraph (e)(3) of 
+this section).
+(iv) Example 4.  W is a business taxpayer engaged in the manufacturing of 
+components, including eligible components as defined in section 45X(c)(1) at facility F.  
+W completes pre-filing registration in accordance with §1.6417-5 stating that it intends 
+to elect to be treated as an applicable entity with respect to eligible components 
+produced at F in 2024.  In 2025, W timely files its 2024 return electing to be treated as 
+an applicable entity, calculating its Federal income tax before GBCs of $125,000 and 
+that its limitation of GBC under section 38(c) (simplified) is $100,000 (paragraph (e)(2)(i) 
+of this section).  W attaches Form 7207 to claim a current section 45X credit of $50,000 
+with respect to eligible components produced at F (its applicable credits).  W also 
+attaches Form 5884 to claim a current work opportunity tax credit (WOTC) of $50,000 
+(WOTC is not an applicable credit).  W also has business credit carryforwards of 
+$25,000, which together with the 45X credit and WOTC results in a total of $125,000 of 
+GBC for the taxable year (paragraph (e)(2)(ii) of this section).  Under paragraph 
+(e)(2)(iii) of this section, the net elective payment amount is $25,000.  Under paragraph 
+(e)(2)(iv) of this section, including using the ordering rules in section 38(d), W is allowed 
+$25,000 of the carryforwards, $50,000 of WOTC plus only $25,000 of section 45X credit 
+against net income tax, as defined under section 38(c)(1)(B).  The $25,000 of unused 
+section 45X credit is the net elective payment amount that results in a $25,000 payment 
+against tax by W (paragraph (e)(2)(iii) of this section).  On its return, W shows net tax 
+liability of $25,000 ($125,000 - $100,000 allowed GBC) and the net elective payment of 
+$25,000 that W applied to net tax liability, resulting in zero tax owed on the return. 
+Under paragraph (e)(2)(v) of this section, W’s applicable credit is reduced by the 
+$25,000 of the net elective payment amount, as well as by the $25,000 of section 45X 
+credit claimed as a GBC for the taxable year, resulting in the $50,000 of applicable 
+credit being reduced to zero.  However, for all other purposes of the Code, the $50,000 
+of 45X applicable credits are deemed to have been allowed to W for 2024 (paragraph 
+(e)(3) of this section).  Even though W did not owe tax after applying the net elective 
+payment amount against its net tax liability, W may be subject to the section 6655 
+penalty for failure to pay estimated income tax.  The net elective payment is not an 
+estimated tax installment, rather, it is treated as a payment made at the filing of the 
+return.
+(v) Example 5.  Assume the same facts as in paragraph (e)(4)(iv) of this section 
+(Example 4), except W filed the return on a timely filed extension after the due date of 
+the return (excluding extensions).  Even though the net elective payment amount is 
+
+sufficient to cover W’s tax liability, W may also be subject to the section 6651(a)(2) 
+penalty for failure to pay tax.
+(vi) Example 6.  Assume the same facts as in paragraph (e)(4)(iv) of this section 
+(Example 4), except W’s activities gave rise to a $100,000 section 45Q credit and W 
+filed a Form 8933, Carbon Oxide Sequestration Tax Credit, instead of a $50,000 section 
+45X credit and Form 7207.  Assume also that W’s activities gave rise to a $50,000 small 
+employer health insurance credit under section 45R (section 45R credit) and W filed 
+Form 8941, Credit for Small Employer Health Insurance Premiums, instead of a 
+$50,000 WOTC and Form 5884.  Under paragraph (e)(2)(iii) of this section, the net 
+elective payment amount is $75,000.  Under paragraph (e)(2)(iv) of this section, 
+including using the ordering rules in section 38(d), W is allowed $25,000 of the 
+carryforwards, $25,000 of the section 45Q credit, plus its $50,000 of section 45R credit 
+against net income tax, as defined under section 38(c)(1)(B).  The $75,000 of unused 
+section 45Q credit that is the net elective payment amount results in a $75,000 payment 
+against tax by W (paragraph (e)(2)(iii) of this section).  On its return, W shows net tax 
+liability of $25,000 ($125,000 - $100,000 allowed GBC) and the net elective payment 
+amount of $75,000 that W applied to net tax liability, resulting in a refund of $50,000. 
+Under paragraph (e)(2)(v) of this section, W’s applicable credit is reduced by the 
+$75,000 of the net elective payment amount, as well as by the $25,000 of section 45Q 
+credit claimed as a GBC for the taxable year, resulting in the $100,000 of applicable 
+credit being reduced to zero.  However, for all other purposes of the Code, the $100,000 
+of section 45Q applicable credits are deemed to have been allowed to W for 2024 
+(paragraph (e)(3) of this section).
+(f) Applicability date.  This section applies to taxable years ending on or after 
+[INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER].  For taxable years 
+ending before [INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER], 
+taxpayers, however, may choose to apply the rules of §§1.6417-1 through 1.6417-4 and 
+1.6417-6, provided the taxpayers apply the rules in their entirety and in a consistent 
+manner.
+§1.6417-3 Special rules for electing taxpayers.
+(a) In general.  This section relates to the election available to electing taxpayers.  
+An electing taxpayer that makes an elective payment election in accordance with this 
+section is treated as an applicable entity for the duration of the election period, but only 
+with respect to the applicable credit property described in proposed §1.6417-1(e)(3), (5), 
+or (7), respectively, that is the subject of the election.  See paragraphs (b), (c), and (d) 
+of this section for the specific rules regarding taxpayers making an election under 
+section 6417(d)(1)(B), (C), or (D), respectively.  See paragraph (e) of this section for 
+
+rules relating to the making the election.  See §1.6417-4 for special rules related to 
+electing taxpayers that are partnerships or S corporations.
+(b) Elections with respect to the credit for production of clean hydrogen.  An 
+electing taxpayer that has placed in service applicable credit property described in 
+§1.6417-1(e)(5) (in other words, a qualified clean hydrogen production facility as defined 
+in section 45V(c)(3)) during the taxable year may make an elective payment election for 
+such taxable year (or by August 16, 2023, in the case of facilities placed in service 
+before December 31, 2022), but only with respect to the qualified clean hydrogen 
+production facility, only with respect to the applicable credit described in §1.6417-1(d)(5) 
+(in other words, the section 45V credit), and only if the pre-filing registration required by 
+§1.6417-5 was properly completed.  An electing taxpayer that elects to treat qualified 
+property that is part of a specified clean hydrogen production facility as energy property 
+under section 48(a)(15) may not make an elective payment election with respect to such 
+facility.
+(c) Election with respect to the credit for carbon oxide sequestration.  An electing 
+taxpayer that has, after December 31, 2022, placed in service applicable credit property 
+described in §1.6417-1(e)(3) (in other words, a single process train described in 
+§1.45Q-2(c)(3) at a qualified facility (as defined in section 45Q(d)) during the taxable 
+year may make an elective payment election for such taxable year, but only with respect 
+to the single process train, only with respect to the applicable credit described in 
+§1.6417-1(d)(3) (in other words, the section 45Q credit), and only if the pre-filing 
+registration required by §1.6417-5 was properly completed.
+(d) Election with respect to the advanced manufacturing production credit.  An 
+electing taxpayer that produces, after December 31, 2022, eligible components (as 
+defined in section 45X(c)(1)) at an applicable credit property described in §1.6417-
+1(e)(7) during the taxable year (whether the facility existed on or before, or after, 
+
+December 31, 2022) may make an elective payment election for such taxable year, but 
+only with respect to the facility at which the eligible components are produced by the 
+electing taxpayer in that year, only with respect to the applicable credit described in 
+§1.6417-1(d)(7) (in other words, the section 45X credit), and only if the pre-filing 
+registration required by §1.6417-5 was properly completed.
+(e) Election for electing taxpayers--(1) In general.  If an electing taxpayer makes 
+an elective payment election under §1.6417-2(b) with respect to any taxable year in 
+which the electing taxpayer places in service a qualified clean hydrogen production 
+facility for which a section 45V credit is determined, places in service a single process 
+train at a qualified facility for which a section 45Q credit is determined, or produces, 
+after December 31, 2022, eligible components (as defined in section 45X(c)(1)) at a 
+facility, respectively, the electing taxpayer will be treated as an applicable entity for 
+purposes of making an elective payment election for such taxable year and during the 
+election period described in paragraph (e)(3) of this section, but only with respect to the 
+applicable credit property described in §1.6417-1(e)(3), (5), or (7), as applicable, that is 
+the subject of the election.  The taxpayer must otherwise meet all requirements to earn 
+the credit in the electing year and in each succeeding year during the election period 
+described in paragraph (e)(3) of this section.
+(2) Election is per applicable credit property.  An elective payment election under 
+§1.6417-2(b) is made separately for each applicable credit property, which is, 
+respectively, a qualified clean hydrogen production facility placed in service for which a 
+section 45V credit is determined, a single process train placed in service at a qualified 
+facility for which a section 45Q credit is determined, or a facility at which eligible 
+components are produced for which a section 45X credit is determined.  An electing 
+taxpayer may only make one election with respect to any specific applicable credit 
+property.
+
+(3) Election period--(i) In general.  Except as provided in paragraph (e)(3)(ii) of 
+this section, if an electing taxpayer makes an elective payment election under §1.6417-
+2(b) with respect to applicable credit property described in §1.6417-1(e)(3), (5), or (7) 
+for which an applicable credit is determined under §1.6417-1(d)(3), (5), or (7), the 
+election period during which such election applies includes the taxable year for which 
+the election is made and each of the four subsequent taxable years that end before 
+January 1, 2033.  The election period cannot be less than a taxable year but may be 
+made for a taxable period of less than 12 months within the meaning of section 443 of 
+the Code.
+(ii) Revocation of election.  An electing taxpayer may, during a subsequent year 
+of the election period described in paragraph (e)(3)(i) of this section, revoke the elective 
+payment election with respect to an applicable credit property described in §1.6417-
+1(e)(3), (5), or (7), in accordance with forms and instructions.  See §601.602 of this 
+chapter.  Any such revocation, if made, applies to the taxable year for which the 
+revocation is made (which cannot be less than a taxable year but may be made for a 
+taxable period of less than 12 months as described in section 443 of the Code) and 
+each subsequent taxable year within the election period.  Any such revocation may not 
+be subsequently revoked.
+(4) No transfer election under section 6418(a) permitted while an elective 
+payment election is in effect.  No transfer election under section 6418(a) may be made 
+by an electing taxpayer with respect to any applicable credit under §1.6417-1(d)(3), (5), 
+or (7) determined with respect to applicable credit property described in §1.6417-
+1(e)(3), (5), or (7) during the election period for that applicable credit property.  
+However, if the election period is no longer in effect with respect to an applicable credit 
+property, any credit determined with respect to such applicable credit property can be 
+transferred pursuant to a transfer election under section 6418(a), as long as the 
+
+taxpayer meets the requirements of section 6418 and the 6418 regulations.
+(f) Applicability date.  This section applies to taxable years ending on or after 
+[INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER].  For taxable years 
+ending before [INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER], 
+taxpayers, however, may choose to apply the rules of §§1.6417-1 through 1.6417-4 and 
+1.6417-6, provided the taxpayers apply the rules in their entirety and in a consistent 
+manner.
+§1.6417-4 Elective payment election for electing taxpayers that are partnerships 
+or S corporations.
+(a) In general.  In the case of any applicable credit determined with respect to 
+any applicable credit property described in §1.6417-1(e)(3), (5), or (7) that is held 
+directly (or treated as held directly because it is held by a disregarded entity) by an 
+electing taxpayer that is a partnership or S corporation, any elective payment election 
+under §1.6417-2(b) must be made by the partnership or S corporation.
+(b) Elections.  If an electing taxpayer that is a partnership or S corporation makes 
+an elective payment election under §1.6417-2(b) with respect to any taxable year in 
+which the electing taxpayer places in service applicable credit property described in 
+§1.6417-1(e)(3) or (5), or produces, after December 31, 2022, eligible components (as 
+defined in section 45X(c)(1)) at an applicable credit property described in §1.6417-
+1(e)(7), the electing taxpayer will be treated as an applicable entity for purposes of 
+making an elective payment election for such taxable year and during the election 
+period described in §1.6417-3(e)(3), but only with respect to the applicable credit 
+property described in §1.6417-1(e)(3), (5), or (7), respectively, that is the subject of the 
+election.  In addition, the taxpayer must otherwise meet all requirements to earn the 
+credit in the electing year and in each succeeding year during the election period 
+described in §1.6417-3(e)(3).
+(c) Effect of election--(1) In general.  If a partnership or S corporation electing 
+
+taxpayer makes an elective payment election, with respect to the section 45V, 45Q, or 
+45X credit--
+(i) The Internal Revenue Service will make a payment to such partnership or 
+S corporation equal to the amount of such credit, determined in accordance with 
+paragraph (d) of this section (unless the partnership or S corporation owes a Federal 
+tax liability, in which case the payment may be reduced by such tax liability);
+(ii) Before determining any partner’s distributive share, or S corporation 
+shareholder’s pro rata share, of such credit, such credit is reduced to zero and is, for 
+any other purposes under the Code, deemed to have been allowed solely to such entity 
+(and not allocated or otherwise allowed to its partners or shareholders) for such taxable 
+year;
+(iii) Any amount with respect to which such election is made is treated as tax 
+exempt income for purposes of sections 705 and 1366 of the Code;
+(iv) A partner’s distributive share of such tax exempt income is equal to such 
+partner’s distributive share of the otherwise applicable credit for each taxable year, as 
+determined under §1.704-1(b)(4)(ii);
+(v) An S corporation shareholder’s pro rata share (as determined under section 
+1377(a) of the Code) of such tax exempt income for each taxable year (as determined 
+under sections 444 and 1378(b) of the Code) is equal to the S corporation shareholder’s 
+pro rata share (as determined under section 1377(a)) of the otherwise applicable credit 
+for each taxable year; and
+(vi) Such tax exempt income resulting from such election is treated as received 
+or accrued, including for purposes of sections 705 and 1366, as of the date the 
+applicable credit is determined with respect to the partnership or S corporation. (such 
+as, for investment credit property, the date the property is placed in service).
+(2) Electing partnerships in tiered structures.  If a partnership (upper-tier 
+
+partnership) is a direct or indirect partner of a partnership that makes an elective 
+payment election (electing partnership) and directly or indirectly receives an allocation 
+of tax exempt income resulting from the elective payment election made by the electing 
+partnership, the upper-tier partnership must determine its partners’ distributive shares of 
+such tax exempt income in proportion to the partners’ distributive shares of the 
+otherwise applicable credit as provided in paragraph (c)(1)(iv) of this section.
+(3) Character of tax exempt income.  Tax exempt income resulting from an 
+elective payment election by an S corporation or a partnership is treated as arising from 
+an investment activity and not from the conduct of a trade or business within the 
+meaning of section 469(c)(1)(A) of the Code.  As such, the tax exempt income is not 
+treated as passive income to any partners or shareholders who do not materially 
+participate within the meaning of section 469(c)(1)(B).
+(d) Determination of amount of the credit--(1) In general.  In determining the 
+amount of an applicable credit that will result in a payment under paragraph (c)(1)(i) of 
+this section, the partnership or S corporation must compute the amount of the 
+applicable credit allowable as if an elective payment election were not made.  Because 
+a partnership or S corporation is not subject to sections 38(b) and (c) and 469 (that is, 
+those sections apply at the partner or S corporation shareholder level), the amount of 
+applicable credit determined by a partnership or S corporation is not subject to limitation 
+by those sections.  In addition, because the only applicable credits with respect to which 
+a partnership or S corporation may make an elective payment election are not 
+investment credits under section 46 of the Code, sections 49 and 50 of the code do not 
+apply to limit the amount of the applicable credits.
+(2) Example.  The rules of this paragraph (d) are illustrated in the following 
+example.  A and B each contributed cash to P, a calendar-year partnership, for the 
+purpose of manufacturing clean hydrogen at V, a qualified clean hydrogen facility that 
+meets the definition of section 45V(c)(3).  The partnership agreement provides that A 
+and B share equally in all items of income, gain, loss, deduction and credit of P.  P 
+completes the pre-filing registration process with respect to the section 45V credit at V 
+
+for 2023 in accordance §1.6417-5.  P places V in service in 2023.  P timely files its 2023 
+Form 1065 and properly makes the elective payment election in accordance with 
+§§1.6417-2(b),1.6417-3, and 1.6417-4.  On its Form 1065, P properly determined that 
+the amount of the section 45V credit with respect to the clean hydrogen produced at V 
+for 2023 is $100,000.  The IRS processes P’s return and makes a $100,000 payment to 
+P.  Before determining A’s and B’s distributive shares, P reduces the credit to zero.  
+While the $100,000 section 45V credit is deemed to have been allowed to P for 2023 for 
+any other purpose under this title, the credit is not allocated or otherwise allowed to its 
+partners.  The $100,000 is treated as tax exempt income for purposes of section 705 
+and is treated as arising from an investment activity and not from the conduct of a trade 
+or business within the meaning of section 469(c)(1)(A).  P allocates the tax exempt 
+income from the elective payment election proportionately among the partners based on 
+each partner’s distributive share of the otherwise eligible section 45V credit as 
+determined under §1.704-1(b)(4)(ii).  Under that section, if partnership receipts or 
+expenditures give rise to a credit, the partner’s interest in the partnership with respect to 
+such credit is in the same proportion as such partners’ distributive shares of such 
+receipt, loss, or deduction.  Section 45V credits arise based on the amount of clean 
+hydrogen produced at a facility.  Under the partnership agreement, A and B share all 
+items equally.  Thus, A and B will each be allocated $50,000 of tax exempt income for 
+2023.  P will continue to be treated as an applicable entity with respect to V for taxable 
+years 2024-2027 unless P revokes its election in accordance with §1.6417-3(e)(3)(ii).  
+At the end of 2023, A and B increase their respective tax bases in their partnership 
+interest and capital accounts by $50,000 each (that is, their share of the $100,000 of tax 
+exempt income).
+(e) Partnerships subject to subchapter C of chapter 63.  For the application of 
+subchapter C of chapter 63 of the Code to section 6417, see §301.6241-7 of this 
+chapter.
+(f) Applicability date.  This section applies to taxable years ending on or after 
+[INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER].  For taxable years 
+ending before [INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER], 
+taxpayers, however, may choose to apply the rules of §§1.6417-1 through 1.6417-4 and 
+1.6417-6, provided the taxpayers apply the rules in their entirety and in a consistent 
+manner.
+§1.6417-5 Additional information and registration.
+(a) Pre-filing registration and election.  An applicable entity or electing taxpayer is 
+required to satisfy the pre-filing registration requirements in paragraph (b) of this section 
+as a condition of, and prior to, making an elective payment election.  An applicable 
+entity or electing taxpayer must use the pre-filing registration process to register itself as 
+
+intending to make the elective payment election, to list all applicable credits it intends to 
+claim, and to list each applicable credit property that contributed to the determination of 
+such credits as part of the pre-filing submission (or amended submission).  An 
+applicable entity or electing taxpayer that does not obtain a registration number under 
+paragraph (c)(1) of this section or report the registration number on its annual tax return, 
+as defined in §1.6417-1(b), pursuant to paragraph (c)(5) of this section with respect to 
+an otherwise applicable credit property, is ineligible to receive any elective payment 
+amount with respect to the amount of any credit determined with respect to that 
+applicable credit property.  However, completion of the pre-filing registration 
+requirements and receipt of a registration number does not, by itself, mean the 
+applicable entity or electing taxpayer is eligible to receive a payment with respect to the 
+applicable credits determined with respect to the applicable credit property.
+(b) Pre-filing registration requirements--(1) Manner of pre-filing registration.  
+Unless otherwise provided in guidance, an applicable entity or electing taxpayer must 
+complete the pre-filing registration process electronically through the IRS electronic 
+portal and in accordance with the instructions provided therein.
+(2) Pre-filing registration and election for members of a consolidated group.  A 
+member of a consolidated group is required to complete pre-filing registration as a 
+condition of, and prior to, making an elective payment election.  See §1.1502-77 
+(providing rules regarding the status of the common parent as agent for its members).
+(3) Timing of pre-filing registration.  An applicable entity or electing taxpayer must 
+satisfy the pre-filing registration requirements of this paragraph (b) and receive a 
+registration number under paragraph (c) of this section prior to making an elective 
+payment election under §1.6417-2(b) on the applicable entity’s or electing taxpayer’s 
+annual tax return for the taxable year at issue.  
+(4) Each applicable credit property must have its own registration number.  An 
+
+applicable entity or electing taxpayer must obtain a registration number for each 
+applicable credit property with respect to which it intends to make an elective payment 
+election.
+(5) Information required to complete the pre-filing registration process.  Unless 
+modified in future guidance, an applicable entity or electing taxpayer must provide the 
+following information to the IRS to complete the pre-filing registration process:
+(i) The applicable entity’s or electing taxpayer’s general information, including its 
+name, address, taxpayer identification number, and type of legal entity.
+(ii) Any additional information required by the IRS electronic portal, such as 
+information regarding the taxpayer’s exempt status under section 501(a) of the Code; 
+that the applicable entity is a political subdivision of a State, the District of Columbia, or 
+a U.S. territory, or subdivision of an Indian tribal government; or that the applicable 
+entity is an agency or instrumentality of a State, the District of Columbia, an Indian tribal 
+government, or a U.S. territory.
+(iii) The taxpayer’s taxable year.
+(iv) The type of annual tax return(s) normally filed by the applicable entity or 
+electing taxpayer, or that the applicable entity or electing taxpayer does not normally file 
+an annual tax return with the IRS.
+(v) The type of applicable credit(s) for which the applicable entity or electing 
+taxpayer intends to make an elective payment election.
+(vi) For each applicable credit, each applicable credit property that the applicable 
+entity or electing taxpayer intends to use to determine the credit for which the applicable 
+entity or electing taxpayer intends to make an elective payment election.
+(vii) For each applicable credit property listed in paragraph (b)(4)(vi) of this 
+section, any further information required by the IRS electronic portal, such as--
+(A) The type of applicable credit property;
+
+(B) Physical location (that is, address and coordinates (longitude and latitude) of 
+the applicable credit property);
+(C) Supporting documentation relating to the construction or acquisition of the 
+applicable credit property (such as State, District of Columbia, Indian tribal, U.S. 
+territorial, or local government permits to operate the applicable credit property; 
+certifications; evidence of ownership that ties to a land deed, lease, or other 
+documented right to use and access any land or facility upon which the applicable credit 
+property is constructed or housed; U.S. Coast Guard registration numbers for offshore 
+wind vessels; and the vehicle identification number of an eligible clean vehicle with 
+respect to which a section 45W credit is determined);
+(D) The beginning of construction date and the placed in service date of the 
+applicable credit property,
+(E) If an investment-related credit property (as defined §1.6417-2(c)(3)), the 
+source of funds the taxpayer used to acquire the property; and
+(F) Any other information that the applicable entity or electing taxpayer believes 
+will help the IRS evaluate the registration request.
+(viii) The name of a contact person for the applicable entity or electing taxpayer.  
+The contact person is the person whom the IRS may contact if there is an issue with the 
+registration.  The contact person must either possess legal authority to bind the 
+applicable entity or electing taxpayer or must provide a properly executed power of 
+attorney on Form 2848, Power of Attorney and Declaration of Representative.  
+(ix) A penalties of perjury statement, effective for all information submitted as a 
+complete application, and signed by a person with personal knowledge of the relevant 
+facts that is authorized to bind the registrant.  
+(x) Any other information the IRS deems necessary for purposes of preventing 
+duplication, fraud, improper payments, or excessive payments under this section that is 
+
+provided in guidance.
+(c) Registration number--(1) In general.  The IRS will review the information 
+provided and will issue a separate registration number for each applicable credit 
+property for which the applicable entity or electing taxpayer provided sufficient verifiable 
+information.
+(2) Registration number is only valid for one taxable year.  A registration number 
+is valid only with respect to the applicable entity or electing taxpayer that obtained the 
+registration number under this section and only for the taxable year for which it is 
+obtained.
+(3) Renewing registration numbers.  If an elective payment election will be made 
+with respect to an applicable credit property for a taxable year after a registration 
+number under this section has been obtained, the applicable entity or electing taxpayer 
+must renew the registration for that subsequent taxable year in accordance with 
+applicable guidance, including attesting that all the facts previously provided are still 
+correct or updating any facts.
+(4) Amendment of previously submitted registration information if a change 
+occurs before the registration number is used.  As provided in instructions to the pre-
+filing registration portal, if specified changes occur with respect to one or more 
+applicable credit properties for which a registration number has been previously 
+obtained but not yet used, an applicable entity or electing taxpayer must amend the 
+registration (or may need to submit a new registration) to reflect these new facts.  For 
+example, if the owner of a facility previously registered for an elective payment election 
+for applicable credits determined with respect to that facility and the facility undergoes a 
+change of ownership (incident to a corporate reorganization or an asset sale) such that 
+the new owner has a different employer identification number (EIN) than the owner who 
+obtained the original registration, the original owner of the facility must amend the 
+
+original registration to disassociate its EIN from the applicable credit property and the 
+new owner must submit separately an original registration (or if the new owner 
+previously registered other credit properties, must amend its original registration) to 
+associate the new owner’s EIN with the previously registered applicable credit property.  
+If the change of ownership is with respect to an electing taxpayer, then the 5-year 
+election period will continue despite the change in ownership.
+(5) Registration number is required to be reported on the return for the taxable 
+year of the elective payment election.  The applicable entity or electing taxpayer must 
+include the registration number of the applicable credit property on its annual tax return 
+as provided in §1.6417-2(b) for the taxable year.  The IRS will treat an elective payment 
+election as ineffective with respect to an applicable credit determined with respect to an 
+applicable credit property for which the applicable entity or electing taxpayer does not 
+include a valid registration number that was assigned to that particular taxpayer during 
+the pre-registration process on the annual tax return.
+(d) Applicability date.  This section applies to taxable years ending on or after 
+[INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER].  
+§1.6417-6 Special rules.
+(a) Excessive payment--(1) In general.  In the case of any elective payment 
+amount that the IRS determines constitutes an excessive payment, the tax imposed on 
+such entity by chapter 1, regardless of whether such entity or taxpayer would otherwise 
+be subject to chapter 1 tax, for the taxable year in which such determination is made will 
+be increased by an amount equal to the sum of--
+(i) The amount of such excessive payment, plus
+(ii) An amount equal to 20 percent of such excessive payment.
+(2) Reasonable cause.  The amount described in paragraph (a)(1)(ii) of this 
+section will not apply to an applicable entity or electing taxpayer if the applicable entity 
+
+or electing taxpayer demonstrates to the satisfaction of the IRS that the excessive 
+payment resulted from reasonable cause.
+(3) Excessive payment defined.  For purposes of this section, the term excessive 
+payment means, with respect to an applicable credit property for which an elective 
+payment election is made under §1.6417-2(b) for any taxable year, an amount equal to 
+the excess of--
+(i) The amount treated as a payment under §1.6417-2(a)(1)(i) or (a)(2)(i), or the 
+amount of the payment made pursuant to §1.6417-2(a)(2)(ii), with respect to such 
+applicable credit property for such taxable year, over
+(ii) The amount of the credit that, without application of this section, would be 
+otherwise allowable under the Code (as determined pursuant to §1.6417-2(c) and (e) or 
+§1.6417-4(d)(1) and (3), and without regard to the limitation based on tax in section 
+38(c)) with respect to such applicable credit property for such taxable year.  For 
+purposes of this section, the amount of such credit that would be otherwise allowable is 
+the amount claimed on an original or amended return, including any administrative 
+adjustment request under section 6227.
+(4) Example.  This example illustrates the principles of this paragraph (a).  B, an 
+instrumentality of State M, places in service in 2023 facility F, which is eligible for the 
+energy credit determined under section 48.  B properly completes the pre-filing 
+registration as an applicable entity that will earn the energy credit from F in accordance 
+with §1.6417-5, and receives a registration number for F.  B timely files its 2023 Form 
+990-T, properly providing the registration number for F and otherwise complying with 
+§1.6417-2(b).  On its Form 990-T, B calculates that the amount of energy credit 
+determined with respect to F is $100,000 and that the net elective payment amount is 
+$100,000.  B receives a refund in the amount of $100,000.  In 2025, the IRS determines 
+that the amount of energy credit properly allowable to B in 2023 with respect to F (as 
+determined pursuant to §1.6417-2(c) and (e) and without regard to the limitation based 
+on tax in section 38(c)) was $60,000.  B is unable to show reasonable cause for the 
+difference.  The excessive payment amount is $40,000 ($100,000 treated as a payment 
+- $60,000 allowable amount).  In 2025, the tax imposed under chapter 1 on B is 
+increased in the amount of $48,000 ($40,000 + (20% * $40,000).)
+(b) Basis reduction and recapture--(1) In general.  Rules similar to the rules of 
+section 50 (without regard to section 50(b)(3) and (4)(A)(i)) apply for purposes of this 
+
+section.
+(2) Reporting recapture.  Any reporting of recapture is made on the annual tax 
+return of the applicable entity or electing taxpayer in the manner prescribed by the IRS 
+in any guidance, along with supplemental forms such as Form 4255, Recapture of 
+Investment Credit.
+(3) Example.  This example illustrates the principles of this paragraph (b).  In 
+December 2023, G, a government entity, places in service P, which is energy property 
+eligible for the energy credit determined under section 48 (section 48 credit).  G properly 
+completes the pre-filing registration in accordance with §1.6417-5 as an applicable 
+entity to make an election under section 6417 for 2023.  G timely files its 2023 Form 
+990-T in 2024, properly making the elective payment election in accordance with 
+§1.6417-2 for a section 48 energy credit determined with respect to P.  On its Form 990-
+T, G properly determines that the amount of section 48 credit determined with respect P 
+is $100,000 and that its net elective payment amount is $100,000.  The IRS sends G a 
+$100,000 refund.  Pursuant to section 50(c), G reduces its basis in P by $50,000.  In 
+July 2025, P ceases to be investment credit property with respect to G.  Because this 
+occurs before the close of the recapture period set forth in section 50, section 
+50(a)(1)(A) provides that the tax under chapter 1 for 2025 is increased by the recapture 
+percentage of the aggregate decrease in the credits allowed under section 38 for all 
+prior taxable years that would have resulted solely from reducing to zero any credit 
+determined under subpart E of part IV of subchapter A of chapter 1 with respect to such 
+property.  Because P ceased to be investment credit property within 2 full years after P 
+was placed in service, section 50(a)(1)(B) provides that the recapture percentage is 
+80%.  G must properly report the recapture event in 2025, paying an $80,000 tax.  
+Because G is a government entity, G reports the recapture event on a Form 990-T or 
+any Form provided in further guidance, along with supplemental forms such as Form 
+4255, Recapture of Investment Credit.  G’s basis in P is increased by $40,000.
+(c) Mirror code territories.  Pursuant to section 6417(f) of the Code, section 6417 
+and the section 6417 regulations are not treated as part of the income tax laws of the 
+United States for purposes of determining the income tax law of any U.S. territory with a 
+mirror code tax system (as defined in section 24(k) of the Code), unless such U.S. 
+territory elects to have section 6417 and the section 6417 regulations be so treated.  
+The applicable territory tax authority for a U.S. territory determines whether such an 
+election has been made.
+(d) Partnerships subject to subchapter C of chapter 63 of the Code.  See 
+§301.6241-7(j) of this chapter for rules applicable to payments made to partnerships 
+subject to subchapter C of chapter 63 of the Code for a partnership taxable year.
+
+(e) Applicability date.  This section applies to taxable years ending on or after 
+[INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER].  For taxable years 
+ending before [INSERT DATE OF PUBLICATION IN THE FEDERAL REGISTER], 
+taxpayers, however, may choose to apply the rules of §§1.6417-1 through 1.6417-4 and 
+1.6417-6, provided the taxpayers apply the rules in their entirety and in a consistent 
+manner.
+§1.6417-5T [Removed]
+Par. 3. Section 1.6417-5T is removed.
+PART 301—PROCEDURE AND ADMINISTRATION
+Par. 4.  The authority citation for part 301 is amended by revising the entries for 
+§§301.6241-1 and 301.6241-7 to read in part as follows:
+Authority: 26 U.S.C. 7805.
+* * * * *
+Section 301.6241-1 also issued under sections 48D(d), 6241, and 6417.
+* * * * *
+Section 301.6241-7 also issued under sections 48D(d), 6241, and 6417.
+* * * * *
+Par. 5.  Section 301.6241-1 is amended by:
+a. Adding a sentence after the second sentence in paragraph (a)(6)(iii); and
+b. Adding a sentence to the end of paragraph (b)(1).
+The additions read as follows:
+§301.6241-1 Definitions.
+(a) * * *
+(6) * * *
+
+(iii) * * * Notwithstanding the previous two sentences, any tax, penalty, addition to 
+tax, or additional amount imposed on the partnership under chapter 1 is an item or 
+amount with respect to the partnership. * * *
+* * * * *
+(b) * * *
+(1) * * * The third sentence of paragraph (a)(6)(iii) of this section applies to 
+partnership taxable years ending on or after June 21, 2023. 
+ * * * * *
+Par. 6. Section 301.6241-7 is amended by:
+a. Redesignating paragraph (j) as paragraph (k);
+b. Adding new paragraph (j);
+c. Revising the first sentence of newly redesignated paragraph (k)(1); and
+d. Adding paragraph (k)(3).
+The additions and revisions read as follows:
+§301.6241-7 Treatment of special enforcement matters.
+* * * * *
+(j) Elections resulting in payments to a partnership.  The IRS may adjust any 
+election that results or could result in a payment to the partnership in lieu of a Federal 
+tax credit or deduction without regard to subchapter C of chapter 63.  The IRS may also 
+make determinations, without regard to subchapter C of chapter 63, about the payment 
+itself as well as any partnership-related item relevant to adjusting the election or the 
+payment.
+* * * * *
+(k) * * * 
+(1) *  *  *  Except as provided in paragraphs (k)(2) (relating to paragraph (b) of 
+this section) and (k)(3) of this section (relating to paragraph (j) of this section), this 
+
+section applies to partnership taxable years ending on or after November 20, 2020. * * *
+ * * * * *
+
+(3) Elections resulting in payments to a partnership.  Paragraph (j) of this section 
+applies to taxable years ending on or after June 21, 2023.
+Douglas W. O’Donnell,
+Deputy Commissioner for Services and Enforcement.
+Approved: February 27, 2024. 
+Aviva Aron-Dine,
+Acting Assistant Secretary of the Treasury (Tax Policy).
+[FR Doc. 2024-04604 Filed: 3/5/2024 8:45 am; Publication Date:  3/11/2024]

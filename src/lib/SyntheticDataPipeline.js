@@ -1,6 +1,6 @@
 // src/lib/SyntheticDataPipeline.js
 // Use dynamic import for ESM compatibility in Next.js
-import { getOpenAI } from './openai';
+const { getOpenAI } = require('./openai');
 
 // Utility function to create a promise that times out
 function withTimeout(promise, timeoutMs, operation = 'operation') {
@@ -630,6 +630,5 @@ class SyntheticDataPipeline {
   }
 }
 
-// Dual export for both CommonJS and ESM
-export { SyntheticDataPipeline };
-export default SyntheticDataPipeline; 
+// Change the export statement to use CommonJS module.exports
+module.exports = { SyntheticDataPipeline }; 

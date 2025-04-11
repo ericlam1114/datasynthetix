@@ -203,10 +203,196 @@ export async function POST(request) {
     // Step 2: Parse and validate the form data
     const formData = await request.formData();
     const file = formData.get('file');
+    const documentId = formData.get('documentId');
+    const tempJobId = formData.get('tempJobId'); // Get tempJobId if provided
     
-    // Validate required fields
+    // Create a job ID (use the temp one if provided)
+    const jobId = tempJobId || `job-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    
+    // Check if we're processing an existing document
+    if (documentId) {
+      console.log(`Processing existing document: ${documentId}`);
+      
+      try {
+        // Create initial status
+        await createProcessingStatus(jobId, {
+          userId: user.uid,
+          documentId,
+          status: 'created',
+          progress: 0,
+          stage: 'initialization'
+        });
+        
+        // Update to show we're starting
+        await updateProcessingStatus(jobId, {
+          status: 'processing',
+          message: 'Processing started for existing document',
+          progress: 5
+        });
+      } catch (statusError) {
+        console.error('Error creating initial status:', statusError);
+        // Non-critical, continue processing
+      }
+      
+      // Parse options for existing document
+      const options = {
+        chunkSize: parseInt(formData.get('chunkSize') || 1000, 10),
+        overlap: parseInt(formData.get('overlap') || 100, 10),
+        outputFormat: formData.get('outputFormat') || 'jsonl',
+        classFilter: formData.get('classFilter') || 'all',
+        prioritizeImportant: formData.get('prioritizeImportant') === 'true',
+        enableOcr: formData.get('enableOcr') === 'true' || process.env.USE_OCR === 'true'
+      };
+      
+      // Check admin credentials
+      const hasAdminCredentials = await checkFirebaseAdminCredentials();
+      
+      // Process the existing document
+      const documentResult = await processExistingDocument(
+        user.uid, 
+        documentId, 
+        options, 
+        jobId, 
+        hasAdminCredentials
+      );
+      
+      // Check if there was an error
+      if (documentResult.error) {
+        return Response.json(errorHandler(new Error(documentResult.message || documentResult.error), {
+          stage: 'document_retrieval',
+          jobId,
+          documentId,
+          statusCode: 400
+        }), { status: 400 });
+      }
+      
+      // Update status
+      await updateProcessingStatus(jobId, {
+        status: 'processing',
+        message: 'Document retrieved, starting processing',
+        progress: 15,
+        documentId
+      });
+      
+      // Now process the document with the pipeline similar to file upload case
+      try {
+        // Initialize the pipeline with options 
+        const pipeline = new SyntheticDataPipeline({
+          apiKey: process.env.OPENAI_API_KEY,
+          extractorModel: "ft:gpt-4o-mini-2024-07-18:personal:clause-extractor:BJoJl5pB",
+          classifierModel: "ft:gpt-4o-mini-2024-07-18:personal:clause-classifier:abcdefgh",
+          duplicatorModel: "ft:gpt-4o-mini-2024-07-18:personal:clause-duplicator:BK81g7rc",
+          chunkSize: options.chunkSize,
+          overlap: options.overlap,
+          outputFormat: options.outputFormat,
+          classFilter: options.classFilter,
+          prioritizeImportant: options.prioritizeImportant,
+          maxClausesToProcess: parseInt(formData.get("maxClauses") || 0, 10),
+          maxVariantsPerClause: parseInt(formData.get("maxVariants") || 3, 10),
+          timeouts: {
+            documentProcessing: parseInt(formData.get("documentTimeout") || 600000, 10),
+            chunkProcessing: parseInt(formData.get("chunkTimeout") || 120000, 10),
+            clauseExtraction: parseInt(formData.get("extractionTimeout") || 30000, 10),
+            clauseClassification: parseInt(formData.get("classificationTimeout") || 15000, 10),
+            variantGeneration: parseInt(formData.get("variantTimeout") || 20000, 10),
+          },
+        });
+        
+        // Estimate resource requirements
+        const complexity = evaluateTextComplexity(documentResult.text);
+        
+        // Configure pipeline options with progress callback
+        const pipelineOptions = {
+          ...options,
+          progressCallback: async (progressData) => {
+            // Similar progress callback as in the file upload case
+            try {
+              if (!progressData) return;
+              
+              const { currentChunk, totalChunks, processedClauses, totalClauses, stage, variantsGenerated } = progressData;
+              
+              const chunkProgress = totalChunks ? Math.round((currentChunk / totalChunks) * 100) : 0;
+              
+              const statusUpdate = {
+                status: 'processing',
+                processedChunks: currentChunk || 0,
+                totalChunks: totalChunks || complexity.estimatedChunks,
+                progress: 20 + Math.floor(chunkProgress * 0.6),
+                stage: stage || 'processing',
+                processingStats: {
+                  processedClauses: processedClauses || 0,
+                  totalClauses: totalClauses || 0,
+                  variantsGenerated: variantsGenerated || 0,
+                  currentStage: stage || 'processing',
+                  currentChunk,
+                  totalChunks,
+                  lastUpdateTime: new Date().toISOString()
+                }
+              };
+              
+              if (stage === 'extracting') {
+                statusUpdate.message = `Extracting clauses (chunk ${currentChunk}/${totalChunks})`;
+              } else if (stage === 'classifying') {
+                statusUpdate.message = `Classifying clauses (${processedClauses} found)`;
+              } else if (stage === 'generating') {
+                statusUpdate.message = `Generating variants (${variantsGenerated} variants created)`;
+              } else {
+                statusUpdate.message = `Processing document (${currentChunk}/${totalChunks} chunks)`;
+              }
+              
+              await updateProcessingStatus(jobId, statusUpdate);
+            } catch (progressError) {
+              console.error('Error in progress callback:', progressError);
+            }
+          },
+          jobId
+        };
+        
+        // Process the document
+        const result = await processDocument(documentResult.text, pipelineOptions);
+        
+        // Update status before saving results
+        await updateProcessingStatus(jobId, {
+          status: 'processing',
+          message: 'Processing complete, saving results',
+          progress: 90,
+          processingStats: {
+            ...result.stats,
+            completed: true
+          }
+        });
+        
+        // Save the processing results
+        await saveProcessingResults(documentId, jobId, result);
+        
+        // Complete the processing job
+        await completeProcessingJob(jobId, result);
+        
+        // Return success response with the real jobId
+        return Response.json({
+          success: true,
+          message: 'Document processed successfully',
+          jobId,
+          documentId,
+          stats: result.stats
+        });
+      } catch (processingError) {
+        return Response.json(errorHandler(processingError, { 
+          stage: 'pipeline_processing', 
+          jobId,
+          documentId,
+          statusCode: 500 
+        }), { status: 500 });
+      }
+    }
+    
+    // If we got here, we're dealing with a new file upload
+    // Validate required fields for new uploads
     if (!file) {
-      return Response.json(errorHandler(new Error('File is required'), { stage: 'validation', statusCode: 400 }), { status: 400 });
+      return Response.json(errorHandler(new Error('File is required for new document uploads'), { 
+        stage: 'validation', 
+        statusCode: 400 
+      }), { status: 400 });
     }
     
     // Parse options
@@ -221,9 +407,7 @@ export async function POST(request) {
       enableOcr: formData.get('enableOcr') === 'true' || process.env.USE_OCR === 'true'
     };
     
-    // Step 3: Create a processing job record
-    const jobId = `job-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-    
+    // Step 3: Create a processing job record (using the jobId from above)
     try {
       // Create initial status
       await createProcessingStatus(jobId, {

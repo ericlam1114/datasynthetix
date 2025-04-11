@@ -14,14 +14,74 @@ export default function ProcessDocumentPage() {
   const { user } = useAuth();
   const [document, setDocument] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [processingStarted, setProcessingStarted] = useState(false);
   
   // Use a ref to store reference to the DocumentProcessor
   const processorRef = useRef(null);
   
-  // Get document ID and autoStart from URL params
+  // Get URL parameters
   const documentId = searchParams.get('documentId');
-  const autoStart = searchParams.get('autoStart');
+  const jobId = searchParams.get('jobId');
+  const tempJobId = searchParams.get('tempJobId');
+  const startProcessing = searchParams.get('startProcessing') === 'true';
   
+  // Start API processing if directed from DocumentList
+  useEffect(() => {
+    const initiateProcessing = async () => {
+      if (!documentId || !tempJobId || !startProcessing || processingStarted || !user) return;
+      
+      try {
+        setProcessingStarted(true);
+        
+        // Get the token for the API request
+        const token = await user.getIdToken();
+        
+        // Create form data with parameters
+        const formData = new FormData();
+        formData.append("documentId", documentId);
+        formData.append("chunkSize", "1000");
+        formData.append("overlap", "100");
+        formData.append("outputFormat", "jsonl");
+        formData.append("tempJobId", tempJobId);
+        
+        // Make the API request in the background
+        const response = await fetch("/api/process-document", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+        
+        // Process the response
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Processing started:", data);
+          
+          // Update URL with the real jobId if available
+          if (data.jobId) {
+            // Replace URL without refreshing the page
+            window.history.replaceState(
+              null, 
+              '', 
+              `/dashboard/process?jobId=${data.jobId}&documentId=${documentId}`
+            );
+          }
+        } else {
+          const errorData = await response.json();
+          console.error("Error processing document:", errorData.error || "Unknown error");
+          
+          // Even if there's an error, stay on this page with the processing UI
+        }
+      } catch (error) {
+        console.error("Error initiating document processing:", error);
+      }
+    };
+    
+    initiateProcessing();
+  }, [user, documentId, tempJobId, startProcessing, processingStarted, router]);
+  
+  // Fetch document data
   useEffect(() => {
     async function fetchDocument() {
       if (documentId && user) {
@@ -45,19 +105,6 @@ export default function ProcessDocumentPage() {
     
     fetchDocument();
   }, [documentId, user, router]);
-
-  // Auto-start processing if requested and document is loaded
-  useEffect(() => {
-    // Only run this effect when document is loaded and autoStart is true
-    if (autoStart === 'true' && document && processorRef.current && processorRef.current.handleProcess) {
-      // Small delay to ensure the component is fully rendered
-      const timer = setTimeout(() => {
-        processorRef.current.handleProcess();
-      }, 500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [autoStart, document]);
   
   return (
     <div className="space-y-6">
@@ -82,6 +129,8 @@ export default function ProcessDocumentPage() {
         <DocumentProcessor 
           initialDocument={document} 
           ref={processorRef}
+          initialJobId={jobId || tempJobId}
+          autoShowProcessing={!!(jobId || tempJobId)}
         />
       )}
     </div>

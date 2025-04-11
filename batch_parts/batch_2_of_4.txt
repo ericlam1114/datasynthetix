@@ -1,0 +1,1192 @@
+s only to taxpayers that have not received an extension of time to file a 
+return after the original due date.  Taxpayers eligible for this relief must take corrective 
+action under §301.9100-2(c) within the six-month extension period and follow the 
+procedural requirements of §301.9100-2(d).
+A few commenters requested clarification on superseding returns.  One 
+commenter stated that the proposed regulations appeared ambiguous regarding 
+whether a return filed after the original due date, but within the automatic extension 
+period, is considered a superseding return.  This commenter recommended clarifying 
+that this would be considered a superseding return.
+Neither the Code nor regulations define a superseding return, but administrative 
+IRS guidance provides that a superseding return is a return filed subsequent to the 
+originally-filed return but before the due date for filing the return (including extensions).  
+For example, if an applicable entity subject to an automatic 6-month extension files an 
+original return on the due date (excluding extensions) and then files a subsequent return 
+within the automatic extension period, the subsequent return would generally be 
+considered a superseding return.  Unlike a superseding return, an amended return is a 
+return filed after the taxpayer filed an original return and after the due date for filing the 
+
+return (including extensions).
+One commenter stated that the reference to a superseding return seems to be an 
+acknowledgment that some taxpayers will use a provisional tax return filed on the due 
+date (before extensions) to hasten the election process.  This commenter asked 
+whether, if a taxpayer files a provisional return on March 15, 2024, and files a 
+superseding return on September 15, 2024, the taxpayer would be treated as making 
+payment against tax under section 6417(d)(4) on March 15, 2024.  The Treasury 
+Department and the IRS note that the designation “provisional” return has no basis in 
+the Code or regulations and accordingly, such returns are not treated differently by the 
+IRS upon filing.  Taxpayers are reminded that a tax return is signed under penalties of 
+perjury that the return is true, correct, and complete.  If an original return is filed on 
+March 15, 2024, and contains a valid elective payment election, the taxpayer is treated 
+as making a payment against tax on that day.  A superseding return could increase or 
+reduce the amount of the net elective payment election.  If the amount is increased, the 
+additional elective payment is treated as paid on the date the superseding return was 
+filed.  Taxpayers should be aware that filing a superseding return could result in a delay 
+in processing the additional elective payment amount.  If the net elective payment 
+amount is reduced because of the superseding return, the taxpayer could be subject to 
+interest and, if the taxpayer fails to pay the difference with the superseding return, 
+penalties.
+3. Pre-filing Registration Requirements
+Proposed §1.6417-2(b)(2) would have specified that pre-filing registration (as is 
+required under §1.6417-5T and would be required under proposed §1.6417-5) is a 
+condition of any amount being treated as a payment that is made by an applicable entity 
+under section 6417(a).  The proposed regulations stated that an elective payment 
+election will not be effective with respect to applicable credits determined with respect to 
+
+an applicable credit property unless the applicable entity or electing taxpayer receives a 
+valid registration number for the applicable credit property and provides the registration 
+number for each applicable credit property on its Form 3800 (or its successor) attached 
+to the tax return, in accordance with guidance.  These final regulations clarify in 
+§1.6417-2(b)(2) that a valid registration number must also be included on any required 
+completed source credit form(s) with respect to the applicable credit property. Additional 
+information about the pre-filing registration process is described in part V of this 
+Summary of Comments and Explanation of Revisions.
+4. Due Date Requirements
+Section 6417(d)(3)(A)(i) provides that any election under section 6417(a) must be 
+made not later than (1) in the case of any government, or political subdivision, described 
+in section 6417(d)(1) and for which no return is required under section 6011 or 6033(a), 
+such date as is determined appropriate by the Secretary, or (2) in any other case, the 
+due date (including extensions of time) for the return of tax for the taxable year for which 
+the election is made, but in no event earlier than 180 days after the date of the 
+enactment of section 6417 (February 13, 2023).  Section 6417 is applicable to taxable 
+years beginning after December 31, 2022.
+Proposed §1.6417-2(b)(3) would have implemented this provision as follows.  In 
+the case of any taxpayer for which no income tax return is required under section 6011 
+or 6033(a) of the Code (such as a governmental entity), the elective payment election 
+must be made no later than the due date (including an extension of time) for the original 
+return that would be due under section 6033(a) if such applicable entity were described 
+in that section.  Under section 6072(e) of the Code, that date is the 15th day of the fifth 
+month after the taxable year determined by section 441 of the Code.  Subject to the 
+issuance of guidance that specifies the manner in which an entity for which no Federal 
+income tax return is required under section 6011 or 6033(a) of the Code could request 
+
+an extension of time to file, the proposed regulations would have provided that an 
+automatic paperless six-month extension from the original due date is deemed to be 
+allowed.
+In the case of any taxpayer that is not normally required to file an annual tax 
+return with the IRS (such as those located in the U.S. territories), the proposed 
+regulations would have provided that the elective payment election must be made no 
+later than the due date (including extensions of time) that would apply if the taxpayer 
+was located in the United States (such as the 15th day of the fourth month after the end 
+of the year for individuals filing Form 1040 or for corporations filing Form 1120).  For 
+example, an individual in a U.S. territory would be required to make the elective 
+payment election on or before the 15th day of April following the close of the calendar 
+year, or, if the individual filed an extension, on or before the 15th day of October 
+following the close of the calendar year.
+The proposed regulations would have provided that, in any other case, the 
+elective payment election must be made no later than the due date (including 
+extensions of time) for the original return for the taxable year for which the election is 
+made, but in no event earlier than February 13, 2023.
+Commenters did not address the second or third provisions, and they are 
+adopted without change.  However, with respect to the first provision, these final 
+regulations simplify the provision in proposed §1.6417-2(b)(3), which stated that an 
+elective payment elective must be made no later than, “[i]n the case of any taxpayer for 
+which no Federal income tax return is required under section 6011 or 6033(a) of the 
+Code, the due date (including an extension of time) for the original return that would be 
+due under section 6033(a) if such applicable entity were described in that section.  
+Under section 6072(e), that date is the 15th day of the fifth month after the taxable year 
+determined by section 441 of the Code,” to simply provide that an elective payment 
+
+election must be made no later than, “[i]n the case of any taxpayer for which no Federal 
+income tax return is required under sections 6011 or no Federal return is required under 
+6033(a) of the Code [ ], the 15th day of the fifth month after the taxable year.”
+Commenters asked that the final regulations clarify the determination of taxable 
+year for an entity that does not have a filing requirement under section 6011 or 6033(a), 
+stating that the reference to “the taxable year determined by section 441 of the Code” is 
+confusing and that the Code provides latitude to taxpayers in determining their 
+applicable taxable year (including calendar year, fiscal year, and short years as 
+applicable).  Commenters gave the example of an applicable entity that is filing Form 
+990-T for the sole reason of making an elective payment election for an applicable 
+credit.  If the applicable entity uses a fiscal year beginning July 1 and ending June 30, 
+placed in service a project for which an applicable credit was determined during the first 
+six months of 2023, and used its fiscal year for purposes of establishing a taxable year, 
+then the applicable entity would be ineligible to make an elective payment election for 
+such project because the fiscal year during which the project was placed in service 
+began on July 1, 2022, which is a fiscal year beginning before December 31, 2022.  
+Commenters noted that similarly situated taxpayers who file their returns on a calendar 
+year basis would be eligible to make an elective payment election.  Commenters 
+requested that they be allowed to choose a calendar taxable year for purposes of 
+making an elective payment election, or, alternatively, that they be permitted to file 
+using a short year beginning January 1, 2023, and ending on the date of their next fiscal 
+year.
+These final regulations delete the reference to section 441 and clarify that, for 
+purposes of section 6417, an applicable entity that is not required to file a Federal 
+income tax return pursuant to section 6011 or Federal return pursuant to section 
+6033(a) (such as a State; the District of Columbia; an Indian tribal government; any U.S. 
+
+territory; a political subdivision of a State, the District of Columbia, or a U.S. territory, or 
+a subdivision of an Indian tribal government; certain agencies or instrumentalities of a 
+State, the District of Columbia, an Indian tribal government, or a U.S. territory; or a 
+taxpayer excluded from filing pursuant to section 6033(a)(3)), but is filing solely to make 
+an elective payment election, may choose whether to file its first Form 990-T (and thus 
+adopt a taxable year for purposes of section 6417) based upon a calendar or fiscal year, 
+provided that such entity maintains adequate book and records, including a 
+reconciliation of any difference between its regular books of account and its chosen 
+taxable year, to support making an elective payment election on the basis of its chosen 
+taxable year.  This should allow an applicable entity that is not required to file a Federal 
+income tax return pursuant to section 6011 or Federal return pursuant to section 6033, 
+but has placed in service an applicable credit property in 2023, to file Form 990-T based 
+on a calendar year and make an elective payment election with respect to the 
+applicable credit property regardless of when the property was placed in service during 
+2023.
+These final regulations continue to provide, consistent with the proposed 
+regulations, that, subject to issuance of guidance that specifies the manner in which an 
+entity for which no Federal income tax return is required under section 6011 or no 
+Federal return is required under section 6033(a) could request an extension of time to 
+file and make the elective payment election, an automatic paperless six-month 
+extension from the 15th day of the fifth month after the taxable year is deemed to be 
+allowed.
+The Treasury Department and the IRS note that a taxpayer that has filed a 
+Federal income tax return under section 6011 or a Federal return under section 6033(a) 
+with the IRS must continue to use that taxable year unless the taxpayer requests a 
+change of annual accounting period pursuant to section 442 of the Code.
+
+5. Irrevocability Requirement
+Proposed §1.6417-2(b)(4) would have provided that any election under section 
+6417(a), once made, is irrevocable and applies with respect to any applicable credit for 
+the taxable year for which the election is made.
+Under section 6417, the election period applies for a period of years with respect 
+to certain applicable credits.  Specifically, for a section 45 credit or section 45Y credit, 
+the election applies to the 10-year period beginning on the date the facility was originally 
+placed in service.  For a section 45Q credit, the election applies to the 12-year period 
+beginning on the date the equipment was originally placed in service.  For a section 45V 
+credit, the election applies to all subsequent taxable years with respect to the facility.
+Electing taxpayers make the election for one five-year period per applicable 
+credit property, but are allowed one revocation per applicable credit property, as 
+provided in section 6417(d)(1)(D), (d)(3)(C), and (d)(3)(D), and would have been 
+provided in proposed §1.6417-3 (as described in part III of this Explanation of 
+Provisions).
+No commenters addressed the irrevocability rule, and these final regulations 
+adopt the rule without change.
+6. No Partial Elections
+Proposed §1.6417-2(b)(5) would have provided that an elective payment election 
+applies to the entire amount of applicable credit(s) determined with respect to each 
+applicable credit property that was properly registered for the taxable year, resulting in 
+an elective payment amount that is the entire amount of applicable credit(s) determined 
+with respect to the applicable entity or electing taxpayer for a taxable year.  As a result, 
+the proposed regulations would require that an applicable entity make an elective 
+payment election for the entire amount of the credit determined with respect to each 
+applicable credit property.
+
+A few commenters advocated for allowing partial elections, stating that this 
+flexibility would be helpful. The Treasury Department and the IRS note that the statute 
+and the proposed regulations already provide considerable flexibility because taxpayers 
+can register none, some, or all of their applicable credit properties.  Further, as opposed 
+to section 6418(a), which allows an eligible taxpayer to elect to transfer all (or any 
+portion specified in the election) of an eligible credit, section 6417(a) provides that an 
+applicable entity making an election is treated as making a payment against the income 
+tax “equal to the amount of” the applicable credit, which does not provide the flexibility 
+to make an election equal to a portion of the applicable credit.  Thus, these final 
+regulations adopt the proposed regulations without change.
+C. Determination of applicable credit
+Proposed §1.6417-2(c) would have provided three rules relating to the 
+determination of any applicable credit: (1) special rules for tax-exempt organizations 
+and government entities; (2) a special rule for investment-related credit property 
+acquired with income that is exempt from taxation under subtitle A; and (3) a rule that 
+credits must be determined with respect to the applicable entity or electing taxpayer.
+1. Special Rules for Tax-exempt Organizations and Government Entities
+In accordance with section 6417(d)(2), proposed §1.6417-2(c)(1) would have 
+provided that, in the case of any applicable entity that makes the election described in 
+section 6417(a), any applicable credit is determined (1) without regard to the restrictions 
+regarding use of property by tax-exempt organizations and government entities found in 
+sections 50(b)(3) and (4)(A)(i); and (2) by treating any property with respect to which 
+such credit is determined as used in a trade or business of the applicable entity.
+Proposed §1.6417-2(c)(2) would have elaborated on the effect of the “trade or 
+business” rule in section 6417(d)(2) and proposed §1.6417-2(c)(1)(ii).  Proposed 
+§1.6417-2(c)(2)(i) would have allowed tax-exempt and government entities to take 
+
+advantage of applicable credits even outside of the unrelated business taxable income 
+context (provided other requirements are met) by allowing the entity to treat an item of 
+property as if it is of a character subject to an allowance of depreciation (such as under 
+sections 30C and 45W); to produce items “in the ordinary course of a trade or business 
+of the taxpayer” (such as in sections 45V and 45X); and to state that an item of property 
+is one for which depreciation (or amortization in lieu of depreciation) is allowable (such 
+as in sections 48, 48C, and 48E).  No commenter addressed this rule, but these final 
+regulations made nonsubstantive edits to this proposed version. 
+Proposed §1.6417-2(c)(2)(ii) would have allowed the entity to apply the 
+capitalization and accelerated depreciation rules (such as sections 167, 168, 263 and 
+263A of the Code) that apply to determining the basis and the depreciation allowance 
+for property used in a trade or business.  One commenter asked whether applicable 
+entities can use section 266 of the Code to capitalize carrying charges.  In response, 
+these final regulations add section 266 to the list of capitalization and accelerated 
+depreciation rules that applicable entities can use in §1.6417-2(c)(2)(ii).
+Proposed §1.6417-2(c)(2)(iii) would have made limitations on the use of credits 
+generally applicable to persons engaged in the conduct of a trade or business 
+applicable to the making of an elective payment election under section 6417, such as 
+the at-risk rules of section 49 of the Code in the context of investment credits 
+determined under sections 48, 48C, and 48E, and the passive activity rules under 
+section 469 of the Code that apply to all applicable credits.  For section 49 to apply to 
+investment tax credits for which an elective payment election is made, the property must 
+be placed in service by an applicable entity or electing taxpayer described in section 
+465(a)(1) of the Code (for example, an individual or a C corporation with respect to 
+which the stock ownership requirements of section 542(a)(2) of the Code are met).  For 
+section 469 to apply to applicable credits for which an elective payment election is 
+
+made, the applicable entity or electing taxpayer would need to be described in section 
+469(a)(2) (that is, an individual, estate or trust, a closely held C corporation, or a 
+personal service corporation).  Thus, for any applicable entity or electing taxpayer for 
+which section 49 or 469 generally applies, those limitations apply with respect to the 
+determination of applicable credits for purposes under section 6417.
+The proposed regulations requested comments on whether any additional 
+clarification is needed regarding the application of sections 49 and 469 to applicable 
+entities or electing taxpayers determining the amount of an applicable credit.  Two 
+commenters asked that the final regulations clarify that section 49 does not apply to limit 
+credits available to tribes or Tribal entities that use direct loan or Federal loan guarantee 
+programs.  The Treasury Department and the IRS note that section 49 generally applies 
+only to individuals and C corporations meeting the stock ownership requirements of 
+section 542(a)(2), and that section 49 reduces the credit base only by the amount of 
+nonqualified nonrecourse financing, as defined in section 49(a)(1)(D)(ii).  Both of these 
+determinations are dependent on the facts and circumstances and are outside of the 
+scope of these final regulations.
+Proposed §1.6417-2(c)(2)(iv) would have stated that the trade or business rule 
+does not create any presumption that the trade or business is related (or unrelated) to a 
+tax-exempt entity’s exempt purpose.  One commenter asked whether nonprofits will 
+owe tax on Solar Renewable Energy Credits (SREC) sales and how selling the SRECs 
+upfront versus selling them over time might change the result.  This comment is outside 
+the scope of these final regulations.  Another commenter asked that the final regulations 
+provide that income from applicable credit property does not give rise to unrelated 
+business income tax (UBIT).  Whether income from applicable credit property gives rise 
+to UBIT is a fact-intensive inquiry under sections 511 through 514 of the Code and it is 
+outside the scope of these final regulations.  As these comments do not require 
+
+revisions to the proposed rule, these final regulations adopt the §1.6417-2(c)(2)(iv) as 
+proposed.
+In addition, these final regulations clarify that the trade or business rule subjects 
+the applicable entity to the credit limitation that applies when there is an excess benefit, 
+as described in part II.C.2 of this Summary of Comments and Explanation of Revisions.  
+See §1.6417-2(c)(2)(v) and (c)(3)(ii).
+2. Special Rule for Investment-related Credit Property Acquired with Amounts, 
+Including Income from Certain Grants and Forgivable Loans, that are Exempt 
+from Taxation Under Subtitle A
+Proposed §1.6417-2(c)(3) would have provided a special rule for investment 
+credit property acquired with amounts, including income from certain grants and 
+forgivable loans, that are exempt from taxation under subtitle A (tax exempt amounts) 
+and would have expanded the rule to “investment-related tax credits” (that is, to other 
+credits that are determined as a percentage of a property’s basis).
+The special rule stated that, for purposes of section 6417, any tax exempt 
+amounts used to purchase, construct, reconstruct, erect, or otherwise acquire an 
+applicable credit property described in sections 30C, 45W, 48, 48C, or 48E (investment-
+related credit property) are included in basis for purposes of computing the applicable 
+credit amount determined with respect to the investment-related credit property, 
+regardless of whether basis is required to be reduced (in whole or in part) by such 
+amounts under general tax principles.  Without this rule, applicable entities that use tax 
+exempt amounts to purchase, construct, reconstruct, erect, or otherwise acquire 
+investment-related credit property may not be able to take full advantage of investment-
+related tax credits with respect to such property because general tax principles may 
+require applicable entities to reduce the basis in such property, for general business 
+credit purposes, by the amount paid for with tax exempt amounts.
+This special rule, by not reducing basis for tax-exempt amounts for purposes of 
+
+computing the applicable credit amount, conferred excess tax benefits under general 
+tax principles applicable to taxable entities.  The proposed regulations contained a “no 
+excess benefit” rule in proposed §1.6417-2(c)(3) to give effect to the requirement in 
+section 6417(d)(2)(B) that the investment-related credit property be treated as used in a 
+trade or business of an applicable entity (and thus subject to general tax principles that 
+apply to taxable entities).  The proposed no excess benefit rule would have reduced the 
+applicable credit amount with respect to "restricted tax exempt amounts,” which taxable 
+entities are generally not entitled to include in the basis of corresponding investment-
+related credit property under general tax principles, if the sum of such restricted tax-
+exempt amounts plus the applicable credit exceeded the cost of the applicable credit 
+property.  Specifically, proposed §1.6417-2(c)(3) would have provided that, if an 
+applicable entity receives tax exempt amounts for the specific purpose of purchasing, 
+constructing, reconstructing, erecting, or otherwise acquiring an investment-related 
+credit property (restricted tax exempt amount), and any restricted tax exempt amounts 
+plus the applicable credit otherwise determined with respect to that investment-related 
+credit property exceeds the cost of the investment-related credit property, then the 
+amount of the applicable credit is reduced so that the total amount of applicable credit 
+plus the amount of any restricted tax exempt amounts equals the cost of investment-
+related credit property.  This no excess benefit rule was a subset of the special rule for 
+investment credit property acquired with tax exempt amounts in that it applied only to 
+restricted tax exempt amounts; in other words, it only applied to tax exempt amounts 
+that are conditioned on being used for the specific purpose of purchasing, constructing, 
+reconstructing, erecting, or otherwise acquiring an investment credit property and did 
+not apply to other tax exempt amounts.  Proposed §1.6417-2(c)(5) contained three 
+examples illustrating these rules.
+One commenter strongly supported the special rule for investment-related credit 
+
+property acquired with income that is exempt from taxation as reasonable and 
+necessary, stating that it (1) places applicable entities on similar footing as taxable 
+entities with respect to impacts on basis, (2) makes funding count equally for investment 
+tax credits (that are determined as a percentage of basis) and production tax credits 
+(which are not tied to basis), and (3) is consistent with the purposes in section 6417.  
+Several other commenters expressed appreciation for this “stackability” feature of the 
+proposed regulations.
+However, some commenters did not support the no excess benefit part of the 
+rule, stating that section 6417 does not contain any limitation on determining the amount 
+of an elective payment for an applicable credit if the applicable entity has received 
+grants or forgivable loans not subject to Federal income tax.  These commenters opined 
+that not only does section 6417 not authorize promulgation of such a rule, but the 
+proposed rule is inconsistent with the intent of section 6417, which, in the commenters’ 
+view, is generally to permit applicable entities to receive an elective payment of an 
+applicable credit in an amount otherwise allowable under the Code.
+These final regulations generally adopt the proposed special rule for investment-
+related credit property acquired with amounts, including income from certain grants and 
+forgivable loans, that are exempt from taxation, with modifications discussed in this Part 
+II.C.2 of the Summary of Comments and Explanation of Provisions section.  First, these 
+final regulations seek to clarify that the no excess benefit rule is a subset of the general 
+rule by separating the special rule into two parts: (1) an “amounts included in basis” rule 
+(allowing tax exempt amounts to count toward basis) and (2) a “no excess benefit from 
+restricted tax exempt amounts” rule (not allowing restricted tax exempt amounts plus 
+the amount of the credit to exceed the cost of the investment-related credit property).
+With respect to the second part of the rule, the Treasury Department and the IRS 
+conclude that section 6417(d)(2)(B) effectively places a limitation on determining the 
+
+amount of an applicable credit by treating the property as being used in a trade or 
+business of an applicable entity, which otherwise subjects the investment-related credit 
+property and the applicable credit to general tax principles that apply to taxable entities.  
+Taxable entities that receive restricted tax exempt amounts are generally required to 
+reduce their basis in the corresponding investment-related credit property under general 
+tax principles, which would limit the amount of the applicable credit.  While the no 
+excess benefit rule does not go so far as to require basis in investment-related credit 
+property to be reduced by the restricted tax exempt amount, it limits the applicable 
+credit so that an applicable entity that receives a restricted tax exempt amount does not 
+receive more than the cost of the investment-related credit property financed without 
+those non-taxable funds.  The alternative to the no excess benefit rule would be to 
+disallow restricted tax exempt amounts from counting toward the basis in investment-
+related credit property (a more severe limitation), which would still give effect to section 
+6417(d)(2)(B) but not accomplish the goals of the IRA as well as the no excess benefit 
+rule does.  
+However, these final regulations clarify the no excess benefit rule in several 
+ways.  These final regulations provide that the determination of whether a tax exempt 
+grant is made for the specific purpose of purchasing, constructing, reconstructing, 
+erecting, or otherwise acquiring an investment-related credit property is made at the 
+time the grant is awarded to the applicable entity.  (If only a portion of a tax exempt 
+amount is restricted and another portion is unrestricted, then only the restricted tax 
+exempt amount is considered for purposes of this rule.)
+Similarly, these final regulations clarify how to treat a grant that is awarded after 
+investment-related credit property is purchased, constructed, reconstructed, erected, or 
+otherwise acquired.  One commenter requested clarification of whether the excessive 
+payment addition to tax may apply if an applicable entity received a Federal grant after 
+
+the elective payment election submission.  Although the comment was unclear, it 
+appears that the commenter was asking whether a grant received after the acquisition 
+of investment-related credit property might be considered a “restricted tax exempt 
+amount” that could affect the amount of the applicable credit claimed on the annual 
+return.  Similarly, two commenters asked that applicable entities be allowed to self-
+identify during the pre-filing registration process or the elective payment election 
+process, or both, if they are preparing to apply for a Federal grant that could potentially 
+impact their elective payment amount.  These commenters stated that an entity could 
+then amend its return based on whether the grant was received to better determine if 
+the entity should receive the full elective payment amount or be required to recalculate 
+the elective payment amount so as not incur an addition to tax due to a possible 
+excessive payment in subsequent taxable years.
+A grant awarded after acquisition of the property is generally not a restricted tax 
+exempt amount because a restricted tax exempt amount is one made for the specific 
+purpose of purchasing, constructing, reconstructing, erecting, or otherwise acquiring an 
+investment-related credit property and, in the commenters’ examples, the applicable 
+entity would already have acquired the investment-related credit property before 
+receiving the grant funds.  However, to avoid allowing taxpayers to circumvent the no 
+excess benefit rule by acquiring applicable credit property in cases in which the receipt 
+of the grant is assured if an application is made and the applicable entity only needs to 
+finance the purchase until the money is received, these final regulations provide that a 
+grant awarded after acquisition of the property is a restricted tax exempt amount if 
+approval of the grant was perfunctory and the amount of the grant was virtually assured 
+at the time of application.
+Commenters asked whether the credit reduction applies to a loan that is not a 
+forgivable loan or to a taxable loan.  The Treasury Department and the IRS clarify that 
+
+loans that need to be repaid are not tax exempt amounts and, thus, will not be restricted 
+tax exempt amounts for purposes of this rule.  Commenters also asked about the timing 
+of the credit reduction and whether there is any potential tax credit recapture if a loan for 
+a project that was not intended to be forgivable is later forgiven by the lender.   In 
+response, these final regulations add a sentence clarifying that the determination of 
+whether a loan is made for the specific purpose of purchasing, constructing, 
+reconstructing, erecting, or otherwise acquiring an investment-related credit property, 
+and whether forgiveness of that loan is contingent upon the specific purpose being 
+satisfied, is made at the time the loan is approved.
+Several commenters did not appear to understand that the no excess benefit rule 
+is a subset of the special rule for investment-related credit property because it applies 
+only to restricted tax-exempt amounts.  For example, one commenter opined that, if an 
+applicable entity’s general revenue (from charitable donations) is not taxable and does 
+not reduce the credit amount, then the concern of an excessive benefit for specific 
+grants is unfounded.  Multiple commenters expressed confusion by the definitions in the 
+rule, asking for further definition (or a safe harbor) of “restricted tax exempt amount” or 
+for a definition of “unrestricted funds.”  Restricted gifts are distinguishable from 
+unrestricted gifts because of the restrictions donors place on the use of the funds.  In 
+response to these comments, however, these final regulations add a sentence to the 
+end of §1.6417-2(c)(3)(ii) stating that the no excess benefit rule does not apply if the tax 
+exempt amount is not received for the specific purpose of purchasing, constructing, 
+reconstructing, erecting, or otherwise acquiring a property eligible for an investment-
+related credit.  This sentence includes two examples of a tax exempt amount that is not 
+considered to be a restricted tax exempt amount: (1) a tax exempt amount from the 
+organization’s general funds and (2) a tax exempt amount the use of which is not 
+restricted to the purpose of purchasing, constructing, reconstructing, erecting, or 
+
+otherwise acquiring an investment-related credit property (such as purchasing an 
+electric vehicle) and could be used for any of several different applicable credit 
+properties (such as purchasing an electric vehicle or purchasing solar panels) or can be 
+put to other purposes (such as purchasing an electric vehicle or making a building more 
+energy efficient).  In addition, these final regulations add an example with unrestricted 
+funds to clarify that unrestricted funds do not implicate the no excess benefit rule.
+One commenter thought that the no excess benefit rule is administratively 
+impractical and will lead certain applicable entities and their donors to structure 
+donations as unrestricted grants (with an unenforceable expectation that the grant will 
+still be used to fund the energy property).  The commenter stated that this lack of a 
+legally enforceable obligation by donors will lead to more opportunities for the misuse of 
+funds and further frustrate Congressional intent to encourage applicable entities to 
+actually build and operate energy property.  The Treasury Department and the IRS 
+recognize that unrestricted funds are not impacted by the no excess benefit rule; thus, 
+taxpayers could structure around the no excess benefit rule by requesting unrestricted 
+funds rather than restricted ones.  However, these final regulations maintain the 
+decision that, when a restricted tax exempt amount plus a general business credit 
+exceeds the cost of the applicable credit property that was purchased with the restricted 
+tax exempt amount, then the no excess benefit rule is reasonable and necessary, gives 
+effect to section 6417(d)(2)(B), and is consistent with general tax principles.
+In response to the commenters asking that applicable entities be allowed to self-
+identify if they are preparing to apply for a Federal grant that could potentially impact 
+their elective payment amount, as provided in part V of this Summary of Comments and 
+Explanation of Revisions, §1.6417-5(b)(5)(vii)(E) provides that an applicable entity must 
+provide information on the source of funds the taxpayer used to acquire the property as 
+part of the pre-filing registration process if the applicable credit property is an 
+
+investment-related credit property.  However, the reporting of an actual credit amount is 
+done on the annual tax return.  In addition, if an applicable entity makes a valid elective 
+payment election but later determines the amount was calculated incorrectly, these final 
+regulations provide the opportunity to file an amended return or AAR to make the 
+appropriate adjustments to the elective payment amount.  See part II.B.2 of this 
+Summary of Comments and Explanation of Revisions.  As described in part VI of this 
+Summary of Comments and Explanation of Revisions, these final regulations clarify 
+that, if an applicable entity or electing taxpayer amends its tax return or files an AAR to 
+properly adjust an excessive elective payment amount before the IRS opens an 
+examination, then the excessive payment provisions of section 6417(d)(6) and §1.6417-
+6(a) would not apply.
+A commenter recommended that the final regulations limit or eliminate the 
+proposed rule that tax-exempt funds raised to pay for the cost of a system must be 
+subtracted from the installed system cost before calculating the value of the investment 
+tax credit.  The commenter’s summary of the proposed rule is not accurate.  The excess 
+benefit determination is made after the investment tax credit is calculated and reduces 
+the amount of the calculated credit only to the extent that an excess benefit was created 
+by any restricted tax exempt amounts used to fund the purchase.
+One commenter asked how the credit reduction relates to tax-exempt bond 
+financing (which, for certain credits, results in a reduction of the credit amount).  The 
+Treasury Department and the IRS confirm that the no excess benefit rule applies after 
+application of any rule, such as sections 45(b)(3), 45Q(f)(8), 45V(d)(3), 45Y(g)(8), 
+48(a)(4), and 48E(d)(2), that relates to the determination of the underlying applicable 
+credit.
+A few commenters said that only Federal grants should be considered in 
+applying the no excess benefit rule.  The Treasury Department and the IRS have 
+
+concluded that all restricted tax exempt amounts should be treated the same way, as 
+any could lead to an excess benefit.
+Two commenters stated that an applicable credit property financed with 
+“recoverable grants” should not result in the reduction of the applicable credit, stating 
+that recoverable grants are similar to loans although some nonprofits and schools 
+cannot enter into loan agreements.  These final regulations do not adopt this comment 
+because, without knowing the conditions upon which the grant proceeds are returned to 
+the grantor, it is not possible to conclude whether such amounts would be considered 
+restricted tax exempt amounts.  For example, if a grantor requires return of the grant 
+proceeds to the extent of an excess benefit created, the proceeds required to be repaid 
+would likely not be considered a restricted tax exempt amount for purposes of §1.6417-
+2(c)(3), as those amounts are more similar to debt repayment.
+One commenter asked that the final regulations provide more specific information 
+about “other amounts generally exempt from taxation under subtitle A,” stating that all 
+revenues earned by section 501(c) entities that are not subject to the unrelated 
+business income provisions of sections 511 through 514 are generally exempt from tax.  
+The commenter noted that Examples 2 and 3 in the proposed regulations contained an 
+exempt organization’s own unrestricted funds, which the commenter presumed was 
+from income exempt from taxation under subtitle A.  The Treasury Department and the 
+IRS agree that the types of income mentioned by the commenter are examples of 
+income “that is exempt from taxation under subtitle A” that are intended to be included 
+in basis for purposes of computing the applicable credit amount determined with respect 
+to the applicable credit property, regardless of whether basis is required to be reduced 
+(in whole or in part) by such amounts under general tax principles.  However, the 
+Treasury Department and the IRS have identified that certain governmental entities, 
+including Indian tribal governments, may have income that is excluded from Federal 
+
+income taxation rather than exempt from taxation under subtitle A.  The intent of the 
+special rule was to have all of this income count towards the basis of investment-related 
+credit property.  Thus, these final regulations add “or otherwise excluded from taxation” 
+to the text of §1.6417-2(c)(3).
+A commenter asked how the special rule works if grant or loan proceeds are paid 
+directly to the contractor building the property, providing an example in which 
+(1) another entity helped cover the cost of the applicable credit property for the 
+applicable entity by paying a vendor directly, and (2) the remaining funds were provided 
+by a lender to the applicable entity, with the lender providing the proceeds of the loan 
+directly to the vendor.  The commenter asked whether these arrangements would affect 
+the cost basis for determining the credit amount, which could then impact the applicable 
+entity’s ability to make an elective payment election.  These final regulations do not 
+address this question since it requires analysis of the details surrounding the contractual 
+arrangements (for example, the terms of the gift and the terms of the loan), as the 
+results depend on the underlying facts.
+One commenter asked whether there are any restrictions on the use of elective 
+payment amounts once they are received by the applicable entity; for example, whether 
+they can be used to repay grant match requirements or to pay off debt used specifically 
+to purchase applicable credit property.  Section 6417 imposes no restriction on the use 
+an applicable entity makes of the elective payment amount after it has been paid to the 
+entity (although the entity bears the risk that any excessive payments are subject to 
+repayment plus a 20-percent tax).
+3. Credits Must be Determined with Respect to the Applicable Entity or Electing 
+Taxpayer
+Proposed §1.6417-2(c)(4) would have stated that any credit for which an election 
+is made under section 6417(a) must have been “determined with respect to” the 
+applicable entity or electing taxpayer, meaning that the applicable entity or electing 
+
+taxpayer must own the underlying eligible credit property or, in the case of section 45X, 
+conduct the activities giving rise to the underlying eligible credit.
+7
+  This proposed rule, 
+which is consistent with the proposed regulations under section 6418, would prohibit an 
+applicable entity or electing taxpayer from making an election under section 6417(a) for 
+credits transferred pursuant to section 6418, transferred pursuant to section 45Q(f)(3), 
+acquired by a lessee from a lessor by means of an election to pass through the credit to 
+a lessee under former section 48(d) (pursuant to section 50(d)(5)), owned by a third 
+party, or otherwise not determined directly with respect to the applicable entity or 
+electing taxpayer, which the proposed regulations labeled “chaining.” 
+The preamble to the proposed regulations noted several potential obstacles to 
+permitting chaining, but requested comments on any limited situations in which 
+exceptions to this proposed rule may be appropriate because they are consistent with 
+the text, design, and intent of the IRA, while also ensuring that such exceptions are not 
+subject to fraud or abuse.
+i. Credits transferred pursuant to section 6418
+One commenter agreed with the proposed rule, stating that chaining will likely 
+create practical and administrative challenges and make the applicable credits more 
+vulnerable to fraud and abuse.  However, multiple commenters stated that chaining is 
+consistent with the text, design, and intent of the IRA and requested that it be allowed.  
+Some commenters advocated for enacting a limited exception tailored to certain 
+situations or limited to certain types of taxpayers, such as (1) a taxpayer whose receipt 
+of credits is directly tied to the taxpayer’s involvement in the manufacturing process and 
+its contractual agreements with third-party producers under section 45X, if not 
+considered a producer under section 45X; (2) public-private partnership arrangements 
+7
+ The section 45X credit requires that the taxpayer produce eligible components.  Thus, an applicable 
+entity or electing taxpayer must produce eligible components to claim the credit.
+
+under which a governmental entity or nonprofit entity can be treated as the owner of the 
+project while receiving private capital from the private, for-profit partner to finance the 
+project; (3) governmental entities and unrelated section 501(c)(3) entities on whose 
+premises the project is located; (4) green banks and other public financing entities; 
+(5) governmental agencies; (6) public power systems that entered into a long-term 
+power purchase agreement with respect to the electricity to be produced at a qualifying 
+facility; (7) entities conducting the activity that do not own the applicable credit property; 
+(8) a transferor and transferee that are joint tenants or partners in a partnership 
+completing a single return, or cross-referencing returns, in which the transfer and 
+elective payment elections are made concurrently on the due date of the return (or later 
+filing date under a valid extension); or (9) in cases in which an ERISA plan, entity 
+holding plan assets, or an entity in which an ERISA plan or entity holding plan assets is 
+the primary equity holder, the transferee would not own more than 50 percent of the 
+seller, the transferee does the same due diligence required of all transferees, the 
+transferee pays a minimum of 90 percent of the face value of the credit in cash, and, if 
+the purchasing ERISA plan has an indirect interest in the proceeds of the sale, it is not 
+permitted to buy more than the commensurate share of the proceeds it would have 
+received if the seller had elected to sell the tax credit to another person or entity with no 
+relationship to the seller.  One commenter asked that any rule prohibiting chaining be 
+limited to potentially abusive situations in which a principal purpose of the structure is to 
+avoid the transfer election rules or otherwise allow taxpayers that are not applicable 
+entities to make elective payment elections.
+After considering comments, the Treasury Department and the IRS have 
+determined that sections 6417 and 6418, read together, are most straightforwardly 
+understood as creating two separate, mutually exclusive regimes regarding credit 
+monetization.  While the Treasury Department and the IRS acknowledge that no 
+
+specific language in section 6417 or 6418 directly prohibits chaining, not permitting 
+chaining allows for more straightforward application of the statute as a whole.  This 
+interpretation reads “determined with respect to” in both sections 6417 and 6418 to 
+require the entity to own the underlying applicable credit property with respect to which 
+the applicable credit is determined and conduct the activities giving rise to the 
+applicable credit or, in the case of section 45X, for which ownership of applicable credit 
+property is not required, to be considered (under the section 45X regulations) the 
+taxpayer with respect to which the section 45X credit is determined.
+The Treasury Department and the IRS also remain concerned about the 
+administrability of chaining and the scope for fraud and abuse.  The Treasury 
+Department and the IRS considered commenters’ suggestions on how chaining might 
+be limited to certain types of taxpayers or certain situations.  While there may be ways 
+in which limiting chaining to certain types of entities or those performing certain activities 
+could potentially reduce risks of fraud and abuse, the Treasury Department and the IRS 
+have concluded, based on the comments, statutory text, and available information, that 
+the IRS would face substantial challenges in attempting to distinguish those types of 
+taxpayers or situations from other applicable entities or other situations.  For example, 
+the existing pre-filing registration process and portal, a key anti-fraud and anti-abuse 
+feature specifically authorized by sections 6417 and 6418, are not capable of 
+administering such distinctions as, for example, the proposed requisite relationships 
+between the parties, many of which would require assessments of particular 
+circumstances or other fact-dependent inquiries.  The Treasury Department and the IRS 
+have not determined how the proposed distinctions or criteria could be sufficiently 
+verified in an administratively reasonable manner during the pre-filing registration 
+process.  Thus, based on available information, the Treasury Department and the IRS 
+could not conclude that any chaining rule could be limited in the manner taxpayers 
+
+proposed.
+Furthermore, any chaining rule would need ancillary rules to address operational 
+differences between the two statutory provisions and complications that would 
+necessarily arise from chaining.  For example, absent ancillary rules to address 
+differences between the two statutes, there would be inconsistencies in the 
+requirements for elective payment elections made by applicable entities for applicable 
+credits that are determined with respect to the applicable entity and elective payment 
+elections made by applicable entities for transferred credits (even if a taxpayer was 
+making both elections for the same type of credit).  Transfer elections under section 
+6418 with respect to credits determined under sections 45, 45Q, 45X, 45V, and 45Y are 
+made on an annual basis, whereas elective payment elections under section 6417 with 
+respect to these credits are made for a multi-year period and are irrevocable.  
+Additionally, transfer elections under section 6418 are permitted to be made for a 
+portion of eligible credits determined with respect to an eligible credit property, whereas 
+section 6417 does not on its face permit partial elections.  A partnership making the 
+election under section 6417 must hold the applicable credit property “directly,” language 
+that is not a clear fit for transferred credits.  If a chaining rule were permitted, the rules in 
+section 6418 would need to accommodate the election requirements in section 6417, 
+but the Treasury Department and the IRS could not determine, based on comments 
+received and available information, how the differences between elective payment 
+elections and transfer elections could be addressed in an administratively reasonable 
+manner.
+Similarly, an applicable entity that is both a transferee under section 6418 and an 
+applicable entity under section 6417 could be subject to both the excessive credit 
+transfer addition to tax under section 6418(g)(2) and the excessive payment addition to 
+tax under section 6417(d)(6).  None of the comments addressed how the excessive 
+
+credit transfer or excessive payment additions to tax should apply in the case of a 
+chaining rule, including whether there would be authority to avoid application of both 
+additions to tax by the same applicable entity.
+Additionally, none of the comments addressed how the basis reduction and 
+recapture rules under sections 6418(g)(3) and 6417(g) would work in the case of a 
+chaining rule, given that transferred credits presumably would need to be treated as 
+“determined with respect to” the applicable entity for purposes of section 6417(g).
+A chaining rule would also create administrative challenges with regard to the 
+pre-filing registration process that are separate from the challenge of potentially 
+distinguishing types of entities or situations, and which were not addressed in 
+comments.  A facility or property intended to produce credits that would be chained 
+would appear to need to be registered twice – first, under section 6418 as an eligible 
+credit property and second, under section 6417 as an applicable credit property – which 
+would result in two different registration numbers with respect to the same facility or 
+property.  Both of these registrations would presumably need to occur after the 
+eligible/applicable credit property was placed in service, but before either taxpayer filed 
+their annual tax return.
+Finally, the Treasury Department and the IRS remain concerned that a rule 
+allowing for chaining could increase risks of fraudulent elective payment elections as 
+well as fraudulent transfers of credits (such as transferring credits that have not been 
+earned by the transferor and therefore do not exist), given a range of factors including 
+the limited time before filing season that the IRS would have to verify information as part 
+of the pre-filing registration process, the transferor’s incentives to shift risk to the 
+transferee, and the difficulties of recovering monies once already paid out to applicable 
+entities.  Comments received by the Treasury Department and the IRS have not 
+provided information that addresses these concerns.
+
+Thus, these final regulations adopt the rule as proposed.  However, the Treasury 
+Department and the IRS will continue to consider potential chaining rules that would 
+address these concerns and be consistent with the statutory framework, as well as the 
+legislative purpose, of sections 6417 and 6418.  In particular, the Treasury Department 
+and the IRS will be monitoring uptake and efficiency of the market for transferred credits 
+and whether additional or different approaches may be useful to improve the functioning 
+of the market to ensure that the provisions are functioning consistent with Congress’s 
+intent in enacting the IRA.  The Treasury Department and the IRS will also be 
+monitoring uptake of the elective payment election, including whether additional or 
+different regulatory approaches may be useful to ensure broad access to the clean 
+energy tax credits consistent with Congress’s intent in enacting the IRA.  At the same 
+time, the Treasury Department and the IRS will be monitoring the risk of improper 
+payments with respect to sections 6417 and 6418 and will consider additional regulatory 
+or administrative action to reduce such risk as experience is gained with respect to 
+these novel provisions.
+ii. Credits allowed pursuant to section 45Q(f)(3)
+As described in part II.C.3 of this Summary of Comments and Explanation of 
+Revisions, proposed §1.6417-2(c)(4) would have provided that no election may be 
+made under section 6417(a) for credits transferred pursuant to section 45Q(f)(3).
+Multiple commenters opined that section 45Q credits transferred pursuant to 
+section 45Q(f)(3)(B) should be considered “determined with respect to” the transferee.  
+Commenters posited that this is the correct result because those transferees conduct 
+carbon capture activities necessary to give rise to a section 45Q credit, citing the 
+language in proposed §1.6417-2(c)(4) that “[a]n applicable credit is determined with 
+respect to an applicable entity or electing taxpayer in cases where the applicable entity 
+or electing taxpayer owns the underlying eligible credit property or, if ownership is not 
+
+required, otherwise conducts the activities giving rise to the underlying eligible credit.” 
+Commenters further stated that performing those carbon capture activities makes them 
+distinguishable from taxpayers that are transferred a credit under section 6418 or an 
+election under section 50(d)(5).
+The Treasury Department and the IRS have concluded that a taxpayer that is 
+transferred a section 45Q credit as a result of an election under section 45Q(f)(3) is not 
+the taxpayer with respect to which the section 45Q credit is determined.  Under section 
+45Q(f)(3)(A)(ii), a section 45Q credit is attributable to the person that owns the carbon 
+capture equipment and physically or contractually ensures the capture and disposal, 
+utilization, or use as a tertiary injectant of such qualified carbon oxide (emphasis 
+added).  Further, under §1.45Q-1(h)(3), it is the taxpayer described in §1.45Q-1(h)(1) to 
+whom the section 45Q credit is attributable (electing taxpayer), that may elect to allow 
+the person that enters into a contract with the electing taxpayer to dispose of the 
+qualified carbon oxide (disposer), utilize the qualified carbon oxide (utilizer), or use the 
+qualified carbon oxide as a tertiary injectant (injector) to claim the credit (credit claimant) 
+(section 45Q(f)(3)(B) election).  Contrary to commenters’ assertions, it is not sufficient 
+for a party to only conduct carbon capture activities to be eligible for a section 45Q 
+credit.  Further, the requirement of ownership in the section 45Q statute and regulations 
+means the commenters’ argument that the language in §1.6417-2(c)(4) allows a section 
+45Q credit to be determined with respect to an applicable entity or electing taxpayer 
+when the party “otherwise conducts the activities giving rise to the underlying applicable 
+credit” is misplaced.  That language in §1.6417-2(c)(4) applies only in the case of an 
+applicable credit for which ownership of property is not required, which is not the case 
+with respect to a section 45Q credit.  Thus, these final regulations clarify in §1.6417-
+2(c)(4) that the only applicable credit for which ownership is not required is the section 
+45X credit.  While the activities of a contractor may be necessary for a section 45Q 
+
+credit to be determined, ultimately, the credit is attributable to and determined by the 
+person that both owns the equipment and physically or contractually ensures the 
+capture and disposal, injection, or utilization of such qualified carbon oxide.  Thus, these 
+final regulations adopt the proposed regulations without change on this issue.
+Other commenters implied that a section 45Q(f)(3) election is not a transfer, just 
+the attribution of the credit to the claimant.  The Treasury Department and the IRS note 
+that the relevant standard under section 6417 for making an elective payment election is 
+that a section 45Q credit must be determined with respect to the applicable entity or 
+electing taxpayer.  Thus, while the proposed regulations used the term “transfer,” the 
+result would have remained unchanged if the proposed regulations used the term 
+‘attributed’ in referring to a party that receives the credit as a result of a section 
+45Q(f)(3)(B) election.  To maintain consistency with §1.45Q-1(h)(3), these final 
+regulations use the word “allowed,” but the result is unchanged from the proposed 
+regulations.
+One commenter asked that, in the case of a taxpayer that is registering a single 
+process train for purposes of a section 45Q credit and will make a section 45Q(f)(3)(B) 
+election to allow all or a portion of that credit to disposers/utilizers, the final regulations 
+require information about such election, as well as an acknowledgment by the owner of 
+the single process train that the disposer(s)/utilizer(s) may make a section 6417 election 
+for its portion of section 45Q credit allowed, using the registration number obtained by 
+the owner of the single process train.  As described previously, a section 45Q credit that 
+is received as the result of a section 45Q(f)(3)(B) election is not determined with respect 
+to the recipient, and therefore the recipient is ineligible to make a section 6417 election 
+and has no need to complete pre-filing registration.
+Commenters stated, citing Rev. Rul. 2021-13, 2021-30 IRB 152, that a taxpayer 
+does not need to own every component of a single process train to claim a section 45Q 
+
+credit.  The Treasury Department and the IRS agree that guidance under section 45Q 
+does not require a taxpayer to own every component of a single process train and have 
+revised the language under §1.6417-1(e)(3) (defining applicable credit property with 
+respect to the section 45Q credit) accordingly.
+iii. Credits acquired by a lessee from a lessor by means of an election to pass 
+through the credit to a lessee under former section 48(d) (pursuant to section 
+50(d)(5))
+Several commenters stated that tribes cannot monetize their elective payment 
+amounts by making transfer elections under section 6418.
+8
+  These commenters stated 
+that tribes should thus be able to structure projects through sale-leasebacks or inverted 
+leases, which would allow tribes to retain ownership of the project while a third party 
+receives tax benefits in exchange for contributing capital to the project.
+The proposed regulations did not specifically address sale-leaseback 
+transactions under section 50(d)(4), and the Treasury Department and the IRS have 
+determined that adopting an explicit rule with respect to sale-leaseback transactions in 
+these final regulations is not necessary.  Such a rule is unnecessary because a sale-
+leaseback transaction under section 50(d)(4) is one in which a purchaser/lessor of 
+investment credit property owns the underlying property with respect to which an 
+applicable credit is determined.  In that case, provided all of the applicable rules are 
+met, because the applicable credit is determined with respect to applicable credit 
+property owned and treated as originally placed in service by the purchaser/lessor, the 
+purchaser/lessor can make an elective payment election with respect to the property 
+under section 6417.
+With respect to inverted leases, the Treasury Department and the IRS 
+8
+ While it is true that section 6418(f)(2) defines “eligible taxpayer” for purposes of transfer election 
+eligibility as “any taxpayer which is not described in section 6417(d)(1)(A)” (and thus an Indian tribal 
+government (including agencies and instrumentalities) described in section 6417(d)(1)(A)(iv) and §6417-
+1(c)(3) and -1(k) would not be eligible to make a transfer election), a Tribal entity that is not described in 
+section 6417(d)(1)(A) would be eligible to make a transfer election under section 6418.
+
+understand the commenters to be referring to an election to pass through the applicable 
+credit to a lessee under former section 48(d) (pursuant to section 50(d)(5)).  The 
+commenters pointed out that a rule allowing the lessee to make a section 6417 election 
+with respect to a credit would allow tribes to retain ownership of the project while a third-
+party receives tax benefits in exchange for contributing capital to the project.  There is a 
+distinction between sale-leaseback transactions under section 50(d)(4) and lease-
+passthrough elections under former section 48 (pursuant to section 50(d)(5)).  In the 
+latter case, it is the lessor that is the party with respect to which the credit is determined, 
+and not the lessee that is allowed to claim the credit as a result of the election.  
+Therefore, the lessee does not meet the requirement of section 6417(a), which requires 
+the applicable credit to be determined with respect to the applicable entity making the 
+elective payment election.  The Treasury Department and the IRS have concluded that 
+the rationale underlying the proposed rule is correct.  Thus, these final regulations adopt 
+the proposed rule without change.
+iv. Ownership
+Proposed §1.6417-2(c)(4) would have provided that applicable credits must be 
+determined with respect to the applicable entity or electing taxpayer, and further 
+explained that an applicable credit is determined with respect to an applicable entity or 
+electing taxpayer in cases in which the applicable entity or electing taxpayer owns the 
+underlying applicable credit property or, if ownership is not required, otherwise conducts 
+the activities giving rise to the underlying applicable credit.  Commenters addressed the 
+ownership aspect of this proposed rule.  A commenter asked for clarity on the types of 
+activities that would be required to give rise to the underlying applicable credit and 
+whether, if the electing taxpayer owns the property for which the applicable credit is 
+determined, they are also required to conduct activities giving rise to the underlying 
+applicable credit.  This commenter stated that property owners often contract with a 
+
+third-party for operations and maintenance.  This commenter also asked for clarification 
+on whether property ownership is sufficient to satisfy any other requirements.  Lastly, 
+the commenter requested additional information on the types of documentation needed 
+to establish ownership of the property.
+It is generally outside of the scope of these final regulations to address the types 
+of activities required to determine the underlying applicable credits.  However, to help 
+clarify, these final regulations specify that the applicable entity or electing taxpayer must 
+both own the underlying applicable credit property and conduct the activities giving rise 
+to the applicable credit or, in the case of a section 45X credit for which ownership of 
+applicable credit property is not required, to be considered (under the section 45X 
+regulations) the taxpayer with respect to which the section 45X credit is determined.  
+That is, with respect to all of the applicable credits, with the exception of the section 45X 
+credit, ownership of qualified property is required.  It is also true that, in order to be 
+eligible for an applicable credit, it is necessary to first complete activities required by the 
+Code section(s) relevant to the determination of the applicable credit.  To the extent that 
+an applicable entity or electing taxpayer contracts with a third party for operation or 
+maintenance of the property, the applicable entity or electing taxpayer must meet the 
+applicable credit requirements for the credit to be determined with respect to such entity 
+or taxpayer.  Lastly, with respect to additional information on documentation necessary 
+for establishing ownership, the determination will be made based on the regulations for 
+the particular applicable credit or bonus credit amount as well as Federal income tax 
+principles.  Ultimately, the principle incorporated into these final regulations, which is 
+based on language in section 6417(a), is that the applicable credit must have been 
+determined with respect to the applicable entity or electing taxpayer making the elective 
+payment election.
+ One commenter asked that the final regulations contain a safe harbor for 
+
+determining the Federal tax owner of the tax credit eligible project and recommended 
+the safe harbor under section 142(b) of the Code as a model.  Section 142(b) requires 
+certain facilities financed with tax-exempt bonds to be owned by a governmental unit.  
+The safe harbor under section 142(b) treats property that is subject to a lease, a 
+management contract, or other similar operating agreement to be treated as owned by 
+the governmental unit under specified conditions.  Specifically, the lessee (or manager 
+or operator) must make an irrevocable election not to claim depreciation or an 
+investment credit with respect to the property; the term of the agreement must not 
+exceed 80 percent of the reasonably expected economic life of the property; and the 
+lessee (or manager or operator) must have no option to purchase the property other 
+than at fair market value as of the time the option is exercised.  The commenter 
+proposed language for a safe harbor for purposes of section 6417 that included 
+language nearly identical to that under section 142(b) but that also included a 
+requirement that the applicable entity own the property under State or local law.  These 
+final regulations do not adopt the commenter’s proposal because ownership is 
+determined based on general Federal tax principles, including any requirements 
+applicable to the relevant applicable credit.  
+D. Denial of double benefit
+Section 6417(a) allows an applicable entity or electing taxpayer other than a 
+partnership or S corporation to be treated as making a payment against the tax imposed 
+by subtitle A for the taxable year with respect to which such credit was determined 
+equal to the amount of such credit.  Section 6417(c)(1)(A) provides that, for an electing 
+taxpayer that is a partnership or S corporation, the Secretary will make a payment to 
+such partnership or S corporation with respect to a credit determined with respect to 
+applicable credit property held directly by the partnership or S corporation equal to the 
+amount of such credit.  Sections 6417(e) and (c)(1)(B) each provide that such credit is 
+
+reduced to zero and, for any other purposes of the Code, is deemed to have been 
+allowed to such entity for such taxable year.  Section 6417(h) provides that the 
+Secretary must issue guidance necessary to carry out the purposes of section 6417, 
+including guidance to ensure that the amount of the payment (in the case of an electing 
+taxpayer that is a partnership or S corporation) or deemed payment (in the case of all 
+other electing taxpayers and applicable entities) made under section 6417 is 
+commensurate with the amount of the credit that would be otherwise allowable 
+(determined without regard to section 38(c)).
+Proposed §1.6417-2(e)(2) and (3) would have addressed the methodology for 
+determining the elective payment election amount and reducing the applicable credit to 
+zero while treating the applicable credit as allowed for the taxable year for all other 
+purposes of the Code with respect to applicable entities and electing taxpayers other 
+than partnerships or S corporations as provided in section 6417(e).  The methodology 
+with respect to a payment made to a partnership or S corporation is described in part IV 
+of this Summary of Contents and Explanation of Revisions.
+Under the proposed regulations, an applicable entity or electing taxpayer (other 
+than an electing taxpayer that is a partnership or S corporation) making an elective 
+payment election would have applied section 6417(e) by taking the following steps.  
+First, the taxpayer would have computed the amount of the Federal income tax liability 
+(if any) for the taxable year, without regard to the GBC, that is payable on the due date 
+of the return (without regard to extensions), and the amount of the Federal income tax 
+liability that may be offset by GBCs pursuant to the limitation based on the amount of 
+tax under section 38.  Second, the taxpayer would have computed the allowed amount 
+of GBC carryforwards carried to the taxable year plus the amount of current year GBCs 
+(including current applicable credits) allowed for the taxable year under section 38 (that 
+is, in accordance with all the rules in section 38, including the ordering rules provided in 
+
+section 38(d)).  Since the election would have been required to be made on an original 
+return, any business credit carrybacks would not have been considered in determining 
+the elective payment amount for the taxable year.  Third, the taxpayer would have 
+applied the GBCs allowed for the taxable year as computed in step 2, including those 
+attributable to applicable credits as GBCs, against the tax liability computed in step 1.  
+Fourth, the taxpayer would have identified the amount of any excess or unused current 
+year business credit, as defined under section 39 of the Code, attributable to current 
+year applicable credit(s) for which the applicable entity is making an elective payment 
+election.  The amount of such unused applicable credits would have been treated as a 
+payment against the tax imposed by subtitle A for the taxable year with respect to which 
+such credits are determined (rather than having them available for carryback or 
+carryover) (net elective payment amount).  Fifth, the taxpayer would have reduced the 
+applicable credits for which an elective payment election is made by the amount (if any) 
+allowed as a GBC under section 38 for the taxable year, as provided in step 3, and by 
+the net elective payment amount (if any) that is treated as a payment against tax, as 
+provided in step 4, which results in the applicable credits being reduced to zero.
+Proposed §1.6417-2(e)(3) would have provided, consistent with section 6417(e), 
+that the full amount of the applicable credits for which an elective payment election is 
+made is deemed to have been allowed for all other purposes of the Code, including, but 
+not limited to, the basis reduction and recapture rules imposed by section 50 and 
+calculation of any underpayment of estimated tax under sections 6654 and 6655 of the 
+Code.  The proposed regulations gave several examples illustrating these rules.  
+The proposed regulations requested comments on whether future guidance 
+should expand or clarify the methodology that an applicable entity follows to compute its 
+elective payment amount.  The proposed regulations also requested comments on 
+additional Code sections under which it may be necessary to consider the applicable 
+
+credit to have been deemed to have been allowed for the taxable year in which an 
+elective payment election is made.
+Multiple commenters asked that the final regulations revise or not include the 
+section 38 ordering rule in §1.6417-2(e)(2).  Commenters stated that, under the 
+proposed ordering rules, if a taxpayer reaches the section 38(c) limitation using prior 
+year credit carryforwards and current year applicable credits, which may be considered 
+used ahead of some other non-applicable credits based on the section 38(d) ordering 
+rule, then the taxpayer would lose the benefit of treating the applicable credit as a 
+payment because it could have used the non-applicable credits to reach the section 
+38(c) limitation.  Instead of receiving the benefits of treating the applicable credit as a 
+payment, the taxpayer could be required to carry otherwise usable non-applicable credit 
+GBCs back or forward to other taxable years.  These commenters suggested that the 
+elective payment amount should not be reduced if a taxpayer has non-applicable credits 
+that can be used to reduce tax liability to the section 38(c) limitation.  A commenter 
+thought specifically that the language in section 6417(e) should not be read as a 
+reference to the GBC ordering rules. The commenter thought that the proposed rule’s 
+application of the GBC ordering rules goes beyond merely addressing a double benefit 
+issue and effectively limits the availability of direct payments, contrary to the statutory 
+language in section 6417.  The commenter thought that the proper application of section 
+6417(e) is demonstrated in proposed §1.6417-2(e)(3) – for example, deeming the 
+applicable credit as allowed for purposes of basis reduction, recapture rules, and 
+estimated tax calculations.
+The Treasury Department and the IRS note that the fact pattern raised by 
+commenters will have no relevance, and application of the rules in §1.6417-2(e) should 
+be straightforward, for any applicable entities without taxable income to offset or with 
+only applicable credits.  However, the Treasury Department and the IRS agree with 
+
+commenters that the GBC ordering rules can result in a lowered elective payment 
+amount for other applicable entities and/or electing taxpayers; thus, these final 
+regulations include changes to address that result.
+Section 6417(a) provides that the applicable entity will be treated as making a 
+payment against tax equal to the amount of the credit, and section 6417(d)(4) 
+references such payment, as noted by commenters.  It is section 6417(e) that creates a 
+bifurcated treatment for purposes of the Code by reducing the credit to zero, but for any 
+other purposes under the Code, deeming the applicable credit to have been allowed to 
+such entity for such taxable year.
+In reviewing these provisions, the Treasury Department and the IRS have 
+determined that section 38 is the section of the Code with respect to which applicable 
+credits should be reduced to zero as provided under section 6417(e), other than as 
+explained in this paragraph.  As section 38 is the operative provision under which all of 
+the applicable credits would be taken into account and allowed to reduce tax liability, it 
+is reasonable to read the no double benefit rule in section 6417(e) to reduce the 
+applicable credits to zero for purposes of section 38.  This prevents a direct double 
+benefit that could be achieved from claiming the credits.  However, preventing such a 
+double benefit does not require reducing the applicable credit to zero for purposes of 
+section 38 to the extent an applicable credit is needed to reduce tax liability up to the 
+section 38(c) limitation.  In addition, reducing an applicable credit to zero in such 
+situations would unnecessarily disadvantage an applicable entity or electing taxpayer 
+filing on extension by preventing them from claiming the applicable credit as a current 
+year GBC.  This is because, to the extent applied as a credit, the applicable credit will 
+reduce tax liability as of the due date of the return, while the elective payment amount is 
+not treated as being made until the later of the due date of the return or the date of 
+filing.  See section 6417(d)(4).  Treating the entire applicable credit as zero in the case 
+
+of an applicable entity or electing taxpayer filing on extension could result in more tax 
+due on the due date of the return and, if not paid, would result in the applicable entity or 
+electing taxpayer owing interest and could result in penalties assessed against the 
+taxpayer.  
+The proposed rules accounted for this situation, and as noted by a commenter, 
+helped mitigate any potential estimated tax penalties if amounts owed were not paid by 
+the due date.  No commenters objected to this aspect of the proposed rule.  Thus, the 
+Treasury Department and the IRS conclude that these final regulations should treat the 
+applicable credit as a credit for section 38 in the limited situation that the applicable 
+credit is needed to reduce tax liability up to the section 38(c) limitation.  It is also noted 
+that, for an applicable entity or electing taxpayer that is filing and making an election by 
+the due date of their return, there should be no difference in outcome between treating 
+an applicable credit resulting in an elective payment as reduced to $0 for section 38, or 
+as a credit that reduces tax liability up to the section 38(c) limitation and a payment 
+beyond the section 38(c) limitation.
+Based on these conclusions, the Treasury Department and the IRS have revised 
+the rules and examples in proposed §1.6417-2(e) and have added a new example.  
+Under these final regulations, there is still a description of steps for an applicable entity 
+or electing taxpayer to complete, but there is a change in the ordering of the steps and 
+in the calculation of the net elective payment amount.  The net elective payment 
+amount, consistent with the proposed regulations, is the amount of an applicable credit 
+that is treated as a payment against the tax imposed by subtitle A.  In these final 
+regulations, the net elective payment amount is equal to the lesser of (1) the aggregate 
+of all applicable credits or (2) the total GBC (including applicable credits) over the total 
+GBC allowed against tax liability (determined with regard to section 38(c)).  Under these 
+final regulations, an applicable entity or electing taxpayer will calculate the net elective 
+
+payment amount prior to applying the ordering rules of section 38(d).  These revisions 
+allow an applicable entity or electing taxpayer that has other non-applicable credit GBCs 
+to lower tax liability to the section 38(c) limitation using the non-applicable credit GBCs 
+without impact from applicable credits.  But the revisions also require a taxpayer to use 
+an applicable credit as a current year GBC to the extent that it is necessary to reduce 
+tax liability up to the limitation under section 38(c).  In all other situations, the applicable 
+credit will be zero for purposes of section 38 and the applicable credit will be considered 
+a payment of tax on the later of the due date of the return or filing (as prescribed by 
+section 6417(d)(4)).  
+In sum, these revisions to proposed §1.6417-2(e) and the examples ensure two 
+outcomes.  First, consistent with commenters’ recommendations, these final regulations 
+ensure that taxpayers making an elective payment election will not have to delay using 
+non-applicable GBCs because of an applicable credit.  Second, consistent with the 
+proposed rule, these final regulations allow a taxpayer to benefit from a reduction in tax 
+liability as of the due date of the return by treating an applicable credit as a credit for 
+purposes of section 38, up to the section 38(c) limitation.
+One commenter urged that the final regulations revise proposed §1.6417-2(e)(3) 
+to treat the entire elective payment amount as a payment against tax for purposes of the 
+calculations under section 59A of the Code, relating to the tax on base erosion of 
+taxpayers with substantial gross receipts (also known as the base erosion anti-abuse 
+tax or BEAT), so that the amount (regardless of any portion included in the GBC 
+calculation) of a section 45X credit for which an elective payment election is made is 
+treated as zero for purposes of section 59A.  In contrast with the analysis earlier for 
+section 38, the Treasury Department and the IRS conclude that treatment of an 
+applicable credit for purposes of BEAT falls within the portion of section 6417(e) that 
+provides, “for any other purposes under this title [26],” the applicable credit is deemed to 
+
+have been allowed to such entity for such taxable year.  In contrast to section 38, BEAT 
+is not a provision pursuant to which the applicable credits would be directly claimed, and 
+treatment of the elective payment amount as suggested by the commenter would 
+conflict with the language in section 6417(e).  Further, since section 6417(e) provides 
+that applicable credits are treated as credits for any other purposes of the Code, the 
+applicable credits are not analogous to other credits that are considered pre-payments 
+of tax and for which the BEAT regulations have an exception.  See §1.59A-5(b)(3)(i)(C) 
+(providing that regular tax liability is not reduced for “[a]ny credits allowed under 
+sections 33, 37, and 53” of the Code.  Section 33 credits are related to withholding of 
+tax at the source with respect to payments to foreign corporations and nonresident 
+aliens.  Section 37 is a credit for the overpayment of taxes.  Section 53 relates to a 
+credit for alternative minimum tax paid in a prior year).  Thus, these final regulations 
+adopt the rule in §1.6417-2(e)(3) as proposed.
+Another commenter requested clarification on apparent ambiguities in proposed 
+§1.6417-2(e)(2)(ii) and (iii).  As the revisions in these final regulations removed the text 
+that the commenter thought was unclear, it is not necessary to address these comments 
+in these final regulations.  
+Although no commenters specifically raised the application of potential penalties 
+under section 6651 in the context of the proposed denial of double benefit rule, these 
+final regulations modify §1.6417-2(e)(3) to clarify that a taxpayer may also be subject to 
+a penalty under section 6651(a)(2) of the Code relating to the taxpayer’s failure to timely 
+pay tax if a return is filed after the original due date.
+E. Timing of payment
+Section 6417(d)(4) provides that the payment described in section 6417(a) is 
+treated as made on (1) in the case of any government, or political subdivision, described 
+in section 6417(d)(1) and for which no return is required under section 6011 or 6033(a), 
+
+the later of the date that a return would be due under section 6033(a) if such 
+government or subdivision were described in that section or the date on which such 
+government or subdivision submits a claim for credit or refund (at such time and in such 
+manner as the Secretary provides), and (2) in any other case, the later of the due date 
+(determined without regard to extensions) of the return of tax for the taxable year or the 
+date on which such return is filed.  Proposed §1.6417-2(d) generally follows the 
+statutory provision.  Commenters addressed many aspects of this rule.
+1. Processing the Elective Payment
+Several commenters asked that the final regulations specify a timeframe within 
+which an applicable entity will receive an elective payment amount. These commenters 
+stated that having certainty on the time it will take to receive payments is important for 
+purposes of securing needed financing or other funding while they are waiting to receive 
+their elective payment amounts.  One commenter stated that, if the IRS takes several 
+months to process the payments, an organization may default on its loan payment(s).  A 
+few commenters speculated that an elective payment amount could be delayed for 
+many months after filing, given slow processing times by the IRS.  One commenter 
+asked that the IRS impose a process similar to Form 4466, Corporation Application for 
+Quick Refund of Overpayment of Estimated Tax, which requires the IRS to process a 
+tax refund within 45 days from the date it is filed, for elective payment amounts.  
+Another commenter suggested that the final regulations require written notice to 
+applicable entities if the IRS will not meet the timeline, with an explanation and a date 
+payment can be expected.  Several commenters requested that the time between when 
+the payments can be claimed and the time of payment be as short as possible, as 
+delays can increase an organization’s costs.
+The Treasury Department and the IRS decline to specify a particular time within 
+which an elective payment election will be processed.  Several factors, including the 
+
+volume of returns on which elective payment elections are made and whether any 
+particular return contains complete and accurate information, will affect processing time.  
+However, as the preamble to the proposed and temporary regulations stated, the pre-
+filing registration is intended to allow the IRS to verify certain information about a 
+taxpayer in a timely manner while mitigating the risk of fraud or improper payments and 
+then process the annual tax return with minimal delays.
+2. Number of Payments
+One commenter asked whether the elective payment amount would be provided 
+in one lump sum or in multiple payments.  The statute and these final regulations 
+contemplate one return containing the elective payment election, and one payment to 
+the taxpayer, per taxable year.  The only exception to this rule is if a taxpayer’s 
+superseding or amended return increases the applicable credit amount reflected on the 
+original return, as described in part II.B.2 of this Summary of Comments and 
+Explanation of Revisions.
+3. Accelerated Payments
+Several commenters asked that payments be provided to applicable entities 
+before the time the statute provides; for example, that applicable entities be allowed to 
+submit elective payment elections as soon as qualified energy properties are placed into 
+service; that the IRS provide a pre-payment of the tax credit of some percentage (for 
+example 20 to 50 percent) based on the “pre-filing record” (and that pre-filing occur at 
+the beginning of construction); or that “third-party attestations” or Treasury verification of 
+initial pre-filing information could support the distribution of cash refunds at that time 
+(which does not preclude the possibility of later audits).  Because section 6417(d)(4) 
+provides the date the payment described in section 6417(a) is treated as made on, 
+which must occur prior to the IRS providing the payment, the Treasury Department and 
+the IRS have determined it is not possible to provide for accelerated payments, 
+
+including in the scenarios advocated by commenters.  Thus, these final regulations do 
+not adopt these comments.
+4. Payments Against Estimated Tax
+In response to several stakeholder responses to Notice 2022-50 asking whether 
+an applicable entity could treat an applicable credit arising during a quarter as a 
+payment against quarterly estimated tax (assuming such an amount was due), the 
+proposed regulations stated that no special rule was needed because taxpayers can 
+determine, based on their projected tax liability, the correct amount of estimated tax to 
+pay in order to avoid a section 6654 or section 6655 estimated tax penalty at the end of 
+the year.
+In response to the proposed regulations, multiple commenters continued to 
+advocate that applicable credits be able to be used against estimated tax payments or 
+stated that the Treasury Department and the IRS should allow for quarterly elections 
+and payments even though the elective payment is not deemed to occur until the later 
+of the due date or filing date of the applicable tax return.  Some commenters stated that 
+allowing properly determined credits to be used against quarterly estimated tax 
+payments could more efficiently provide taxpayers with the funds to make and sustain 
+investments, that a delay in realizing the value of the credits would increase pressure on 
+cash flows and working capital, and that the inability to offset quarterly estimated tax 
+liability with an applicable credit is inconsistent with the purpose of section 6417.  
+Commenters opined that the Treasury Department and the IRS could allow eligible 
+taxpayers to make and receive quarterly elections and payments, align quarterly 
+elections with quarterly returns, and replicate the quarterly excise tax reporting 
+mechanism similar to rules under sections 6426 and 6427 of the Code, allowing eligible 
+entities to claim payments every quarter.  One commenter recommended that 
+applicable entities be permitted to include applicable credits within the calculation of 
+
+estimated tax for Form 4466.  Another commenter suggested the Treasury Department 
+and the IRS could exercise its authority under section 6655(j) to promulgate regulations 
+impacting estimated tax penalties.
+The distinction between estimated tax installments (which are the obligation of 
+the taxpayer to calculate) versus an end of year estimated tax penalty (that may result if 
+the taxpayer’s calculations are not correct and/or if the taxpayer’s annual tax liability is 
+not paid on the due date for the return, including a “payment” that is made through an 
+elective payment election) appeared to confuse several commenters.  For example, one 
+commenter stated that proposed §1.6417-2(e)(3) could be interpreted to permit a 
+taxpayer to calculate their estimated tax installments and any underpayment by 
+considering properly determined refundable credits in making quarterly estimated tax 
+payments, even though the elective payment amount is not deemed to be made until 
+the later of the due date or filing date of the applicable tax return.
+Some commenters asked for clarifications to proposed §1.6417-2(e)(4), Example 
+5, which describes a situation in which an electing taxpayer filed its tax return on a 
+timely filed extension after the due date of the return (without extensions).  Example 5 in 
+the proposed regulations would have provided: 
+“[e]ven though W did not owe tax after applying the net elective payment 
+amount against its net tax liability, W may be subject to the section 6655 
+penalty for failure to pay estimated income tax. The net elective payment 
+is not an estimated tax installment, rather, it is treated as a payment made 
+at the filing of the return.”
+Commenters asked that the applicable credits be considered to have been 
+estimated tax payments, resulting in no tax liability at the end of the year or, at a 
+minimum, that final regulations waive estimated tax penalties related to an elective 
+payment election.  In other words, commenters requested that the elective payment 
+election amount may be applied both as a reduction to any quarterly estimated tax 
+payments (without penalty) and to offset any taxes that are reported on the taxpayer’s 
+
+income tax return for any taxable year in which those elections are in effect.
+These final regulations do not adopt these suggestions.  Section 6417(d)(4) 
+generally requires a single payment and clearly states the timing of when the payment 
+is treated as made, which is, at the earliest, the return due date (determined without 
+regard to extensions).  In that sense, payments made under section 6417 are no 
+different than other kinds of payments a taxpayer may make as part of filing a timely 
+return (excluding extensions) or making a payment with a timely filed application for 
+extension.  Taxpayers can adequately determine whether their quarterly estimated 
+payments are sufficient to avoid estimated income tax penalties based on their 
+projected income and by considering any expected, properly determined applicable 
+credit.  For the same reasons, applicable credits may not be included to calculate 
+estimated tax for Form 4466, which, under section 6425(a)(1) of the Code must be filed 
+after the close of a corporation’s taxable year, on or before the 15th day of the fourth 
+month following the close of such taxable year, and prior to the filing of the corporation’s 
+return for such taxable year.  Comments requesting the promulgation of regulations 
+under section 6655 are outside the scope of these final regulations.  For the sake of 
+clarity, however, these final regulations modify Example 5 under §1.6417-2(e)(4) to 
+better reflect the conclusion that a taxpayer that files its return after the due date for 
+filing (excluding extensions) may also be subject to a penalty under section 6651(a)(2) 
+for the failure to timely pay tax, even if it did not owe tax after applying the net elective 
+payment amount against its net tax liability.
+Some commenters requested clarification on whether the elective payment 
+amount under section 6417(a) is subject to the same treatment as estimated payments 
+against income taxes under §301.6402-4; as a refund other than estimated taxes; as a 
+refundable tax credit; or as some other form of special payment.  Commenters also 
+stated that, if the elective payment amount is treated as a refund, the final regulations 
+

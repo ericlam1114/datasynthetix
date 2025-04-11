@@ -1,271 +1,195 @@
-/**
- * Status update service for document processing jobs
- * Centralizes status updates, progress tracking, and error handling
- */
-
-import { getFirebaseAdmin } from '../../../../lib/firebase-admin';
-import { doc, serverTimestamp, updateDoc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
+// Make sure you have these imports at the top of your file
+import { getAdminFirestore } from '../../../../lib/firebase-admin';
+import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 /**
- * Creates a new processing status record
+ * Creates a new processing status document in Firestore
  * 
- * @param {String} jobId - The processing job ID
- * @param {Object} initialStatus - Initial status information
- * @returns {Object} The created status object
+ * @param {string} jobId - The processing job ID
+ * @param {object} initialStatus - Initial status data
+ * @returns {object} Operation result
  */
 export async function createProcessingStatus(jobId, initialStatus = {}) {
   try {
-    const admin = getFirebaseAdmin();
-    const db = admin.firestore();
+    // For now, always use client SDK due to OpenSSL issues
+    const db = getFirestore();
+    const statusRef = doc(db, 'processingJobs', jobId);
     
-    // Merge defaults with provided status
-    const statusData = {
+    await setDoc(statusRef, {
       jobId,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
       status: 'created',
       progress: 0,
-      processedChunks: 0,
-      totalChunks: 0,
-      startedAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      isActive: true,
-      lastProgressChange: new Date().toISOString(),
       ...initialStatus
-    };
+    });
     
-    // Create record in database
-    const statusRef = db.collection('processingJobs').doc(jobId);
-    await statusRef.set(statusData);
-    
-    // Also write to status API if available
-    await postToStatusAPI(jobId, statusData);
-    
-    return statusData;
+    return { success: true, jobId };
   } catch (error) {
     console.error('Error creating processing status:', error);
-    // Don't throw - status tracking is not critical
-    return {
-      jobId,
-      status: 'created',
-      error: error.message
-    };
+    return { success: false, error: error.message };
   }
 }
 
 /**
- * Updates an existing processing status
+ * Updates an existing processing status document
  * 
- * @param {String} jobId - The processing job ID
- * @param {Object} statusUpdate - Status changes to apply
- * @returns {Object} The updated status object
+ * @param {string} jobId - The processing job ID
+ * @param {object} statusData - Status data to update
+ * @returns {object} Operation result
  */
-export async function updateProcessingStatus(jobId, statusUpdate = {}) {
+export async function updateProcessingStatus(jobId, statusData) {
+  console.log(`Updating status for job ${jobId}:`, statusData);
+  
+  if (!jobId) {
+    console.error('Job ID is required for status updates');
+    return { success: false, error: 'Job ID is required' };
+  }
+  
+  // Get existing status from Firestore if available
+  try {
+    // For now, always use client SDK due to OpenSSL issues
+    const db = getFirestore();
+    const statusRef = doc(db, 'processingJobs', jobId);
+    
+    let existingDoc;
+    try {
+      existingDoc = await getDoc(statusRef);
+    } catch (error) {
+      console.error(`Error getting existing status for job ${jobId}:`, error);
+      existingDoc = { exists: () => false };
+    }
+    
+    // Clean up statusData to remove any undefined values which cause Firestore errors
+    const cleanStatusData = {};
+    Object.entries(statusData).forEach(([key, value]) => {
+      if (value !== undefined) {
+        cleanStatusData[key] = value;
+      }
+    });
+    
+    // If processingStats contains undefined values, clean them up
+    if (cleanStatusData.processingStats) {
+      const cleanStats = {};
+      Object.entries(cleanStatusData.processingStats).forEach(([key, value]) => {
+        if (value !== undefined) {
+          cleanStats[key] = value;
+        }
+      });
+      cleanStatusData.processingStats = cleanStats;
+    }
+    
+    // Existing document check
+    if (!existingDoc.exists()) {
+      console.log(`Creating new status document for job ${jobId}`);
+      
+      // If existing doc doesn't exist, create a new status doc
+      const newStatus = {
+        jobId,
+        status: 'processing',
+        progress: 0,
+        stage: 'initialization',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        ...cleanStatusData
+      };
+      
+      await setDoc(statusRef, newStatus);
+      return { success: true };
+    }
+    
+    // Update existing status
+    const currentData = existingDoc.data();
+    
+    // Merge with current data
+    const updatedStatus = {
+      ...currentData,
+      ...cleanStatusData,
+      updatedAt: serverTimestamp()
+    };
+    
+    // Update the document
+    await updateDoc(statusRef, updatedStatus);
+    
+    return { success: true };
+  } catch (error) {
+    console.error(`Error updating job status ${jobId} in Firestore:`, error);
+    // Try to proceed without failing the entire process
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Marks a processing job as complete
+ * 
+ * @param {string} jobId - The processing job ID
+ * @param {object} results - Processing results
+ * @returns {object} Operation result
+ */
+export async function completeProcessingJob(jobId, results) {
+  try {
+    // For now, always use client SDK due to OpenSSL issues
+    const db = getFirestore();
+    const statusRef = doc(db, 'processingJobs', jobId);
+    
+    // Clean the results.stats object to remove any undefined values
+    const cleanStats = {};
+    if (results && results.stats) {
+      Object.entries(results.stats).forEach(([key, value]) => {
+        if (value !== undefined) {
+          cleanStats[key] = value;
+        }
+      });
+    }
+    
+    await updateDoc(statusRef, {
+      status: 'completed',
+      progress: 100,
+      completedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      stats: cleanStats
+    });
+    
+    return { success: true };
+  } catch (error) {
+    console.error(`Error completing processing job ${jobId}:`, error);
+    // Non-critical error, continue
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Handles processing errors by updating the job status
+ * 
+ * @param {string} jobId - The processing job ID
+ * @param {Error} error - The error that occurred
+ * @param {string} stage - The processing stage where the error occurred
+ * @returns {object} Operation result
+ */
+export async function handleProcessingError(jobId, error, stage = 'unknown') {
   try {
     if (!jobId) {
-      console.warn('Attempted to update status without a jobId');
-      return null;
+      console.error('No job ID provided for error handling');
+      return { success: false };
     }
     
-    // Calculate progress percentage if not provided
-    if (statusUpdate.progress === undefined && 
-        statusUpdate.processedChunks !== undefined && 
-        statusUpdate.totalChunks !== undefined) {
-      statusUpdate.progress = Math.round((statusUpdate.processedChunks / statusUpdate.totalChunks) * 100);
-    }
+    console.error(`Processing error in ${stage} stage for job ${jobId}:`, error);
     
-    // Current timestamp for updates
-    const now = new Date();
-    const formattedNow = now.toISOString();
+    // For now, always use client SDK due to OpenSSL issues
+    const db = getFirestore();
+    const statusRef = doc(db, 'processingJobs', jobId);
     
-    // Post to the process-status API endpoint
-    await postToStatusAPI(jobId, {
-      ...statusUpdate,
-      updatedAt: formattedNow
-    });
-    
-    // Get existing status from Firestore if available
-    try {
-      const admin = getFirebaseAdmin();
-      const db = admin.firestore();
-      
-      const statusRef = db.collection('processingJobs').doc(jobId);
-      const existingDoc = await statusRef.get();
-      
-      if (!existingDoc.exists) {
-        console.log(`Creating new status document for job ${jobId}`);
-        await statusRef.set({
-          ...statusUpdate,
-          jobId,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp()
-        });
-      } else {
-        console.log(`Updating status for job ${jobId}`);
-        
-        // Check if progress has changed to update lastProgressChange
-        const existingData = existingDoc.data();
-        const progressChanged = existingData.progress !== statusUpdate.progress;
-        
-        await statusRef.update({
-          ...statusUpdate,
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-          ...(progressChanged ? { lastProgressChange: formattedNow } : {})
-        });
-      }
-      
-      return {
-        jobId,
-        ...statusUpdate,
-        updatedAt: formattedNow
-      };
-    } catch (firestoreError) {
-      console.error(`Error updating job status ${jobId} in Firestore:`, firestoreError);
-      // Don't throw - Firestore updates are non-critical if status API works
-    }
-    
-    return {
-      jobId,
-      ...statusUpdate,
-      updatedAt: formattedNow
-    };
-  } catch (error) {
-    console.error(`Error updating job status ${jobId}:`, error);
-    // Don't throw - status tracking is not critical
-    return null;
-  }
-}
-
-/**
- * Posts status updates to the status API
- * 
- * @param {String} jobId - The job ID
- * @param {Object} statusData - The status data to post
- * @returns {Object} The response from the API
- */
-async function postToStatusAPI(jobId, statusData) {
-  try {
-    // Construct the API endpoint URL
-    const endpoint = process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}/api/process-status` 
-      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/process-status`;
-    
-    // Add jobId to statusData
-    const payload = {
-      ...statusData,
-      jobId
-    };
-    
-    // Post to API
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-    
-    if (!response.ok) {
-      console.error(`Error posting to status API: ${response.status} ${response.statusText}`);
-      return null;
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error(`Error posting to status API: ${error.message}`);
-    return null;
-  }
-}
-
-/**
- * Handles processing errors with consistent formatting and logging
- * 
- * @param {Error} error - The error that occurred
- * @param {Object} contextData - Additional context about the error
- * @returns {Object} Error information for the client
- */
-export function handleProcessingError(error, contextData = {}) {
-  const { jobId, userId, documentId, stage = 'processing' } = contextData;
-  
-  // Generate error ID for tracking
-  const errorId = `err-${Date.now()}-${uuidv4().substring(0, 8)}`;
-  
-  // Log detailed error information
-  console.error(`Processing error [${errorId}]:`, error);
-  console.error('Error context:', contextData);
-  
-  // Update status if we have a jobId
-  if (jobId) {
-    updateProcessingStatus(jobId, {
+    await updateDoc(statusRef, {
       status: 'error',
-      error: error.message,
-      errorId,
-      stage,
-      updatedAt: new Date().toISOString()
-    }).catch(statusError => {
-      console.error('Failed to update error status:', statusError);
+      errorStage: stage,
+      errorMessage: error.message || 'Unknown error',
+      errorStack: error.stack,
+      updatedAt: serverTimestamp()
     });
-  }
-  
-  // Return standardized error response
-  return {
-    success: false,
-    error: error.message,
-    errorId,
-    stage,
-    ...(jobId ? { jobId } : {}),
-    ...(documentId ? { documentId } : {})
-  };
-}
-
-/**
- * Finalizes a processing job as complete
- * 
- * @param {String} jobId - The job ID
- * @param {Object} resultData - The processing results
- * @returns {Object} The final status update
- */
-export async function completeProcessingJob(jobId, resultData = {}) {
-  try {
-    const statusUpdate = {
-      status: 'complete',
-      progress: 100,
-      processedChunks: resultData.stats?.processedChunks || resultData.totalChunks || 0,
-      totalChunks: resultData.stats?.totalChunks || resultData.totalChunks || 0,
-      result: resultData,
-      completedAt: new Date().toISOString()
-    };
     
-    return await updateProcessingStatus(jobId, statusUpdate);
-  } catch (error) {
-    console.error(`Error completing job ${jobId}:`, error);
-    return null;
+    return { success: true };
+  } catch (updateError) {
+    console.error(`Failed to update error status for job ${jobId}:`, updateError);
+    return { success: false, error: updateError.message };
   }
 }
-
-/**
- * Retrieves the current status of a processing job
- * 
- * @param {String} jobId - The job ID
- * @returns {Object} The current status
- */
-export async function getProcessingStatus(jobId) {
-  try {
-    const admin = getFirebaseAdmin();
-    const db = admin.firestore();
-    
-    const statusRef = db.collection('processingJobs').doc(jobId);
-    const statusDoc = await statusRef.get();
-    
-    if (!statusDoc.exists) {
-      return null;
-    }
-    
-    return {
-      jobId,
-      ...statusDoc.data()
-    };
-  } catch (error) {
-    console.error(`Error getting processing status for job ${jobId}:`, error);
-    return null;
-  }
-} 

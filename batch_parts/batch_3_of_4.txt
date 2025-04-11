@@ -1,0 +1,1228 @@
+he 
+year but that, given the examples provided in the proposed regulations, their 
+interpretation was that any amount utilized as part of the section 38 limitation is allowed 
+to offset estimated taxes during the taxable year; whereas the net elective payment 
+amount is not allowed as a reduction to estimated taxes as it is deemed paid on the 
+date the return is filed.  The revisions to proposed §1.6417-2(e)(2) in these final 
+regulations, including the definition of net elective payment amount and the examples in 
+§1.6417-2(e)(4), are intended to clarify that any amount utilized as part of the section 38 
+limitation is allowed to reduce tax liability for purposes of determining any underpayment 
+of estimated tax; whereas the net elective payment amount is not treated as reducing 
+tax liability as it is deemed paid on the later of the due date of filing the return or the 
+date the return is filed.
+The proposed regulations addressed the interaction between the timing rule in 
+
+section 6417(d)(4) and the denial of double benefit rule in section 6417(e).  In 
+considering the comments in relation to timing of the payment, it is clear from section 
+6417(d)(4) that the payment is considered made at the later of the due date of filing the 
+tax return or the actual filing.  Further, rather than as suggested by most commenters, it 
+is this timing rule and not the rules in proposed §1.6417-2(e)(2) and (3) (regarding 
+ordering and use of the applicable credit) that creates the commenters’ issue related to 
+penalties for underpayment of estimated taxes.  For example, if a taxpayer with a tax 
+liability was solely relying on the elective payment amount to cover the tax liability, such 
+taxpayer could receive a payment related to the applicable credit but could still incur an 
+estimated tax penalty because section 6417(d)(4) explicitly states that the payment of 
+tax occurs on the date on which such return is filed.  These final regulations do revise 
+proposed §1.6417-2(e)(2), but the revisions continue to allow taxpayers the beneficial 
+approach of the proposed regulations in this respect.  Under the revisions, if any of the 
+applicable credits for which the election is being made are needed to reach the 
+limitation under section 38(c), then those credits are treated as reducing tax liability as 
+of the due date of the return (excluding extensions).  As one commenter stated, while 
+the proposed rule does not eliminate the potential for an estimated tax penalty, the 
+approach can mitigate the potential penalty by minimizing the amount of tax due on the 
+return. The same result is achieved in these final regulations.  While commenters are 
+suggesting it is possible to allow a payment as having been made at various times of 
+the year, these comments contradict the timing of payment language in section 
+6417(d)(4).  Thus, these final regulations do not adopt comments that suggested 
+revisions to the rules in proposed §1.6417-2(e), but make clarifications in the examples 
+that illustrate the application of those rules.
+5. Partnership Elections
+Proposed §1.6417-4(c) would provide rules for a partnership or S corporation 
+
+that makes an election under section 6417(a) and proposed §1.6417-2(b) in accordance 
+with the special rules for partnerships and S corporation under section 6417(c)(1)(A) 
+through (D).  One commenter opined that the proposed regulations seem to allow a 
+corporation making an elective payment election for section 45X credits determined 
+during the year to reduce quarterly estimated taxes by including credits in its general 
+business credit computation up to the section 38(c) limitation.  However, the commenter 
+thought this was not the case for section 45X credits earned through a partnership, as 
+the election and payment are made at the partnership level.  The commenter thought 
+that, in the absence of quarterly elections and payments, the final regulations should 
+provide a mechanism for corporate partners to reduce quarterly estimated taxes for 
+applicable credits determined with respect to applicable credit property held through 
+partnerships that will make elective payment elections; otherwise, the commenter 
+thought it would be penalizing taxpayers that operate their businesses through 
+partnerships, for example, as joint ventures.
+The Treasury Department and the IRS note that the treatment of partners of a 
+partnership (or shareholders of an S corporation) is different from the treatment of an 
+applicable entity or electing taxpayer directly making the elective payment election.  
+This is a result of the special rules for partnerships in section 6417(c)(1) that require an 
+elective payment election for applicable credits determined with respect to any 
+applicable credit property held directly by a partnership to be made by the partnership.  
+An elective payment election made by a partnership is not reduced by the Federal tax 
+liabilities of its partners.  Instead, it is only reduced by any partnership level Federal tax 
+liability.  If partners were allowed to reduce their quarterly estimated taxes for applicable 
+credits determined with respect to applicable credit property held by a partnership for 
+which the partnership makes an elective payment election, then the amount of the 
+elective payment made to the partnership should be reduced by the partners’ 
+
+corresponding quarterly estimated tax liabilities.  Otherwise, the partners would receive 
+a windfall because the same applicable credits would be used to both reduce the 
+partners’ estimated tax payments and generate an elective payment to the partnership.  
+Section 6417(c)(1) does not allow for such a mechanism.  Instead, section 
+6417(c)(1)(C) provides that, if a partnership makes an elective payment election, any 
+elective payment amount is treated as tax exempt income for purposes of section 705 
+and a partner's distributive share of such tax exempt income is equal to such partner's 
+distributive share of the otherwise applicable credit for each taxable year as determined 
+under §1.704-1(b)(4)(ii).  As the elective payment election results in an applicable credit 
+being treated as tax exempt income rather than as a credit, it is inappropriate to adopt a 
+rule allowing the partners to treat the same amount as a credit for estimated tax 
+purposes.  Thus, these final regulations do not adopt the commenter’s recommendation 
+of a rule allowing corporate (or any other) partners to reduce quarterly estimated taxes 
+for applicable credits determined with respect to applicable credit property held through 
+partnerships that make elective payment elections.
+6. Appeal and Litigation Rights
+Several commenters asked whether the procedural guidelines outlined in 
+subtitle F of the Code are applicable to elective payment elections in scenarios involving 
+an audit or rejection by the IRS.  These commenters opined that, because section 6417 
+treats an elective payment election as akin to an income tax payment, the procedures 
+outlined in subtitle F of the Code should apply, and further, that the overpayment 
+interest provisions of sections 6611 and 6621 should apply based on the payment dates 
+described in section 6417(d)(4)(B) and in the proposed regulations.  The Treasury 
+Department and the IRS note that section 6417 is located in chapter 65 of the Code, 
+which relates to Abatements, Credits, and Refunds, which is in turn located under 
+subtitle F of the Code.  Accordingly, subtitle F of the Code, which include provisions 
+
+relating to overpayment interest, applies to elective payment elections under section 
+6417.
+Commenters requested that the final regulations confirm an applicable entity or 
+electing taxpayer’s right to appeal an adverse determination by the IRS with respect to a 
+determination regarding an elective payment election, and that deficiency procedures 
+(including the right to petition the U.S. Tax Court) are applicable.  An applicable entity or 
+electing taxpayer may challenge an adverse determination by the IRS with respect to an 
+elective payment election if the denial of such election creates a tax deficiency, for 
+which deficiency procedures apply, including the right to petition the U.S. Tax Court.  
+For example, if an applicable entity or electing taxpayer claimed an elective payment 
+amount for applicable credits that were subsequently disallowed by the IRS, then the 
+applicable entity or electing taxpayer could protest the disallowance before the IRS 
+Independent Office of Appeals (Appeals) and ultimately petition the U.S. Tax Court, if 
+desired or appropriate.
+Another commenter suggested that the IRS should be required to share with the 
+taxpayer the reasons why the IRS has denied a credit.  The Treasury Department and 
+the IRS intend for disallowances of an applicable credit under section 6417 to function 
+the same as disallowances by the IRS for other credits or deductions.  In such 
+situations, a taxpayer will be provided the basis for the disallowance.  Accordingly, this 
+comment is not adopted.
+One commenter stated that the proposed regulations designated the elective 
+payment election as a “special enforcement matter” for purposes of the centralized 
+partnership audit regime
+9
+ pursuant to section 6241(11) of the Code but provided no 
+information about what audit rules apply in lieu of those partnership audit rules or why 
+special enforcement is required to make an elective payment election.  Under section 
+9
+ Subchapter C of chapter 63 of the Code as amended by the Bipartisan Budget Act of 2015 (BBA).
+
+6241(11), in the case of partnership-related items involving special enforcement 
+matters, the Secretary may prescribe regulations providing that the centralized 
+partnership audit regime (or any portion thereof) does not apply to such items and that 
+such items are subject to special rules as the Secretary determines to be necessary for 
+the effective and efficient enforcement of the Code.  The Treasury Department and the 
+IRS have determined that applying the special enforcement rules to the elective pay 
+election is appropriate in order to prevent payments for invalid credits and avoid the 
+need for audits at that stage.  The IRS uses the special enforcement rule to make an 
+adjustment upon the determination of an ineffective election instead of following the 
+audit procedures of the centralized partnership audit regime.  This special enforcement 
+rule only applies to adjustments to the elective payment election and payment; any 
+other adjustments that may be required later in time remain subject to the centralized 
+partnership audit regime.
+Another commenter stated that it would be helpful to specify what, if any, audit 
+process would apply to tax-exempt or governmental entities that do not normally file tax 
+returns or pay taxes.  This commenter stated that the pre-registration certification 
+process will go a long way toward preventing fraud associated with these projects and 
+thus recommended that the Treasury Department and the IRS identify a category of 
+smaller projects that could be excluded from, or subjected to, a simplified audit process.  
+The Treasury Department and the IRS expect that tax-exempt or governmental entities 
+that do not ordinarily file tax returns or pay tax would be subject to the same 
+examination process and procedures as other entities that have historically had a filing 
+obligation.  Any changes to such procedures, including a simplified audit process, are 
+outside the scope of these final regulations, but may be considered in future guidance.
+III. Elective Payment Election by Electing Taxpayers
+Section 6417(d)(1)(B) through (D) provides that an electing taxpayer (that is, a 
+
+person other than an applicable entity described in section 6417(d)(1)(A)) that, with 
+respect to any taxable year, places in service applicable credit property that qualifies for 
+a section 45V credit or a section 45Q credit, or, with respect to any taxable year in 
+which such taxpayer has, after December 31, 2022, produced eligible components (as 
+defined in section 45X(c)(1)), respectively, may elect to be treated as an applicable 
+entity for purposes of section 6417 for such taxable year, but only with respect to the 
+aforementioned applicable credit property and only with respect to a section 45V credit, 
+section 45Q credit, or section 45X credit, respectively.
+The special rules for electing taxpayers are found in section 6417(d)(1) and (3).  
+Proposed §1.6417-3 would have combined these rules for clarity, and these final 
+regulations adopt proposed §1.6417-3 with minor changes noted in this part III of the 
+Summary of Comments and Explanation of Revisions.
+Proposed §1.6417-3(b), (c), and (d) would have provided the specific rules 
+regarding the election under section 6417(d)(1)(B) through (D).  Proposed §1.6417-3(e) 
+would have provided the rules relating to the election for electing taxpayers.  As 
+described in part IV of this Summary of Comments and Explanation of Revisions, 
+proposed §1.6417-4 would have provided additional rules for electing taxpayers that are 
+partnerships or S corporations.
+A. Qualified clean hydrogen production facility (section 45V)
+Proposed §1.6417-3(b) would have provided that an electing taxpayer that has 
+placed in service a qualified clean hydrogen production facility, as defined in section 
+45V(c)(3), during the taxable year may make an elective payment election for such 
+taxable year (or by August 16, 2023, in the case of facilities placed in service before 
+December 31, 2022), but only with respect to the qualified clean hydrogen production 
+facility, only with respect to a section 45V credit, and only if the pre-filing registration 
+process required by §1.6417-5T was properly completed.  An electing taxpayer that 
+
+elects to treat qualified property that is part of a specified clean hydrogen production 
+facility as energy property under section 48(a)(15) would not be able to make an 
+elective payment election with respect to such facility.  No commenter addressed this 
+provision, and these final regulations adopt it without change.
+B. Carbon oxide sequestration (section 45Q)
+Proposed §1.6417-3(c) would have provided that an electing taxpayer that has, 
+after December 31, 2022, placed in service a single process train described in §1.45Q-
+2(c)(3) at a qualified facility (as defined in section 45Q(d)) during the taxable year may 
+make an elective payment election for such taxable year, but only with respect to the 
+single process train, only with respect to a section 45Q credit, and only if the pre-filing 
+registration process required by §1.6417-5T was properly completed.  
+One commenter asked about registering multiple process trains that are part of a 
+single facility under section 45Q.  The IRS will consider ways outside of these final 
+regulations to make the pre-filing registration process more streamlined for entities 
+doing multiple registrations.  Therefore, these final regulations adopt this provision 
+without change.
+C. Advanced manufacturing credit (section 45X)
+Section 6417(d)(1)(D) provides that an electing taxpayer can make an election 
+with respect to any taxable year in which such taxpayer has, after December 31, 2022, 
+produced eligible components (as defined in section 45X(c)(1)), and section 
+6417(d)(1)(D)(ii)(I) provides that the elective payment election applies to each of the 
+four succeeding taxable years ending before January 1, 2033.  Proposed §1.6417-
+2(a)(3)(v) and -3(d) would have clarified that an electing taxpayer that produces, after 
+December 31, 2022, eligible components (as defined in section 45X(c)(1)) at an 
+applicable credit property described in §1.6417-1(e)(7) (in other words, a facility that 
+produces eligible components, as described in guidance under sections 48C and 45X) 
+
+during the taxable year (whether the facility existed on or before, or after, December 31, 
+2022) may make an elective payment election for such taxable year, but only with 
+respect to the facility at which the eligible components are produced by the electing 
+taxpayer in that year, only with respect to a section 45X credit, and only if the pre-filing 
+registration process required by §1.6417-5T was properly completed. 
+Commenters asked for clarifications regarding section 45X facilities (such as how 
+to designate different parts as different facilities).  These comments are outside the 
+scope of these final regulations; thus, these final regulations adopt this provision without 
+change.
+D. Electing taxpayer making an elective payment election
+Proposed §1.6417-3(e) would have provided rules on how the electing taxpayer 
+makes the elective payment election, as further described in this section.  
+1. In General
+Proposed §1.6417-3(e)(1) would have provided that, if an electing taxpayer 
+makes an elective payment election under proposed §1.6417-2(b) with respect to any 
+taxable year in which the electing taxpayer places in service a qualified clean hydrogen 
+production facility for which a section 45V credit is determined, places in service a 
+single process train at a qualified facility for which a section 45Q credit is determined, or 
+produces, after December 31, 2022, eligible components (as defined in section 
+45X(c)(1)) at a facility, respectively, the electing taxpayer will be treated as an 
+applicable entity for purposes of making an elective payment election for such taxable 
+year and during the election period described in proposed §1.6417-3(e)(3), but only with 
+respect to the applicable credit property described in proposed §1.6417-1(e)(3), (5), or 
+(7), respectively, that is the subject of the election.  The taxpayer would be required to 
+otherwise meet all requirements to earn the credit in the electing year and in each 
+succeeding year during the election period described in proposed §1.6417-3(e)(3).
+
+No commenter addressed this rule, and these final regulations adopt this 
+provision without change.
+2. Election is Per Applicable Credit Property
+Proposed §1.6417-3(e)(2) would have provided that the election must be made 
+separately for each applicable credit property, which is, respectively, a qualified clean 
+hydrogen production facility placed in service for which a section 45V credit is 
+determined, a single process train placed in service at a qualified facility for which a 
+section 45Q credit is determined, or a facility in which eligible components are produced 
+for which a section 45X credit is determined.  An electing taxpayer may only make one 
+election with respect to any specific applicable credit property.
+A few commenters requested that the final regulations clarify whether it is 
+possible to make a second 5-year elective payment election for the same applicable 
+credit property, opining that section 6417 does not preclude a second 5-year election 
+and that the language in proposed §1.6417-2(b)(4)(iii) is ambiguous.  The Treasury 
+Department and the IRS have determined that it is more consistent with the statute to 
+allow only one election per specific applicable credit property; thus, these final 
+regulations continue to unambiguously provide that it is not possible to make an elective 
+payment election for the same applicable credit property for a second 5-year period and 
+§1.6417-2(b)(4)(iii) is adopted without change.
+One commenter asked whether a change in ownership during the 5-year period 
+would continue the 5-year period.  Although the comment was unclear, presumably, the 
+commenter preferred the 5-year period to continue rather than beginning a new 5-year 
+period or ending the old 5-year period.  The Treasury Department and the IRS note that 
+proposed §1.6417-5(c)(4) would have provided that, if a facility previously registered for 
+an elective payment election undergoes a change of ownership (incident to a corporate 
+reorganization or an asset sale) such that the new owner has a different employer 
+
+identification number (EIN) than the owner who obtained the original registration, the 
+original owner would be required to amend the original registration to disassociate its 
+EIN from the credit property and the new owner would be required to submit an original 
+registration (or if the new owner previously registered other credit properties, must 
+amend its original registration) to associate the new owner’s EIN with the previously 
+registered credit property.  This provision was intended to provide that the previous 5-
+year period would continue despite the change in ownership.  This is because it would 
+be inappropriate to start a new 5-year period with respect to the same applicable credit 
+property, while at the same time undesirable to cut short a 5-year period that had not 
+yet ended.  These final regulations add a sentence to clarify this point.
+3. Election Period
+i. In general
+Pursuant to section 6417(d)(1)(D)(ii)(I), (d)(3)(C)(i)(II)(aa), and 
+(d)(3)(D)(i)(III)(aa), proposed §1.6417-3(e)(3)(i) would have provided that the elective 
+payment election generally would apply for an election period consisting of the taxable 
+year in which the election is made and each of the four succeeding taxable years that 
+end before January 1, 2033.  Proposed §1.6417-3(e)(3)(i) also would have provided that 
+the election period cannot be less than a taxable year but may be made for a taxable 
+period of less than 12 months within the meaning of section 443 of the Code.
+Several commenters thought the five-year period should start on the date 
+equipment is placed in service and run for 60 months; for example, using an 
+“annualization principle.”  Commenters stated that, unless the qualified facility or carbon 
+capture equipment is placed in service on the first day of an electing taxpayer’s taxable 
+year, the elective payment amount would not be commensurate with the credit that 
+would be otherwise allowable under section 45Q(a)(3) and (4).  Commenters stated that 
+this could incentivize taxpayers to delay placing projects in service until the first day of 
+
+the following taxable year so as to make an elective payment election for the amount of 
+applicable credit allowed for a full year, but that incentivizing such a delay is 
+counterintuitive and seems misaligned with the original intent for permitting elective 
+payment elections.
+The Treasury Department and the IRS agree that such a result may seem 
+counterintuitive but note that any other rule would be inconsistent with the statute.  For 
+section 45V credits, the elective payment election is made for the taxable year the 
+equipment or facility is placed in service (or by August 16, 2023, in the case of facilities 
+placed in service before December 31, 2022) and the four succeeding taxable years 
+with respect to such facility which end before January 1, 2033.
+10
+  For section 45Q 
+credits, the elective payment election is made for the taxable year in which such 
+taxpayer has, after December 31, 2022, placed in service carbon capture equipment at 
+a qualified facility (as defined in section 45Q(d)), and the four subsequent taxable years 
+with respect to such equipment which end before January 1, 2033.
+11
+  Because the 
+statute is unambiguous with respect to which taxable years qualify for the election after 
+an applicable credit property is placed in service, these final regulations adopt proposed 
+§1.6417-3(e)(3)(i) without change.
+One commenter suggested that a taxpayer should be able to file a short year tax 
+return ending on the 60th month so that the taxpayer can make a transfer election under 
+section 6418 for the remainder of the taxpayer’s taxable year following the 60th month.  
+The Treasury Department and the IRS note that the rules for short year tax returns are 
+found in section 443 and the regulations thereunder.  Among other things, adopting a 
+short year if the taxpayer is still in existence would require approval by the IRS.  
+Because the rules for short year returns are outside the scope of these final regulations, 
+10
+ See section 6417(d)(1)(B), 6417(d)(3)(D)(i)(II), and 6417(d)(3)(D)(i)(III)(aa).
+11
+ See section 6417(d)(1)(C) and 6417(d)(3)(C)(i)(II)(aa).
+
+these final regulations do not adopt a special rule in response to the comment.
+ii. Revocation
+Proposed §1.6417-3(e)(3)(ii) would have provided that an electing taxpayer may, 
+during a subsequent year of the election period, revoke the elective payment election 
+with respect to an applicable credit property described in proposed §1.6417-1(e)(3), (5), 
+or (7) in accordance with forms and instructions.  Any such revocation, if made, applies 
+to the taxable year in which the revocation is made (which cannot be less than a taxable 
+year but may be made for a taxable period of less than 12 months within the meaning of 
+section 443 of the Code) and each subsequent taxable year within the election period.  
+Any such revocation may not be subsequently revoked.
+One commenter requested clarification that an elective payment election remains 
+in effect even if an electing taxpayer does not make an election in a particular year, as 
+long as the taxpayer does not affirmatively revoke the election.  As a clarification, unless 
+otherwise provided in forms and instructions, the act of not making an elective payment 
+election during the election period is not itself a revocation of the election.  Thus, for 
+example, if an electing taxpayer makes an elective payment election in years 1 and 2 
+but fails to make the election in year 3, then the electing taxpayer is still eligible to make 
+the election in years 4 and 5 if the electing taxpayer so desires.  However, the Treasury 
+Department and the IRS note that, as described in part III.4 of this Summary of 
+Comments and Explanation of Revisions, the electing taxpayer is ineligible to make a 
+transfer election under section 6418 while the section 6417 election period is still in 
+effect.
+4. No Transfer Election Under Section 6418(a) Permitted While an Elective 
+Payment Election is in Effect
+Pursuant to section 6417(d)(1)(D)(iii) (section 45X credit), (d)(3)(C)(ii) (section 
+45Q credit), and (d)(3)(D)(ii) (section 45V credit), proposed §1.6417-3(e)(4) would have 
+provided that an electing taxpayer could not make a transfer election under section 
+
+6418(a) with respect to any applicable credit under proposed §1.6417-1(d)(3), (5), or (7) 
+determined with respect to applicable credit property described in proposed §1.6417-
+1(e)(3), (5), or (7) during the election period for that applicable credit property.  
+However, if the election period is no longer in effect with respect to an applicable credit 
+property, any credit determined with respect to such applicable credit property could be 
+transferred pursuant to a transfer election under section 6418(a), as long as the 
+taxpayer meets the requirements of section 6418 and the section 6418 regulations.
+One commenter requested that the final regulations clarify that electing taxpayers 
+described in section 6417(d)(1)(B) may make a section 6417 elective payment election 
+for up to five years and then make a section 6418 transfer election for the remainder of 
+the 12-year credit period provided for under section 45Q.  The Treasury Department 
+and the IRS agree that this is permitted as long as the electing taxpayer complies with 
+the requirements of sections 45Q, 6417, and 6418, and the respective regulations 
+thereunder, but concluded that no clarification in these final regulations is necessary.
+This commenter also requested clarification that electing taxpayers may forgo the 
+elective payment election under section 6417 altogether and elect to transfer credits 
+under section 6418 for the entire 12-year credit period provided for under section 45Q.  
+The Treasury Department and the IRS agree that an electing taxpayer that does not 
+elect to be treated as an applicable entity with respect to applicable credit property 
+described in proposed §1.6417-1(e)(3), (5), or (7), respectively, is not subject to the 
+rules of section 6417, and may make a section 6418 election for a credit determined 
+with respect to the electing taxpayer under section 45Q, 45V, or 45X as long as the 
+taxpayer meets the requirements of those sections and the respective regulations 
+thereunder.
+IV. Elective Payment Election for Partnerships and S Corporations
+Section 6417(c)(1) provides that, in the case of any applicable credit determined 
+
+with respect to any applicable credit property held directly by a partnership or 
+S corporation, any election under section 6417(a) is made by such partnership or 
+S corporation.  Section 6417(c)(1)(A) through (D) describes the treatment of an elective 
+payment election made by a partnership or S corporation, and proposed §1.6417-4 
+would have provided additional rules for electing taxpayers that are partnerships or 
+S corporations. 
+Proposed §1.6417-4(a) would have provided that, if an applicable credit is 
+determined with respect to applicable credit property owned by a partnership or 
+S corporation, the elective payment election must be made by the partnership or 
+S corporation.  Proposed §1.6417-4(b) would have provided that, if an elective payment 
+election is made with respect to applicable credit property pursuant to section 45Q, 45V, 
+or 45X, such partnership or S corporation would be treated as an applicable entity for 
+purposes of making such elective payment election.  Proposed §1.6417-4(c)(1) would 
+have provided that, if such partnership or S corporation makes an elective payment 
+election:  (1) the IRS will make a payment to such partnership or S corporation in the 
+amount of the credit determined; (2) before determining a partner’s distributive share or 
+shareholder’s pro rata share of any applicable credit, the applicable credit is reduced to 
+zero; (3) any amount received with respect to such elective payment election is treated 
+as tax exempt income; (4) a partner’s distributive share of such tax-exempt income is 
+equal to such partner’s distributive share of the otherwise applicable credit; and (5) such 
+tax exempt income is treated as received or accrued, including for purposes of sections 
+705 and 1366, as of the date the applicable credit is determined.  Proposed §1.6417-
+4(c)(2) would have provided that if a partnership (upper-tier partnership) receives from a 
+lower tier partnership an allocation of tax exempt income pursuant to section 6417, the 
+upper-tier partnership must determine its partners’ distributive shares of such tax 
+exempt income in proportion to the partners’ distributive shares of the otherwise 
+
+applicable credit.  Proposed §1.6417-4(c)(3) would have provided that such tax exempt 
+income is treated as arising from an investment activity rather than the conduct of a 
+trade or business and is therefore not treated as income from a passive activity under 
+section 469.  Proposed §1.6417-4(d) would have provided that a partnership or S 
+corporation must compute the amount of the applicable credit allowable as if an elective 
+payment election were not made and without regard to the limitations in sections 38(b) 
+and (c) and 469 because those provisions apply at the partner or S corporation 
+shareholder level.  Additionally, because the only applicable credits with respect to 
+which a partnership or S corporation may make an elective payment election are not 
+investment credits under section 46, proposed §1.6417-4(d) would have provided that 
+sections 49 and 50 do not apply to limit the amount of the applicable credits.  Because 
+there were no comments related to the provisions described in this paragraph, the 
+proposed regulations are adopted without change in these final regulations.
+In connection with the implementation of section 6417, the proposed regulations 
+would have added a sentence to §301.6241-1(a)(6)(iii) (regarding items or amounts with 
+respect to a BBA Partnership) to provide that any chapter 1 tax that is the liability of the 
+BBA Partnership is an item with respect to the BBA Partnership, regardless of whether 
+that chapter 1 tax is required to be reflected or shown on the partnership return or 
+required to be maintained in the BBA Partnership’s books and records.  The Treasury 
+Department and the IRS did not receive any comments related to this change under 
+§301.6241-1; consequently, the proposed rule is adopted without change in these final 
+regulations.
+V. Pre-filing Registration Requirements
+Section 6417(d)(5) provides that as a condition of, and prior to, any amount being 
+treated as a payment that is made by the taxpayer under section 6417(a) or any 
+payment being made pursuant to section 6417(c), the Secretary may require such 
+
+information or registration as the Secretary deems necessary or appropriate for 
+purposes of preventing duplication, fraud, improper payments, or excessive payments.  
+Proposed §1.6417-5 would have addressed these requirements by adding a pre-filing 
+registration process, and §1.6417-5T (TD 9975), issued contemporaneously, put those 
+rules into effect for taxable years ending on or after June 21, 2023.  Because these final 
+regulations obsolete the temporary regulations, this part V discusses the proposed 
+regulations rather than the temporary regulations, which are identical in content.
+Proposed §1.6417-5(a)-(d) would have provided the mandatory pre-filing 
+registration process that, except as provided in guidance, an applicable entity or 
+electing taxpayer would be required to complete as a condition of, and prior to (1) any 
+amount being treated as a payment against the tax imposed by subtitle A that is made 
+by an applicable entity or electing taxpayer (other than a partnership or S corporation) 
+under proposed §1.6417-2(a)(1)(i) or (a)(2)(i); or (2) any amount being paid to a 
+partnership or S corporation pursuant to proposed §1.6417-2(a)(2)(ii).
+Proposed §1.6417-5(a) would have provided an overview of the pre-filing 
+registration process.  Proposed §1.6417-5(b) would have included the pre-filing 
+registration requirements, including: (1) manner of pre-filing registration; (2) pre-filing 
+registration and election for members of a consolidated group; (3) timing of pre-filing 
+registration; (4) that each applicable credit property must have its own registration 
+number; and (5) information required to complete the pre-filing registration process.  
+Proposed §1.6417-5(c) would have provided rules related to the registration number, 
+including: (1) general rules; (2) that the registration number is valid for only one taxable 
+year; (3) renewing registration numbers; (4) amendment of previously submitted 
+registration information if a change occurs before the registration number is used; and 
+(5) that the registration number is required to be reported on the return for the taxable 
+year of the elective payment election.  Proposed §1.6417-5(d) would have provided that 
+
+the section applies to taxable years ending on or after date of publication of the final 
+rule.
+Some commenters stated the proposed rules related to pre-filing registration 
+were too cumbersome.  For example, commenters noted that local governments have 
+significantly limited resources and may, in some cases, require robust technical 
+assistance or otherwise abandon these projects altogether.  One suggestion was to 
+create a streamlined pre-filing registration process for projects that are less complex.  
+Another was that the IRS establish a minimum credit threshold to relieve some 
+applicants who are planning to claim lower credit amounts from the pre-filing registration 
+requirements.
+The Treasury Department and the IRS understand commenters’ concerns about 
+the need for resources to complete the pre-filing registration process; however, pre-filing 
+registration is necessary to help meet the government’s compelling interest to prevent 
+fraud and duplication while also allowing for a more efficient processing and payment 
+upon filing of the return.  The information requested is also information that an 
+applicable entity should have available after having engaged in an activity for which an 
+applicable credit is determined.  Further, for entities engaging in fewer projects, the pre-
+filing registration process will be less complex.  For example, an applicable entity with 
+one applicable credit property for which an applicable credit is determined during the 
+taxable year will have a more streamlined registration process than will an applicable 
+entity with multiple applicable credit properties for which multiple applicable credits are 
+determined during the taxable year.  Finally, the IRS is committed to ongoing efforts to 
+provide guidance to help applicable entities understand how to qualify for the underlying 
+credits, the pre-filing registration requirements, and the elective payment election 
+process, and these efforts should address the commenters’ concerns.  Thus, the 
+Treasury Department and the IRS have concluded that these final regulations should 
+
+adopt the pre-filing registration process as proposed.
+Multiple commenters asked how long the pre-filing registration process is 
+expected to take and what a taxpayer should do if the IRS does not timely issue a 
+registration number.  Because the timeframe and procedures of the pre-filing 
+registration process may be modified over time as both the IRS and taxpayers gain 
+experience with it, these final regulations do not contain any such timeframe or 
+procedure.  Instead, the Treasury Department and the IRS recommend that taxpayers 
+with these sorts of questions consult the current version of Publication 5884, Inflation 
+Reduction Act (IRA) and CHIPS Act of 2022 (CHIPS) Pre-Filing Registration Tool User 
+Guide and Instructions, for the latest guidance on the pre-filing registration process.  As 
+of February 2024, Publication 5884 states:
+Even though registration is not possible prior to the beginning of the tax 
+year in which the credit will be earned, the IRS recommends that 
+taxpayers register as soon as reasonably practicable during the tax year. 
+The current recommendation is to submit the pre-filing registration at least 
+120 days prior to when the organization or entity plans to file its tax return. 
+This should allow time for IRS review, and for the taxpayer to respond, if 
+the IRS requires additional information before issuing the registration 
+numbers.
+One commenter recommended a safe harbor if the pre-filing registration was 
+completed by the registrant within a certain time period prior to filing.  These final 
+regulations do not adopt this suggestion because the timing of the submission is only 
+one factor; the quality and accuracy of information of the provided information is also a 
+factor.  Further, as the IRS and taxpayers gain experience with the pre-filing registration 
+portal, the timing of processing submissions may change, making any proposed safe 
+harbor period obsolete.
+One commenter recommended that the final regulations provide that an election 
+could be made prior to receiving a registration number if the applicable entity or electing 
+taxpayer completed the pre-filing registration process but had not yet received a 
+registration number, suggesting that an amended return could be filed upon receipt of 
+
+the registration number.  These final regulations continue to provide that an applicable 
+entity or electing taxpayer that does not obtain a registration number or report the 
+registration number on its annual tax return with respect to an otherwise applicable 
+credit property is ineligible to receive any elective payment amount with respect to the 
+amount of any credit determined with respect to that applicable credit property.  
+Publication 5884 states that the IRS will work to issue a registration number even if the 
+registration submission is made close in time before the registrant’s filing deadline.  
+However, in such cases, the registrant should anticipate that the tax return on which the 
+elective payment or transfer election is made may undergo heightened scrutiny to 
+mitigate the risk of fraud and duplication that pre-filing registration is intended to 
+address before a payment is issued.  
+The Treasury Department and the IRS also note that an elective payment 
+election can be made on any return filed on or before the due date for filing the tax 
+return (including extensions), that §1.6417-2(b)(3)(i) contains a special rule providing an 
+automatic paperless six-month extension for entities that are not otherwise able to 
+request an automatic six-month extension, and that these final regulations provide late 
+election relief for certain taxpayers, assuming the taxpayer has not received an 
+extension of time to file a return, the taxpayer’s original return is timely filed, and the 
+9100 relief requirements are met.  See parts II.B.2 and II.B.4 of this Summary of 
+Comments and Explanation of Revisions.
+A few commenters asked about the scope of prefiling registration review and 
+whether taxpayers can appeal any denials of registration numbers.  Section 7803(e)(3) 
+of the Code provides that it is the function of Appeals to resolve Federal tax 
+controversies without litigation.  Decisions made by the IRS relating to the denial, 
+suspension, or revocation of a registration number are not Federal tax controversies 
+within the meaning of section 7803(e)(3) because registration is too attenuated and 
+
+separate from any tax liability of the applicable entity or electing taxpayer.  Publication 
+5884 describes the IRS review, and opportunity for taxpayers to respond with additional 
+information, of pre-filing registration submissions.  In cases in which a pre-filing 
+registration submission is incomplete, the IRS will attempt to contact the registrant using 
+the information provided to indicate deficiencies with the registration prior to making a 
+determination.  However, once the IRS determines that a registration number should not 
+be given, the registrant may not appeal the denial unless the IRS and Appeals agree 
+that such review is available and the IRS provides the time and manner for such review.
+A few commenters suggested that pre-filing registration include a “pre-approval 
+process” or “pre-approval certification” that ensures that applicable entities would be 
+able to make elective payment elections for their projects.  A few of these commenters 
+sought the distribution of cash refunds earlier than the filing of a return; for example, 
+when a project is placed in service or when pre-filing registration is complete, perhaps 
+by allowing for third-party attestations or verification of initial pre-filing information.  One 
+commenter asked that the process of obtaining a registration number provide as much 
+assurance as possible for applicants that they are indeed eligible for the applicable 
+credit for which they intend to make an elective payment election, opining that the pre-
+filing registration portal should function as a checklist, so an applicant should have 
+reasonable assurance that it will be eligible for the applicable credits if the information it 
+provides is accurate.  This commenter stated that, similar to pre-qualifying for a 
+mortgage loan before purchasing a home, those who receive registration numbers 
+should reasonably be able to expect to receive an elective payment, barring any 
+significant changes in project design or entity status.
+The pre-filing registration process is not a guarantee that a project will qualify for 
+an applicable credit for which an elective payment election may be made, as verification 
+of initial pre-filing information cannot be used by the IRS to confirm compliance with the 
+
+requirements of an underlying credit.  Compliance with the underlying credit 
+requirements is reported and verified in additional detail on the annual tax return, and, 
+as those requirements are provided in Code sections outside of section 6417, are 
+largely outside the scope of these final regulations.  Further, section 6417(d)(4) provides 
+that the payment is treated as being made by the applicable entity on the later of the 
+due date for the return or the date the return is actually filed, so the statute does not 
+permit the IRS to make any payments earlier than such dates.  Thus, these final 
+regulations do not adopt the commenters’ suggestions.
+One commenter asked that the portal allow users to track where they are in the 
+approval process and allow for a transparent and expedited appeals process if the clean 
+energy project is deemed ineligible for a registration number.  While outside the scope 
+of these final regulations, the Treasury Department and the IRS note that the pre-filing 
+registration portal does allow users to track where they are in the approval process.  
+See Publication 5884.
+Proposed §1.6417-5(b)(5)(vii)(D) would have required that, to complete the pre-
+filing registration process, registrants must provide information as to the beginning of 
+construction date and the placed in service date of the applicable credit property.  A few 
+commenters requested that entities be able to complete pre-filing registration prior to 
+property being placed in service, such as for residential or small commercial systems or 
+for Alaska Native villages and other Tribal entities.  Another commenter requested that 
+the final regulations require registration more than 60 days before construction starts for 
+prevailing wage and apprenticeship (PWA) purposes.  The Treasury Department and 
+the IRS have determined that a registration number should not be given before the 
+applicable credit property is placed in service, which is an important step to ensuring 
+that the applicable credit property qualifies for the applicable credit for which the 
+applicable entity seeks to make an elective payment election.  Because a credit must be 
+
+determined in the taxable year of the elective payment election, maintaining the 
+proposed requirement will ensure that taxpayers are not attempting to make an elective 
+payment election in a year in which a credit is not determined.  Further, this information 
+will help the IRS prevent fraud.  The Treasury Department and the IRS have also 
+determined that it is not necessary to require registration prior to construction for PWA 
+purposes.  Thus, these final regulations adopt proposed §1.6417-5(b)(5)(vii)(D) without 
+change.
+Multiple commenters asked that the final regulations allow the option to group 
+multiple qualified facilities as a “single project” that would obtain a single registration 
+number, or that consolidated filings be available for multiple small projects.  
+Commenters asked that the final regulations apply Section 4.04 of Notice 2013-29, 
+2012-20 I.R.B. 1085, which provides that multiple qualified facilities may be treated as a 
+single project for the “beginning of construction” purposes, provided the facilities share 
+certain characteristics, such as common ownership, contiguous location, common PPA, 
+or common permits.  A commenter suggested having a “Master Registration 
+Agreement” to allow issuing a single registration number as a single master project 
+instead of a “thousand or more” registration numbers which would burden the applicable 
+entity as well as the IRS.
+The definition of applicable credit property in section 6417 is based on the 
+relevant rules for the underlying applicable credit, and changes to the definition of 
+particular properties under the underlying Code sections is outside the scope of this 
+rulemaking.  If such underlying Code section allows grouping to determine a qualified 
+property, then grouping for purposes of a registration number is permitted.  If such 
+definition does not allow grouping, then each applicable credit property must be 
+registered separately; however, for some applicable credits, the pre-filing registration 
+portal allows applicable credit property information to be uploaded by way of a 
+
+spreadsheet file (bulk upload).  See Publication 5884.
+One commenter asked that the text of §1.6417-5 be amended to specifically 
+include the words “restricted tax exempt amounts.”  These final regulations do not adopt 
+this suggestion because the term “the source of funds the taxpayer used to acquire the 
+property” found in §1.6417-5 includes restricted tax exempt amounts (as described in 
+Section II.C.3 of this Summary of Comments and Explanation of Revisions) and may 
+also include information about other sources of funding that the IRS has determined is 
+necessary for tax administration.
+One commenter asked that applicable entities and electing taxpayers be required 
+to state during pre-filing registration whether they intend to qualify for the prevailing 
+wage and apprenticeship bonus amount.  These final regulations do not adopt this 
+comment because the pre-filing registration process is primarily intended to verify that 
+the applicant is an applicable entity and that the registered property is an applicable 
+credit property.  Calculation of the credit amount (including qualifying for any bonus 
+amounts that would increase the base credit amount) is done on the annual return.  
+However, the Treasury Department and the IRS will monitor the pre-filing registration 
+process to determine whether requesting additional information is needed to prevent 
+duplication, fraud, improper payments, or excessive payments under section 6417.
+One commenter asked that the final regulations allow an applicable entity to use 
+a certificate, permit, or evidence of ownership, rather than all three, during pre-filing 
+registration, especially since applicable entities are required to maintain books and 
+records supporting the underlying credit.  Proposed §1.6417-5(b)(5)(vii)(C) would have 
+required an applicable entity or electing taxpayer to provide information related to 
+applicable credit properties, including “any” supporting documentation relating to the 
+construction or acquisition of the applicable credit property.  The Treasury Department 
+and the IRS did not intend for proposed §1.6417-5(b)(5)(vii)(C) to require all supporting 
+
+documentation to be provided during the pre-filing registration process.  Rather, the 
+intent was to require information sufficient to verify the applicable credit property.  In 
+response to the comment, these final regulations remove the word “any” from the 
+provision so that it now reads “[s]upporting documentation relating to the construction or 
+acquisition of the applicable credit property...”
+The documentation to support the existence of valid applicable credit property 
+will vary by the credit being claimed.  The pre-filing registration portal and Publication 
+5884 list, for each credit, a description of the types of documents that will facilitate 
+processing of the pre-filing registration.  A registrant does not need to provide all 
+information that may be available; in fact, in February 2024, Publication 5884 states:
+If detailed project plans or contractual agreements are the best support 
+that the taxpayer is engaging in activities or making tax credit investments 
+that qualify the registrant to claim a credit, the registrant should submit an 
+extract of the document showing the name of the taxpayer, date of 
+purchase and identifying information such as serial numbers, rather than 
+the entire document.
+However, to the extent the information provided is insufficient for purposes of the 
+pre-filing registration process, the IRS may request further information.  See Publication 
+5884.
+One commenter recommended that the Treasury Department and the IRS 
+consider authorizing users to renew their registrations on an annual basis rather than 
+submit entirely new registrations each year.  Several commenters stated that renewal of 
+registration numbers should not be required because an annual renewal is a significant 
+burden on taxpayers and may disincentivize taxpayers from undertaking a production 
+tax credit project.  A few commenters stated that renewal should not be required if the 
+project is extended or delayed from going into operation or if there is no change in the 
+relevant facts with respect to the facility, and one of these commenters requested that 
+registration numbers be valid for multiple years for public projects that are more likely to 
+be delayed.  Several commenters suggested that, if no factual information required for 
+
+the pre-filing registration process has changed, then the registration portal should 
+provide an expedited or streamlined process such as a “short form.”
+Proposed §1.6417-5(c)(3) provided, and these final regulations also state, that a 
+renewal must be made “in accordance with applicable guidance, including attesting that 
+all the facts previously provided are still correct or updating any facts.”  Thus, any 
+changes to the pre-filing registration process to make it be more streamlined for 
+renewals will be addressed in applicable guidance.  Further, a registration number is not 
+provided until an applicable credit property is placed in service; therefore, project delays 
+should be irrelevant to the pre-filing registration process.
+A commenter asked whether two unrelated taxpayers who own separate 
+applicable credit properties (for example, a single process train under section 45Q and 
+a qualified facility as defined in section 45Z(d)(4)), could each complete the 
+preregistration process so long as such taxpayers ultimately make an elective payment 
+election or a transfer election under section 6418 in accordance with the qualification 
+rules.  The commenter added it did not expect that both taxpayers would be able to 
+claim their respective tax credits in the same taxable year.  The commenter seems to 
+misunderstand that pre-filing registration and elective payment elections are made on 
+the basis of individual applicable credit properties, so to the extent there are two 
+applicable credit properties, separate registration numbers are required.  A registration 
+number can only be obtained by the entity who owns the underlying applicable credit 
+property and conducts the activities giving rise to the credit or, in the case of section 
+45X (under which ownership of applicable credit property is not required), be considered 
+(under the section 45X regulations) the taxpayer with respect to which the section 45X 
+credit is determined.  Further, a registration number is valid only for the taxable year for 
+which it is obtained.  
+A few commenters recommended that tax professionals be allowed to apply for 
+
+registration numbers for their clients.  The Treasury Department and the IRS note that 
+the proposed regulations would not have restricted a taxpayer from authorizing a 
+representative to apply for a registration number on behalf of the taxpayer, and these 
+final regulations similarly do not do so.  See Publication 5884, which provides that a 
+person who wishes to access Energy Credits Online on behalf of a taxpayer must 
+authorize an IRS Energy Credits Online account by selecting "Start Authorization."  
+These final regulations modify §1.6417-5(c)(5) to clarify that a valid registration number 
+is one that was assigned to the particular taxpayer during the pre-registration process.  
+A commenter requested clarification that persons completing pre-filing 
+registration documentation on behalf of applicable entities do not, by virtue of such 
+activity, become “tax return preparers.”  The determination of whether a person is a tax 
+return preparer, as defined under section 7701(a)(36), is based on facts and 
+circumstances that are outside of the scope of these final regulations.  
+VI. Special Rules
+Section 6417(d)(6) provides rules relating to excessive payment, and section 
+6417(g) provides rules relating to basis reduction and recapture.  Proposed §1.6417-6 
+would have implemented these provisions.
+A. Excessive payments
+Pursuant to section 6417(d)(6), proposed §1.6417-6(a) would have provided that 
+the IRS may determine that an amount treated as a payment made by an applicable 
+entity under proposed §1.6417-2(a)(1)(i) or an electing taxpayer under proposed 
+§1.6417-2(a)(2)(i), or the amount of the payment made to a partnership electing 
+taxpayer pursuant to proposed §1.6417-2(a)(2)(ii), constitutes an excessive payment.  
+Proposed §1.6417-6(a) would have provided that, in the case of an excessive payment 
+determined by the IRS, the amount of chapter 1 tax imposed on the applicable entity or 
+electing taxpayer for the taxable year in which the excessive payment determination is 
+
+made is increased by an amount equal to the sum of (1) the amount of such excessive 
+payment, plus (2) an amount equal to 20 percent of such excessive payment (additional 
+20 percent tax).  This would be the case even if the applicable entity or electing 
+taxpayer is otherwise not subject to chapter 1 tax.  If the additional 20 percent tax is 
+applicable, it would apply in addition to any penalties, additions to tax, or other amounts 
+applicable under the Code.  The additional 20 percent tax amount would not apply if the 
+applicable entity or electing taxpayer demonstrates to the satisfaction of the IRS that the 
+excessive payment resulted from reasonable cause.  The preamble to the proposed 
+regulations stated that the Treasury Department and the IRS anticipated that existing 
+standards of reasonable cause would inform the determination by the IRS of whether 
+reasonable cause has been demonstrated for this purpose.
+Proposed §1.6417-6(a)(3) would have defined “excessive payment” as an 
+amount equal to the excess of (1) the amount treated as a payment under proposed 
+§1.6417-2(a)(1)(i) or proposed §1.6417-2(a)(2)(i), or the amount of the payment made 
+pursuant to proposed §1.6417-2(a)(2)(ii), with respect to such facility or property for 
+such taxable year, over (2) the amount of the credit that, without application of section 
+6417, would be otherwise allowable (as described in parts II.C and II. D. or part IV of 
+this Summary of Comments and Explanation of Revisions and without regard to section 
+38(c)) under the Code with respect to such facility or property for such taxable year.
+Commenters asked for “regulatory relief” from the excessive payment rules, and 
+whether appeals rights, deficiency procedures, and the right to petition the Tax Court 
+apply to excessive payment determinations by the IRS.  Any excessive payment 
+determination will be made by the IRS under established examination procedures and 
+these final regulations do not except any taxpayers or any calculations from this 
+process.
+Several commenters sought clarification of the definition and application of 
+
+reasonable cause, including requesting additional factors or examples (such as the 
+absence of fraud, reliance on a project labor agreement, excessive payments that stem 
+from labor standards noncompliance, or the misallocation of general versus earmarked 
+funding).  Multiple commenters asked that reasonable cause be interpreted broadly to 
+include a taxpayer’s “reasonable effort” or “good faith.”  Another commenter 
+recommended the final regulations include a rebuttable presumption that applicable 
+entities have reasonable cause because they lack internal resources, tax expertise, and 
+experience in the initial period of elective payment implementation.  Commenters also 
+asked for guidance on reasonable cause and the PWA bonus amount.  The Treasury 
+Department and the IRS recognize that taxpayers operating under certain tax rules for 
+the first time will desire certainty.  However, reasonable cause standards are already 
+well-established under case law and administrative and regulatory authorities.  For 
+example, a taxpayer that receives an excessive payment may assert defenses that are 
+commonly raised by taxpayers in other situations in which the IRS has asserted an 
+addition to tax.  Section 1.6664-4, for example, provides guidance related to reasonable 
+cause in the context of accuracy-related penalties under section 6662.  Comments 
+regarding reasonable cause standards as they relate to specific provisions concerning 
+increased credit or deduction amounts available for taxpayers satisfying PWA 
+requirements are outside the scope of these final regulations.  Thus, these final 
+regulations continue to provide that existing standards and authorities for determining 
+reasonable cause apply for purposes of the additional 20 percent tax amount, and do 
+not adopt commenters’ suggestions to create new, special rules for certain types of 
+entities or for purposes of section 6417.
+As described in part II.C.2 of this Summary of Comments and Explanation of 
+Revisions, commenters requested that the final regulations clarify whether a taxpayer 
+could amend its return to adjust the elective payment amount and avoid incurring the 
+
+excessive payment addition to tax.  These final regulations clarify that, if an applicable 
+entity or electing taxpayer amends its tax return or files an AAR before the IRS opens 
+an examination, and the amended return or AAR adjusts the elective payment amount 
+to the amount properly determined with respect to the applicable entity or electing 
+taxpayer, then the excessive payment provisions of section 6417(d)(6) and §1.6417-
+6(a) would not apply.
+B. Basis reduction and recapture
+Section 6417(g) provides basis reduction and recapture rules.  It states that, 
+except as otherwise provided in section 6417(d)(2)(A), rules similar to the rules of 
+section 50 apply for purposes of section 6417.  (Section 6417(g) erroneously refers to 
+section 6417(c)(2)(A), a provision that does not exist, and it is evident that such 
+reference was intended to be to section 6417(d)(2)(A).  That error is accounted for in 
+these final regulations.)  Proposed §1.6417-6(b) would have provided these rules.  
+One commenter addressed basis reduction, requesting that the basis reduction 
+under section 50(c)(3) not apply to a taxable electric cooperative that is an applicable 
+entity under the statute.  The commenter stated that electric cooperatives seldom 
+dispose of or sell any significant assets; instead, they typically retire the assets once 
+they are no longer used and useful in providing electric service.  The commenter also 
+stated that taxable electric cooperatives typically have little to no tax liability and utilize 
+longer straight-line methods of tax depreciation; as a result, there is no increase in tax 
+that may result from reduced depreciation deductions.  
+The Treasury Department and the IRS note that most applicable entities listed in 
+section 6417(d)(1)(A) have little or no tax liability and have concluded that, as section 
+6417(g) states that rules “similar to” the rules of section 50 apply for purposes of section 
+6417 and there does not appear to be any valid reason to treat a taxable rural electric 
+cooperative differently from other applicable entities with respect to this rule, these final 
+
+regulations should not adopt this suggestion.
+A commenter asked that the final regulations include an exception to the 
+recapture rules for certain sales by applicable entities, for example, a sale to a party that 
+would (1) be a more suitable operator and (2) be able to monetize tax depreciation 
+(unlike applicable entities in most circumstances).  The Treasury Department and the 
+IRS have determined that allowing such exceptions would be too far of a departure from 
+the general rules of section 50, as section 6417(g) provides that rules similar to section 
+50 apply.  Section 50(a) provides that if, during any taxable year, investment credit 
+property is disposed of, or otherwise ceases to be investment credit property with 
+respect to the taxpayer, before the close of the recapture period (which is five years 
+after the property is placed in service), then the tax under chapter 1 for such taxable 
+year is increased by the recapture percentage.  To provide an exception for sales to a 
+party that the seller determines to be a more suitable operator, or because the buyer 
+would be able to take a depreciation deduction, would severely limit the application and 
+congressional purpose of section 50.  Thus, these final regulations do not adopt this 
+comment.
+VII. Comments that are Outside the Scope of These Final Regulations
+Several commenters noted typos or corrections to the proposed regulations, 
+which were generally corrected in these final regulations.  In addition, several categories 
+of comments were outside the scope of these final regulations but are generally 
+summarized below.
+A. Requests to streamline or simplify the process
+In addition to general requests to streamline the pre-filing registration process, a 
+few commenters asked that the IRS prioritize support for low-income and 
+disadvantaged communities, and several commenters requested that their particular 
+entity be eligible for a simplified process.  One commenter requested that the final 
+
+regulations eliminate the tax return requirement for governmental entities that do not 
+have a Federal tax obligation, and another commenter requested a “waiver process.”  
+The Treasury Department and the IRS acknowledge the potential for complexity for 
+applicable entities and electing taxpayers seeking to make elective payment elections, 
+especially for taxpayers who have not historically had a return-filing obligation, and have 
+sought to balance taxpayer compliance burdens with the need to ensure payments are 
+being correctly made to applicable entities and electing taxpayers.  The proposed 
+regulations specifically requested comments on methods to reduce paperwork burden 
+or burdens on small entities.  While these final regulations do not adopt comments 
+recommending a streamlined process for certain taxpayers, including comments 
+suggesting the removal of a return-filing requirement, the Treasury Department and the 
+IRS will continue to monitor the elective payment process to determine whether there 
+are areas in which more efficiencies can be created.
+B. Requests for plain language guidance or other assistance
+Multiple commenters asked for additional help in accessing applicable credits, 
+including developing and delivering a far-reaching awareness campaign; providing a 
+webinar or workshop to provide clear guidance and clarification to some of the issues 
+raised; providing IRS staff to answer questions via email, telephone, or in-person 
+outreach or via a taxpayer customer service portal and ensuring this support is culturally 
+appropriate and language-accessible; publishing straightforward materials (for example, 
+a checklist of necessary steps) to claim credits; publishing templates, filing manuals, 
+sample forms, and documentation examples; providing clear examples of timelines, 
+including for entities with different tax filing years; providing regular updates on when 
+these credits will expire; testing approaches with early potential users and using 
+feedback to adjust as necessary; collaborating with other agencies; leveraging 
+community partnerships; and expanding efforts to proactively consult communities with 
+
+the greatest barriers to access, among other things.
+The Treasury Department and the IRS acknowledge the learning curve many 
+taxpayers will face in registering for and making elective payment elections for 
+applicable credits and intend to provide as much additional assistance as possible to 
+taxpayers.  The Treasury Department and the IRS are endeavoring to provide as much 
+plain language guidance as possible to taxpayers to expand access and uptake of 
+applicable credits.  As previously discussed, the Treasury Department and the IRS will 
+monitor the pre-filing registration and filing processes and have already embarked on 
+many of these recommendations.  For example, as of the publication of these final 
+regulations, the Treasury Department and the IRS have conducted webinars; issued 
+FAQs; published information on IRS.gov
+12
+ on how taxpayers can complete the pre-filing 
+registration process; and have held “office hours” with taxpayers offering assistance 
+with the pre-filing registration process.
+One commenter recommended creation of a simple online “elective payment 
+amount estimator” tool that would estimate (without guarantees) the elective payment 
+amount and the timing of key actions (for example, when to register and file, when 
+receipt of payment is estimated) that could aid taxpayers considering the making of an 
+elective payment election.  Such a tool, according to the commenter, would facilitate 
+bridge financing by assisting, for example, school construction authorities or green 
+banks by estimating future elective payment amounts.  It is not possible for the IRS to 
+estimate the elective payment amount at the time of pre-filing because the IRS will not 
+have adequate information, such as eligibility for bonus credit amounts to make such a 
+calculation, but a taxpayer may be able to estimate the amount of credit by completing a 
+draft Form 3800 and any required completed source form(s).
+C. Tax exempt bonds
+12
+ For additional information, see https://www.irs.gov/credits-deductions/elective-pay-and-transferability. 
+
+The proposed regulations did not contain any rules specifically addressing the 
+use of tax-exempt bond financing.  However, multiple commenters had questions about 
+the interplay between tax-exempt bonds and section 6417.  These questions generally 
+are outside of the scope of these final regulations because the use of proceeds of tax-
+exempt bonds under section 103 may impact the amount of a particular applicable 
+credit in the underlying Code sections (such as sections 45 and 48), and such reduction 
+in the credit amount occurs before the application of section 6417 and independently 
+from the application of section 6417.
+One commenter requested that the final regulations clarify that the amount 
+received pursuant to an elective payment election is not treated as “proceeds” of a tax-
+exempt bond issue, which would be subject to use and investment limits under the tax-
+exempt bond rules.  This commenter stated that, if the payment were treated as 
+proceeds of a bond issue, the use of tax-exempt bond financing could ruin the 
+economics of the deal.  The Treasury Department and the IRS confirm that section 
+6417(a) provides that the applicable credit is treated as a payment against the tax 
+imposed by subtitle A and, therefore, the amount received as an elective payment is not 
+proceeds of a tax-exempt bond issue.
+Multiple commenters addressed the reduction to the section 45 credit required by 
+section 45(b)(3) (section 45(b)(3) credit reduction) for the use of tax-exempt bond 
+proceeds and its interaction with section 6417(a).  One commenter requested 
+clarification that the section 45(b)(3) credit reduction is not required if parties use tax-
+exempt bridge financing for credit property and retire it before the facility is placed in 
+service.  One commenter recommended that project owners be granted permission to 
+use the tax-exempt bond allocation rules (that is, the allocation rules for purposes of 
+determining a bond’s tax-exempt status) to determine the percentage of tax-exempt 
+bond financing utilized and calculate any reduction necessary if energy credits are 
+
+utilized.  One commenter stated that calculation of the credit reduction percentage 
+should be permitted to occur when the tax-exempt bonds are structured, sold, or issued, 
+because unless additional funds are added to the project, a final allocation of tax-
+exempt bond proceeds to expenditures under §1.148-6 should not result in a change in 
+the amounts of tax-exempt bond proceeds and other funds for purposes of calculating 
+the credit reduction percentage.  One commenter requested examples for local 
+governments or municipal utilities of how the section 45(b)(3) credit reduction affects 
+elective payment amounts.  One commenter requested confirmation that the cost 
+determination necessary to calculate the extent of any section 45(b)(3) credit reduction 
+with respect to a production tax credit facility should be based on criteria and guidance 
+developed in the context of investment tax credits.  One commenter stated that the 
+allocation of tax-exempt bond proceeds for purposes of the section 45(b)(3) credit 
+reduction to property that is qualified or non-qualified for a credit within a larger facility 
+that includes both types of property should not impact the application of the bond rules 
+under §1.141-6 relating to private business use.  This commenter also stated there 
+should be no requirement that the allocations under section 45(b)(3) and §1.141-6 be 
+consistent with regards to floating allocations of sources of funding to uses.  One 
+commenter recommended that the final regulations treat tax-exempt bond proceeds as 
+automatically allocated to any portions of the overall facility that are not part of the 
+"qualified facility" (as that term is used in section 45(b)(3)).
+The rules for the allocation of tax-exempt bond proceeds for purposes of the 
+credit reduction fraction under section 45(b)(3) and §1.148-6(d) are generally outside 
+the scope of these final regulations.  Section 1.148-6(d) provides that an issuer must 
+account for the allocation of proceeds to expenditures not later than 18 months after the 
+later of the date the expenditure is paid or the date the project, if any, that is financed by 
+the issue is placed in service.  Further, the allocation must be made in any event by the 
+
+date 60 days after the fifth anniversary of the issue date or the date 60 days after the 
+retirement of the issue.
+One commenter requested that, if the rules for allocation of tax-exempt bond 
+proceeds to expenditures under §1.148-6 are applied to credit reduction for tax-exempt 
+bond financing under section 45(b)(3), the final regulations should provide an automatic 
+extension to file a superseding return to reflect changes with regards to tax-exempt 
+financing, or issue other guidance to accommodate this situation.  As discussed in part 
+II.B.2 of this Summary of Comments and Explanation of Revisions, these final 
+regulations allow an applicable entity or electing taxpayer that has made an elective 
+payment election on an original return to file a superseding return if permissible, or to 
+amend their return or file an AAR to the extent the amount of the applicable credit is 
+later determined to need adjustment.
+Commenters asked that excessive payment provisions not apply if allocations of 
+tax-exempt bond proceeds to expenditures under §1.148-6 occur after a project is 
+placed in service.  As described in part IV.A of this Summary of Comments and 
+Explanation of Revisions, excessive payment provisions may apply if the amount the 
+applicable entity treats as a payment under section 6417(a) (including the allocations of 
+tax-exempt bond expenditures) is greater than the amount of the credit that, without 
+application of section 6417, would be otherwise allowable (as determined pursuant to 
+section 6417(d)(2) and without regard to section 38(c)).  However, as described in part 
+VI.A of this Summary of Comments and Explanation of Revisions, if a taxpayer amends 
+their return or files an AAR before the IRS opens an examination, then the 20-percent 
+addition to tax does not apply.
+One commenter requested guidance that the rules under section 50(c) regarding 
+the reduction of basis (section 50(c) basis reduction rules) and the recapture of credits 
+will not cause tax-exempt bond proceeds to be deallocated from project costs.  The 
+
+section 50(c) basis reduction rules are outside of the scope of these final regulations.  
+The Treasury Department and the IRS clarify that the section 50(c) basis reduction rules 
+apply to the credit that is determined, but any effect on the allocation or deallocation of 
+tax-exempt bond proceeds occurs outside of these final regulations.
+A few commenters asked whether refundable credits pledged as security or used 
+to pay debt service for a bond issue results in a Federal guarantee of the bonds per 
+section 149 of the Code.  The Treasury Department and the IRS confirm that a pledge 
+of the refundable credits as security for, or the use of the refundable credits to pay debt 
+service on, the bonds by itself does not result in a Federal guarantee of the bonds.
+One commenter wanted confirmation that the existing allocation and accounting 
+rules in §1.141-6 apply with respect to the credit reduction for tax-exempt bond 
+financing under section 45(b)(3), whereas another commenter requested that the 
+regulations under section 141 be “modernized” in light of the enactment of section 6417.  
+Regulations under section 141 are outside of the scope of these final regulations.
+Commenters requested that the reduction for restricted tax exempt amounts 
+considered in the special rule for investment-related credit property acquired with tax 
+exempt income in proposed §1.6417-2(c)(3) be calculated after the 15 percent credit 
+reduction under section 45(b)(3) related to tax-exempt financing is made.  The Treasury 
+Department and the IRS confirm that the rule in §1.6417-2(c)(3) applies after application 
+of any reduction under section 45(b)(3) because determination of the underlying credit 
+amount occurs before the amount is possibly adjusted by section 6417 and the 
+regulations thereunder.
+Commenters requested confirmation that the 15-percent credit reduction under 
+section 45(b)(3) for the use of tax-exempt financing is applied separately and 
+independently to each co-tenant's undivided interest in cases in which applicable credit 
+property is held as a TIC or JOA.  The Treasury Department and the IRS can confirm 
+
+that each co-tenant’s undivided interest is an undivided ownership share of the 
+applicable credit property and will be treated as a separate applicable credit property 
+owned by such applicable entity under §1.6417-2(a)(1)(iii).  Thus, it will be necessary for 
+each owner to determine whether its undivided ownership share is subject to the 
+reduction under section 45(b)(3).
+D. Comments about other Code provisions
+Multiple commenters asked about the application of other Code provisions.  For 
+example, commenters asked for guidance on the underlying credits or bonus provisions 
+such as the energy communities bonus amount, the prevailing wage and apprenticeship 
+bonus amounts, and the domestic content bonus amount and for domestic content 
+waivers.  Commenters asked that the placed in service requirements be clarified or 
+relaxed in various ways.  Commenters requested guidance under section 30C, including 
+a map or searchable address database that clearly shows eligible census tracts.  
+Commenters also asked for guidance under sections 45U, 45V, and 48; asked whether 
+the 5 MW maximum threshold for projects qualifying for the Low-Income Bonus to the 
+ITC applies to individual sites or interconnection points; asked what is allowed in the 
+cost basis of the project (e.g., infrastructure costs and soft costs); asked for guidance on 
+the “clean electricity ITC and PTC;” and asked for clarifications regarding 45X facilities 
+(how to designate different parts as different facilities).  Commenters asked what 
+methods tax-exempt entities could use to monetize depreciation deductions and that 
+applicable entities should be able to make elective payment elections with respect to 
+section 179D deductions.  All of these comments are outside the scope of this 
+rulemaking, which addresses only sections 6417 and 6241.
+E. Comments about provisions outside the Internal Revenue Code.
+Multiple commenters asked for guidance on provisions that are not a part of the 
+Code.  For example, commenters requested (1) guidance on how a city could protect 
+
+itself from liability without losing the ability to make an elective payment election 
+because of the per se corporation rule; (2) guidance on how an applicable entity could 
+obtain funding related to payments it expects to receive from making an elective 
+payment election; (3) clarification on whether applicable credits are treated as 
+“proceeds... from any other activities of the Corporation” under 16 U.S.C. 831y; (4) 
+guidance on whether refunds greater than $5 million will require review by the Joint 
+Committee on Taxation; (5) confirmation that for a partnership (i) with a tax-exempt 
+electric cooperative as a partner, and (ii) that elects under section 761 to be excluded 
+from the application of subchapter K, the basis of the allocable share of property to the 
+tax exempt electric cooperative is determined both by tax law plus any other costs 
+incurred by the tax exempt electric cooperative using book accounting in accordance 
+with generally acceptable accounting principles (GAAP) that are properly capitalizable;
+13
+ 
+and (6) guidance on whether a municipal utility that builds a qualifying bioenergy project 
+and seeks the tax incentive could also consider implementing an eRINs program with 
+the renewable energy produced, and if so, whether this impacts the tax incentive in any 
+way, or causes a reduction in the incentive.  All of these comments are outside the 
+scope of this rulemaking.
+Effect on Other Documents
+The temporary regulations are removed [INSERT DATE 60 DAYS AFTER DATE 
+OF PUBLICATION IN THE FEDERAL REGISTER].
+Special Analyses
+I. Regulatory Planning and Review
+Pursuant to the Memorandum of Agreement, Review of Treasury Regulations 
+13
+ The commenter stated that tax-exempt electric cooperatives, as tax-exempt entities, use book 
+accounting based on GAAP and Uniform Systems of Account such as provided by the Rural Utilities 
+Service, and stated that it would be helpful to know that, while their initial basis in a partnership asset may 
+have been determined on a tax basis, cost subsequent to the election under section 761 to be excluded 
+from the application of subchapter K that are properly capitalizable under GAAP are also properly 
+includible in the cost basis of a qualifying asset for Federal income tax purposes.
+
+under Executive Order 12866 (June 9, 2023), tax regulatory actions issued by the IRS 
+are not subject to the requirements of section 6(b) of Executive Order 12866, as 
+amended.  Therefore, a regulatory impact assessment is not required.
+II. Paperwork Reduction Act
+The Paperwork Reduction Act of 1995 (44 U.S.C. 3501-3520) (PRA) generally 
+requires that a Federal agency obtain the approval of the Office of Management and 
+Budget (OMB) before collecting information from the public, whether such collection of 
+information is mandatory, voluntary, or required to obtain or retain a benefit.  An agency 
+may not conduct or sponsor, and a person is not required to respond to, a collection of 
+information unless the collection of information displays a valid control number.
+The collections of information in these final regulations contain reporting and 
+recordkeeping requirements.  The recordkeeping requirements mentioned within these 
+final regulations are considered general tax records under Section 1.6001-1(e).  These 
+records are required for the IRS to validate that taxpayers have met the regulatory 
+requirements and are entitled to make an elective payment election.  For PRA 
+purposes, general tax records are already approved by OMB under 1545-0047 for tax-
+exempt organizations and government entities; 1545-0074 for individuals; and under 
+1545-0123 for business entities.
+These final regulations also mention reporting requirements related to making 
+elections as detailed in §§1.6417-2 and 1.6417-3 and calculating the claim amounts as 
+detailed in §§1.6417-2 and 1.6417-4.  These elections will be made by taxpayers on 
+Forms 990-T, 1040, 1120-S, 1065, and 1120; and credit calculations will be made on 
+Form 3800 and supporting forms.  These forms are approved under 1545-0047 for tax-
+exempt organizations and governmental entities; 1545-0074 for individuals; and 1545-
+0123 for business entities.
+These final regulations also mention recapture procedures as detailed in 
+
+§1.6417-6.  These recaptures are performed using Form 4255.  This form is approved 
+under 1545-0047 for tax-exempt organizations and governmental entities; 1545-0074 
+for individuals; and 1545-0123 for business entities.  These final regulations are not 
+changing or creating new collection requirements not already approved by OMB.
+These final regulations mention a requirement to register with the IRS to be able 
+to elect payments as detailed in §1.6417-5.  The pre-filing registration portal is approved 
+under 1545-2310 for all filers.
+The IRS solicited feedback on the collection requirements for reporting, 
+recordkeeping, and pre-filing registration.  Although no public comments received by the 
+IRS were directed specifically at the PRA or on the collection requirements, several 
+commenters generally expressed concerns about the burdens associated with the 
+documentation requirements contained in the proposed regulations.  As described in the 
+relevant portions of this preamble, the Treasury Department and the IRS believe that 
+the documentation requirements are necessary to administer the elective payment 
+election under section 6417.
+III. Regulatory Flexibility Act
+The Regulatory Flexibility Act (5 U.S.C. 601 et seq.) (RFA) imposes certain 
+requirements with respect to Federal rules that are subject to the notice and comment 
+requirements of section 553(b) of the Administrative Procedure Act (5 U.S.C. 551 et 
+seq.) and that are likely to have a significant economic impact on a substantial number 
+of small entities.  Unless an agency determines that a proposal is not likely to have a 
+significant economic impact on a substantial number of small entities, section 603 of the 
+RFA requires the agency to present a final regulatory flexibility analysis (FRFA) of the 
+final regulations.  The Treasury Department and the IRS have not determined whether 
+these final regulations will likely have a significant economic impact on a substantial 
+number of small entities.  This determination requires further study.  Because there is a 
+
+possibility of significant economic impact on a substantial number of small entities, a 
+FRFA is provided in these final regulations.
+Pursuant to section 7805(f) of the Code, this notice of final rulemaking has been 
+submitted to the Chief Counsel of Advocacy of the Small Business Administration for 
+comment on its impact on small business, and no comments were received.
+1. Need for and Objectives of the Rule
+These final regulations provide greater clarity to taxpayers that intend to take 
+advantage of the credit monetization mechanism in section 6417.  It provides needed 
+definitions, the time and manner to make the election, and information about the pre-
+filing registration process, among other items.  The Treasury Department and the IRS 
+intend and expect that giving taxpayers guidance that allows them to use section 6417 
+will beneficially impact various industries, delivering benefits across the economy, and 
+reduce economy-wide greenhouse gas emissions.
+In particular, section 6417 allows applicable entities to treat an applicable credit 
+as a payment against Federal income taxes and defines applicable entities to include 
+many entities that may not have any tax liability.  Allowing entities without sufficient 
+Federal income tax liability to use a business tax credit to instead make an election to 
+receive a refund of any overpayment of taxes created by the elective payment election 
+will increase the incentive for taxpayers to invest in clean energy projects that give rise 
+to applicable credits because it will increase the amount of cash available to those 
+entities, thereby reducing the amount of financing needed for clean energy projects.
+2. Significant Issues Raised by Public Comments in Response to the IRFA
+There were no comments filed that specifically addressed the Proposed Rules 
+and policies presented in the IRFA. Additionally, no comments were filed by the Chief 
+Counsel of Advocacy of the Small Business Administration.
+3. Affected Small Entities
+
+The RFA directs agencies to provide a description of, and if feasible, an estimate 
+of, the number of small entities that may be affected by the final regulations, if adopted.  
+The Small Business Administration’s Office of Advocacy estimates in its 2023 
+Frequently Asked Questions that 99.9 percent of American businesses meet its 
+definition of a small business.  The applicability of these final regulations does not 
+depend on the size of the business, as defined by the Small Business Administration.  
+As described more fully in the preamble to these final regulations and in this FRFA, 
+section 6417 and these final regulations may affect a variety of different entities across 
+several different industries as there are 12 different applicable credits for which an 
+elective payment election may be made.  Further, the elective payment election for 3 of 
+the applicable credits may be made both by applicable entities and by taxpayers other 
+than applicable entities.  Although there is uncertainty as to the exact number of small 
+businesses within this group, the current estimated number of respondents to these final 
+rules is 20,000 taxpayers, as described in the Paperwork Reduction Act section of the 
+preamble.
+The Treasury Department and the IRS expect to receive more information on the 
+impact on small businesses once taxpayers start to make the elective payment election 
+using the guidance and procedures provided in these final regulations.
+4. Impact of the Rules
+These final regulations provide rules for how taxpayers can take advantage of 
+the section 6417 credit monetization regime.  Taxpayers that elect to take advantage of 
+section 6417 will have administrative costs related to reading and understanding the 
+rules as well as recordkeeping and reporting requirements because of the pre-filing 
+registration and tax return requirements.  The costs will vary across different-sized 
+entities and across the type of project(s) in which such entities are engaged.
+The pre-filing registration process requires a taxpayer to register itself as 
+
+intending to make the elective payment election, to list all applicable credits it intends to 
+claim, and to list each applicable credit property that contributed to the determination of 
+such credits.  This process must be completed to receive a registration number for each 
+applicable credit property with respect to which the applicable taxpayer intends to make 
+an elective payment election.  To make the elective payment election and claim the 
+credit, the taxpayer must file an annual tax return.  The reporting and recordkeeping 
+requirements for that return would be required for any taxpayer that is claiming a 
+general business credit, regardless of whether the taxpayer was making an elective 
+payment election under section 6417.
+Although the Treasury Department and the IRS do not have sufficient data to 
+determine precisely the likely extent of the increased costs of compliance, the estimated 
+burden of complying with the recordkeeping and reporting requirements are described 
+in the Paperwork Reduction Act section of the preamble.
+5. Alternatives Considered
+The Treasury Department and the IRS considered alternatives to the final 
+regulations.  For example, in adopting the pre-filing registration requirements, the 
+Treasury Department and the IRS considered whether such information could be 
+obtained at the filing of the relevant annual tax return.  However, the Treasury 
+Department and the IRS decided that such an option would increase the opportunity for 
+duplication, fraud, improper payments, or excessive payments under section 6417 as 
+well as potentially delaying payments to qualifying taxpayers.  Section 6417(d)(5) 
+specifically authorizes the IRS to require such information or registration as the 
+Secretary deems necessary for purposes of preventing duplication, fraud, improper 
+payments, or excessive payments under section 6417 as a condition of, and prior to, 
+any amount being treated as a payment that is made by an applicable entity under 
+section 6417.  As described in the preamble to these final regulations, these final rules 
+
+carry out that Congressional intent as pre-filing registration allows for the IRS to verify 
+certain information in a timely manner and then process the annual tax return with 
+minimal delays.  Having a distinction between applicable entities or electing taxpayers 
+that are small businesses versus others making an elective payment election would 
+create a scenario in which a subset of taxpayers seeking to make an elective payment 
+election would not have been verified or received registration numbers, potentially 
+delaying payment not only to them but to other taxpayers seeking to use section 6417.
+Additionally, in considering how taxpayers should claim the credits and make the 
+elective payment election, the Treasury Department and the IRS considered creating an 
+election system outside of the tax return filing system.  However, it was determined that 
+such a process would not be an efficient use of resources, especially given the statutory 
+due date to make an election, which is the return filing date for the taxpayers with a 
+filing obligation (which would include small business taxpayers).  The Treasury 
+Department and the IRS decided that the most efficient and reliable method is to use 
+the existing method for claiming business tax credits; that is, the filing of the annual tax 
+return.  To create a different method for small businesses making an elective payment 
+election than for a small business claiming the credit (or a larger business making an 
+elective payment election or claiming the credit) would create an additional burden for 
+both small businesses and the IRS, without any commensurate benefit.
+The Treasury Department and the IRS solicited comments on the requirements 
+in the proposed regulations, including specifically whether there are less burdensome 
+alternatives that do not increase the risk of duplication, fraud, improper payments, or 
+excessive payments under section 6417.  The comments received in response to this 
+request have been discussed in the preceding paragraphs.
+6. Duplicative, Overlapping, or Conflicting Federal Rules
+These final regulations do not duplicate, overlap, or conflict with any relevant 
+

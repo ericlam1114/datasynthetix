@@ -1,0 +1,1253 @@
+
+
+[4830-01-p]
+DEPARTMENT OF THE TREASURY
+Internal Revenue Service
+26 CFR Parts 1 and 301
+[TD 9988]
+RIN 1545-BQ63
+Elective Payment of Applicable Credits
+AGENCY:  Internal Revenue Service (IRS), Treasury.
+ACTION:  Final regulations and removal of temporary regulations.
+SUMMARY:  This document contains final regulations concerning the election under the 
+Inflation Reduction Act of 2022 to treat the amount of certain tax credits as a payment of 
+Federal income tax.  The regulations describe rules for the elective payment of these 
+credit amounts in a taxable year, including definitions and special rules applicable to 
+partnerships and S corporations and regarding repayment of excessive payments.  In 
+addition, the regulations describe rules related to a required IRS pre-filing registration 
+process.  These regulations affect tax-exempt organizations, State and local 
+governments, Indian tribal governments, Alaska Native Corporations, the Tennessee 
+Valley Authority, rural electric cooperatives, and, in the case of three of these credits, 
+certain taxpayers eligible to elect the elective payment of credit amounts in a taxable 
+year.
+DATES:  Effective date:  These regulations are effective [INSERT DATE 60 DAYS 
+AFTER DATE OF PUBLICATION IN THE FEDERAL REGISTER].   
+Applicability date: For dates of applicability, see §§1.6417-1(q), 1.6417-2(f), 
+1.6417-3(f), 1.6417-4(f), 1.6417-5(d), 1.6417-6(e), 301.6241-1(b)(1), and 301.6241-
+7(k)(3).
+FOR FURTHER INFORMATION CONTACT:  Concerning these final regulations, 
+This document is scheduled to be published in the
+Federal Register on 03/11/2024 and available online at
+https://federalregister.gov/d/2024-04604, and onhttps://govinfo.gov
+
+Jeremy Milton at (202) 317-5665 and James Holmes at (202) 317-5114 (not toll-free 
+numbers).
+SUPPLEMENTARY INFORMATION:
+Background
+This document contains final regulations that amend the Income Tax Regulations 
+(26 CFR part 1) and the Procedure and Administration Regulations (26 CFR part 301) 
+to implement the statutory provisions of section 6417 of the Internal Revenue Code 
+(Code), as enacted by section 13801(a) of Public Law 117-169, 136 Stat. 1818, 2003 
+(August 16, 2022), commonly known as the Inflation Reduction Act of 2022 (IRA).
+I. Overview of Section 6417
+An applicable entity that meets all the requirements of section 6417 is permitted 
+to make an election under section 6417 with respect to any applicable credit determined 
+with respect to the applicable entity for the taxable year (elective payment election).  If 
+an applicable entity makes an elective payment election, the applicable entity is treated 
+as making a payment against Federal income taxes imposed by subtitle A of the Code 
+(subtitle A) for the taxable year with respect to which such credit was determined that is 
+equal to the amount of such credit (elective payment amount).  An election under 
+section 6417 must be made at such time and in such manner as provided by the 
+Secretary of the Treasury or her delegate (Secretary).
+Section 6417(b) defines the term “applicable credit” to mean each of the following 
+12 credits:
+(1) So much of the credit for alternative fuel vehicle refueling property allowed 
+under section 30C of the Code that, pursuant to section 30C(d)(1), is treated as a credit 
+listed in section 38(b) of the Code (section 30C credit);
+(2) So much of the renewable electricity production credit determined under 
+section 45(a) of the Code as is attributable to qualified facilities that are originally placed 
+
+in service after December 31, 2022 (section 45 credit);
+(3) So much of the credit for carbon oxide sequestration determined under 
+section 45Q(a) of the Code as is attributable to carbon capture equipment that is 
+originally placed in service after December 31, 2022 (section 45Q credit);
+(4) The zero-emission nuclear power production credit determined under 
+section 45U(a) of the Code (section 45U credit);
+(5) So much of the credit for production of clean hydrogen determined under 
+section 45V(a) of the Code as is attributable to qualified clean hydrogen production 
+facilities that are originally placed in service after December 31, 2012 (section 45V 
+credit);
+(6) In the case of a “tax-exempt entity” described in section 168(h)(2)(A)(i), (ii), or 
+(iv) of the Code, the credit for qualified commercial vehicles determined under section 
+45W of the Code by reason of section 45W(d)(3)
+1
+ (section 45W credit);
+(7) The credit for advanced manufacturing production under section 45X(a) of the 
+Code (section 45X credit);
+(8) The clean electricity production credit determined under section 45Y(a) of the 
+Code (section 45Y credit);
+(9) The clean fuel production credit determined under section 45Z(a) of the Code 
+(section 45Z credit);
+(10) The energy credit determined under section 48 of the Code (section 48 
+credit);
+(11) The qualifying advanced energy project credit determined under section 48C 
+of the Code (section 48C credit); and
+(12) The clean electricity investment credit determined under section 48E of the 
+1
+ The reference was intended to be to section 45W(d)(2).  See General Explanation of Tax Legislation 
+Enacted in the 117th Congress, JCS-1-23 (December 21, 2023) at 282.  Thus, the final regulations refer 
+to section 45W(d)(2).
+
+Code (section 48E credit).
+As described in part II of this Background, section 6417(d) defines an “applicable 
+entity” and provides generally applicable rules for making elective payment elections.  
+Section 6417(e) through (h) provide special rules applicable under section 6417 that are 
+described in part II of this Background.  As described in parts III and IV of this 
+Background, section 6417(c), (d)(1)(B) through (D), and (d)(3) also contain special rules 
+allowing a taxpayer, including for this purpose a partnership or S corporation, that is not 
+an applicable entity (electing taxpayer) to elect to be treated as an applicable entity for 
+the limited purpose of making an elective payment election under section 6417, but only 
+with respect to section 45Q credits, section 45V credits, and section 45X credits.  Part V 
+of this Background describes Notice 2022-50, 2022-43 I.R.B. 325, which, in part, 
+requested feedback from the public on potential issues with respect to the elective 
+payment election provisions under section 6417.  Part VI of this Background describes 
+proposed regulations (REG-101607-23) and temporary regulations (TD 9975) issued 
+under section 6417.
+II. Applicable Entities and General Elective Payment Election Rules
+Section 6417(d)(1)(A) defines the term “applicable entity” to mean:
+(1) Any organization exempt from tax imposed by subtitle A;
+(2) Any State or political subdivision thereof;
+(3) The Tennessee Valley Authority;
+(4) An Indian tribal government (as defined in section 30D(g)(9) of the Code);
+(5) Any Alaska Native Corporation (as defined in section 3 of the Alaska Native 
+Claims Settlement Act (43 U.S.C. 1602(m)); or
+(6) Any corporation operating on a cooperative basis that is engaged in 
+furnishing electric energy to persons in rural areas.
+Section 6417(d)(2) provides that, in the case of any applicable entity that makes 
+
+the election described in section 6417(a), any applicable credit amount is determined 
+(1) without regard to section 50(b)(3) and (4)(A)(i) of the Code (that is, restrictions on 
+property used by tax-exempt organizations and governmental units), and (2) by treating 
+any property with respect to which such credit is determined as used in a trade or 
+business of the applicable entity.
+Section 6417(d)(3)(A)(i) provides rules regarding the due date for making any 
+elective payment election.  In the case of any government (such as a State, the District 
+of Columbia, an Indian tribal government, any U.S. territory) or any political subdivision, 
+agency or instrumentality of the foregoing described in section 6417(d)(1) and for which 
+no return is required under section 6011 or 6033(a) of the Code, any election under 
+section 6417(a) cannot be made later than the date as is determined appropriate by the 
+Secretary.  In any other case, any election under section 6417(a) cannot be made later 
+than the due date (including extensions of time) for the tax return for the taxable year for 
+which the election is made, but in no event earlier than 180 days after the date of the 
+enactment of section 6417 (that is, in no event earlier than 180 days after August 16, 
+2022, which is February 13, 2023).
+Section 6417(d)(3)(A)(ii) provides that any election under section 6417(a), once 
+made, is irrevocable, and applies (except as otherwise provided in section 6417(d)(3)) 
+with respect to any credit for the taxable year for which the election is made.
+Section 6417(d)(3)(B) provides that, in the case of section 45 credits, any 
+election under section 6417(a): (1) applies separately with respect to each qualified 
+facility; (2) must be made for the taxable year in which such qualified facility is originally 
+placed in service; and (3) applies to such taxable year and to any subsequent taxable 
+year that is within the 10-year credit period described in section 45(a)(2)(A)(ii) with 
+respect to such qualified facility.
+Section 6417(d)(3)(C) provides that, in the case of section 45Q credits, any 
+
+election under section 6417(a): (1) applies separately with respect to the carbon capture 
+equipment originally placed in service by the applicable entity during a taxable year; and 
+(2) applies to such taxable year and to any subsequent taxable year that is within the 
+12-year credit period described in section 45Q(a)(3)(A) or (4)(A) with respect to such 
+equipment.  Section 6417(d)(3)(C)(i)(II)(aa), (d)(3)(C)(ii), and (d)(3)(C)(iii) provides 
+special rules for a taxpayer making the election to be treated as an applicable entity for 
+purposes of section 6417 with respect to a section 45Q credit (see part III of this 
+Background).
+Section 6417(d)(3)(D) provides that, in the case of section 45V credits, any 
+election under section 6417(a): (1) applies separately with respect to each qualified 
+clean hydrogen production facility; (2) must be made for the taxable year in which such 
+facility is placed in service (or within the 1-year period subsequent to the date of 
+enactment of section 6417 in the case of facilities placed in service before December 
+31, 2022); and (3) applies to the taxable year and all subsequent taxable years with 
+respect to such facility.  Section 6417(d)(3)(D)(i)(III)(aa), (ii), and (iii) provide special 
+rules for a taxpayer making the election to be treated as an applicable entity for 
+purposes of section 6417 with respect to the 45V credit (see part III of this Background).
+Section 6417(d)(3)(E) provides that, in the case of section 45Y credits, any 
+election under section 6417(a): (1) applies separately with respect to each qualified 
+facility; (2) must be made for the taxable year in which such facility is placed in service; 
+and (3) applies to such taxable year and to any subsequent taxable year that is within 
+the 10-year credit period described in section 45Y(b)(1)(B) with respect to such facility.
+Section 6417(d)(4) provides rules regarding when the elective payment is treated 
+as made.  Section 6417(d)(4)(A) provides that, in the case of any government or 
+political subdivision described in section 6417(d)(1), and for which no return is required 
+under section 6011 or 6033(a), the payment described in section 6417(a) is treated as 
+
+made on the later of the date that a return would be due under section 6033(a) if such 
+government or subdivision were described in section 6033 or the date on which such 
+government or subdivision submits a claim for credit or refund (at such time and in such 
+manner as the Secretary provides).  Section 6417(d)(4)(B) provides that, in any other 
+case, the payment described in section 6417(a) is treated as made on the later of the 
+due date (determined without regard to extensions) of the return of tax for the taxable 
+year or the date on which such return is filed with the IRS.
+Section 6417(d)(5) provides that, as a condition of, and prior to, any amount 
+being treated as a payment that is made by an applicable entity under section 6417(a), 
+the Secretary may require such information or registration as the Secretary deems 
+necessary for purposes of preventing duplication, fraud, improper payments, or 
+excessive payments under section 6417.
+Section 6417(d)(6) provides rules relating to excessive payments.  In the case of 
+any amount treated as a payment that is made by the applicable entity under 
+section 6417(a), or the amount of the payment made pursuant to section 6417(c), that is 
+determined to constitute an excessive payment, the tax imposed on such entity by 
+chapter 1 of the Code (chapter 1), regardless of whether such entity would otherwise be 
+subject to chapter 1 tax, for the taxable year in which such determination is made is 
+increased by an amount equal to the sum of (1) the amount of such excessive payment, 
+plus (2) an amount equal to 20 percent of such excessive payment.  The increase equal 
+to 20 percent of the excessive payment does not apply if the applicable entity can 
+demonstrate that the excessive payment resulted from reasonable cause.
+An excessive payment is defined as, with respect to a facility or property for 
+which an election is made under section 6417 for any taxable year, an amount equal to 
+the excess of (1) the amount treated as a payment that is made by the applicable entity 
+under section 6417(a), or the amount of the payment made pursuant to section 6417(c), 
+
+with respect to such facility or property for such taxable year, over (2) the amount of the 
+credit that, without application of section 6417, would be otherwise allowable (as 
+determined pursuant to section 6417(d)(2) and without regard to section 38(c)) with 
+respect to such facility or property for such taxable year.
+Section 6417(e) provides a denial of double benefit rule providing that, in the 
+case of an applicable entity making an election under section 6417 with respect to an 
+applicable credit, such credit is reduced to zero and, for any other purpose under the 
+Code, is deemed to have been allowed to such entity for such taxable year.
+Section 6417(f) provides a special rule relating to any territory
+2
+ of the United 
+States with a mirror code tax system (as defined in section 24(k) of the Code).  Under 
+this rule, section 6417 will not be treated as part of the income tax laws of the United 
+States for purposes of determining the income tax law of any such U.S. territory unless 
+such U.S. territory elects to have section 6417 be so treated.  Currently, the U.S. Virgin 
+Islands, Guam, and the Commonwealth of the Northern Mariana Islands have mirror 
+code tax systems.
+Section 6417(g) provides basis reduction and recapture rules.  It states that, 
+except as otherwise provided in section 6417(c)(2)(A),
+3
+ rules similar to the rules of 
+section 50 apply for purposes of section 6417.
+Section 6417(h) authorizes the Secretary to issue regulations or other guidance 
+as may be necessary to carry out the purposes of section 6417, including guidance to 
+ensure that the amount of the payment or deemed payment made under section 6417 is 
+commensurate with the amount of the credit that would be otherwise allowable 
+(determined without regard to section 38(c)).
+2
+ Section 6417(f) uses the term “possession,” but the proposed regulations and these final regulations use 
+the alternative term “territory.”
+3
+ There is no section 6417(c)(2)(A) and the Treasury Department and the IRS believe Congress intended 
+to refer instead to section 6417(d)(2)(A).  See General Explanation of Tax Legislation Enacted in the 
+117th Congress, JCS-1-23 (December 21, 2023) at 284.  Thus, the proposed and final regulations refer to 
+section 6417(d)(2)(A).
+
+III. Special Rules Relating to Electing Taxpayers Making An Election Under Section 
+6417(d)(1)(B), (C), or (D)
+A taxpayer other than an applicable entity under section 6417(d)(1)(A) (electing 
+taxpayer) may make an election to be treated as an applicable entity for the limited 
+purpose of making an elective payment election with respect to a section 45V credit, a 
+section 45Q credit, or a section 45X credit under section 6417(d)(1)(B), (C), or (D), 
+respectively.  An electing taxpayer may make an elective payment election under 
+section 6417(d)(1)(B), (C), or (D) at such time and in such manner as the Secretary 
+provides (but no election may be made with respect to any taxable year beginning after 
+December 31, 2032).  The special rules for such an election are described in parts III.A, 
+III.B, and III.C of this Background.
+A. Electing taxpayers making an election with respect to section 45V credits
+Section 6417(d)(1)(B) allows an electing taxpayer to make an elective payment 
+election for any taxable year in which such taxpayer has placed in service a qualified 
+clean hydrogen production facility (as defined in section 45V(c)(3)), but only with 
+respect to a section 45V credit determined in such year with respect to the electing 
+taxpayer.  Pursuant to section 6417(d)(3)(D)(i)(III), such electing taxpayer is treated as 
+having made such election for the taxable year with respect to which the election is 
+made and each of the four subsequent taxable years ending before January 1, 2033.  
+Under section 6417(d)(3)(D)(iii), an electing taxpayer may elect to revoke the 
+application of such election, but any such election to revoke, if made, applies to the 
+applicable year specified in such election (but not any prior taxable year) and each 
+subsequent taxable year within the 5-year period and cannot be revoked.
+Section 6417(d)(3)(D)(ii) prohibits an electing taxpayer from making a transfer 
+election under section 6418(a) of the Code with respect to a section 45V credit for any 
+year for which the electing taxpayer’s election under section 6417(d)(1)(B) is in effect.
+B. Electing taxpayers making an election with respect to section 45Q credits
+
+Section 6417(d)(1)(C) allows an electing taxpayer to make an elective payment 
+election for any taxable year in which the electing taxpayer has, after December 31, 
+2022, placed in service carbon capture equipment at a qualified facility (as defined in 
+section 45Q(d)), but only with respect to a section 45Q credit determined in such year 
+with respect to such taxpayer.  Pursuant to section 6417(d)(3)(C)(i)(II)(aa), such electing 
+taxpayer is treated as having made such election for the taxable year with respect to 
+which the election is made and each of the four subsequent taxable years ending before 
+January 1, 2033.  Under section 6417(d)(3)(C)(iii), an electing taxpayer may elect to 
+revoke the application of such election, but any such election to revoke, if made, applies 
+to the applicable year specified in such election (but not any prior taxable year) and 
+each subsequent taxable year within the 5-year period and cannot be revoked.
+Section 6417(d)(3)(C)(ii) prohibits an electing taxpayer from making a transfer 
+election under section 6418(a) with respect to a section 45Q credit for any year for 
+which the electing taxpayer’s election under section 6417(d)(1)(C) is in effect.
+C. Electing taxpayers making an election with respect to section 45X credits
+Section 6417(d)(1)(D) allows an electing taxpayer to make an elective payment 
+election for any taxable year in which the electing taxpayer has, after December 31, 
+2022, produced eligible components (as defined in section 45X(c)(1)), but only with 
+respect to a section 45X credit determined in such year with respect to such taxpayer.  
+Pursuant to section 6417(d)(1)(D)(ii)(I), such electing taxpayer is treated as having 
+made such election for the taxable year with respect to which the election is made and 
+each of the four subsequent taxable years ending before January 1, 2033.  Under 
+section 6417(d)(1)(D)(ii)(II), an electing taxpayer may elect to revoke the application of 
+such election, but any such election to revoke, if made, applies to the applicable year 
+specified in such election (but not any prior taxable year) and each subsequent taxable 
+year remaining within the 5-year period and cannot be revoked.
+
+Section 6417(d)(1)(D)(iii) prohibits an electing taxpayer from making a transfer 
+election under section 6418(a) with respect to a section 45X credit for any year for 
+which the electing taxpayer’s election under section 6417(d)(1)(D) is in effect.
+IV. Section 6417 Rules for Partnerships and S corporations
+Section 6417(c) provides special rules for partnerships and S corporations that 
+hold directly (as determined for Federal tax purposes) a facility or property for which an 
+applicable credit is determined.  Section 6417(c)(1) provides that, in the case of any 
+applicable credit determined with respect to any facility or property held directly by a 
+partnership or S corporation, any elective payment election must be made by such 
+partnership or S corporation in the manner provided by the Secretary.  If a partnership 
+or S corporation makes an elective payment election with respect to any applicable 
+credit, (1) a payment is made to such partnership or S corporation equal to the 
+applicable credit amount; (2) section 6417(e) is applied with respect to the applicable 
+credit before determining any partner's distributive share, or S corporation shareholder's 
+pro rata share, of such applicable credit; (3) any applicable credit amount with respect 
+to which the election in section 6417(a) is made is treated as tax exempt income for 
+purposes of sections 705 and 1366 of the Code; and (4) a partner’s distributive share of 
+such tax exempt income is based on such partner's distributive share of the otherwise 
+applicable credit for each taxable year (an S corporation shareholder’s share of tax 
+exempt income is based on the shareholder’s pro rata share).
+Section 6417(c)(2) provides that, in the case of any facility or property held 
+directly by a partnership or S corporation, no election by any partner or shareholder is 
+allowed under section 6417(a) with respect to any applicable credit determined with 
+respect to such facility or property.
+V. Notice 2022-50
+On October 24, 2022, the Department of the Treasury (Treasury Department) 
+
+and the IRS published Notice 2022-50, 2022-43 I.R.B. 325, to, among other things, 
+request feedback from the public on potential issues with respect to the elective 
+payment election provisions under section 6417 that may require guidance.  
+Stakeholders submitted more than 200 comments in response to Notice 2022-50.  
+Feedback in those comments informed the development of the proposed regulations 
+and is described in the preamble to the proposed regulations as appropriate.
+VI.  Proposed and Temporary Regulations
+On June 21, 2023, the Treasury Department and the IRS published proposed 
+regulations under section 6417 (REG-101607-23) in the Federal Register (88 FR 
+40528) to provide guidance on elective payment elections (proposed regulations).  
+Those proposed regulations included proposed §1.6417-5, which contained proposed 
+rules identical to the temporary regulations at §1.6417-5T.  Those temporary regulations 
+also were published on June 21, 2023, in the Federal Register (88 FR 40093) to provide 
+guidance on the mandatory information and registration requirements for elective 
+payment elections.  The provisions of the proposed regulations are explained in greater 
+detail in the preamble to the proposed regulations.
+Summary of Comments and Explanation of Revisions
+This Summary of Comments and Explanation of Revisions summarizes the 
+proposed regulations and all the substantive comments submitted in response to the 
+proposed regulations.  The Treasury Department and the IRS received 151 written 
+comments in response to the proposed regulations.  The comments are available for 
+public inspection at www.regulations.gov or upon request.  A hearing was conducted in 
+person and telephonically on August 21, 2023, during which 10 presenters provided 
+comments.  After full consideration of the comments received, these final regulations 
+adopt the proposed regulations with modifications in response to the comments 
+described in this Summary of Comments and Explanation of Revisions.  
+
+Comments merely summarizing the proposed regulations, recommending 
+statutory revisions to section 6417 or other statutes, or addressing issues that are 
+outside the scope of this rulemaking, such as the calculation of applicable credits 
+(including any bonus credit amounts) or recommended changes to IRS forms, are 
+beyond the scope of these regulations and are not adopted.
+I. General Rules and Definitions
+A. Applicable entities
+Section 6417(d)(1) defines applicable entity.  Proposed §1.6417-1(c) clarified the 
+statutory definition of applicable entity pursuant to the Secretary’s authority under 
+section 6417(h) to issue regulations necessary to carry out the purposes of section 
+6417.  Commenters addressed several aspects of the proposed definitions, as 
+described in this Part I.A of the Summary of Comments and Explanation of Revisions.  
+1. Any Organization Exempt from the Tax Imposed by Subtitle A
+Section 6417(d)(1)(A)(i) defines “applicable entity” as including any organization 
+exempt from the tax imposed by subtitle A.  The proposed regulations would have 
+clarified that “any organization exempt from the tax imposed by subtitle A” meant (1) 
+any organization exempt from the tax imposed by subtitle A by reason of section 501(a) 
+of the Code and (2) any organization exempt from the tax imposed by subtitle A 
+because it is the government of any U.S. territory or a political subdivision thereof.
+A few commenters asked that Puerto Rico-registered nonprofits (those with 
+Puerto Rico 1101.01 nonprofit status) be allowed to file for elective payment of 
+renewable energy tax credits without having to acquire section 501(c)(3) status.  As the 
+preamble to the proposed regulations noted, stakeholders had previously responded to 
+Notice 2022-50 by asking whether an entity classified as a nonprofit under State law but 
+that does not have Federal tax-exempt status would be described in section 
+6417(d)(1)(A).  The preamble to the proposed regulations stated that such an entity 
+
+would not be described in section 6417(d)(1)(A) because it is not exempt from the tax 
+imposed by subtitle A (but that some of these entities might meet the requirements of 
+another type of applicable entity, such as a State instrumentality, and might be an 
+applicable entity on those grounds).  This same answer applies to a Puerto Rico-
+registered nonprofit that does not have section 501(c)(3) status.
+Multiple commenters urged that homeowners’ associations described in section 
+528 of the Code be considered applicable entities under section 6417(d)(1)(A) because 
+they are “exempt from the tax imposed by subtitle A” by their statutory language.  Two 
+of these commenters noted that other sections within subchapter F of chapter 1 have 
+similar statutory language, and one of these commenters thus requested that the final 
+regulations be modified to include all organizations considered exempt from income 
+taxes pursuant to subchapter F of chapter 1.  In response, these final regulations adopt 
+this comment and define “any organization exempt from the tax imposed by subtitle A” 
+to include organizations exempt from the tax imposed by subtitle A by reason of 
+subchapter F of chapter 1.  Thus, under these final regulations, any organization 
+described in sections 501 through 530 of the Code that meets the requirements to be 
+recognized as exempt from tax under those sections is an applicable entity eligible to 
+make an elective payment election.
+No commenters opposed the inclusion of the government of any U.S. territory or 
+a political subdivision thereof in this definition; thus, these final regulations adopt this 
+definition as proposed.  However, several commenters recommended that the final 
+regulations provide an exception to the general rule in section 50(b)(1) for territorial 
+applicable entities making elections under section 6417 for investment tax credits, 
+advocating that such a rule would provide better parity with domestic applicable entities 
+making such elections and would advance the IRA’s purpose by improving access to 
+clean energy investment tax credits in U.S. territories.
+
+Since before the IRA, investment tax credits, vehicle-related credits, and energy 
+efficiency incentives have included restrictions with respect to property located or used 
+in U.S. territories by reference to section 50(b)(1).  Section 50(b)(1) provides that “no 
+[investment tax] credit shall be determined . . . with respect to any property which is 
+used predominantly outside the United States”
+4
+ unless section 168(g)(4) applies (which 
+provides an exception for any property that is owned by a domestic corporation or by a 
+United States citizen other than a citizen entitled to the benefits of section 931 or 933 of 
+the Code, and that is used predominantly in a possession of the United States by such 
+a corporation or such a citizen, or by a corporation created or organized in, or under the 
+law of, a possession of the United States).  The IRA did not amend these provisions; 
+instead, the IRA specifically referenced 50(b)(1) in section 30C, incorporated section 
+50(b)(1) into section 45W, and did not exclude section 48, 48C, or 48E from the 
+application of section 50(b)(1).  Furthermore, section 6417(d)(2) provides special rules 
+that enable tax-exempt and government entities to benefit from section 30C, 45W, 48, 
+48C, and 48E because it provides that applicable credits are determined without regard 
+to sections 50(b)(3) and (4)(A)(i).  However, there is no provision lifting the territory-
+related restrictions of section 50(b)(1).  Without specific language in section 6417 or in 
+the underlying applicable credits addressing section 50(b)(1), or other compelling 
+evidence of congressional intent, a special rule turning off the application of section 
+50(b)(1) is not supported by the Code.  Therefore, these final regulations do not adopt 
+this recommendation.
+One commenter asked for a process under which the Puerto Rico Department of 
+Treasury (or any other agency designed by the Governor of Puerto Rico) is designated 
+to receive, process, and/or administer elections for elective payments from applicable 
+4
+ Under section 7701(a)(9) of the Code, “[t]he term ‘United States’ when used in a geographical sense 
+includes only the States and the District of Columbia.”
+
+entities and instrumentalities of Puerto Rico, similar to the process for disbursements of 
+Coronavirus Relief Funds under the Coronavirus Aid, Relief, and Economic Security 
+Act, Public Law 116-136, 134 Stat. 281 (March 27, 2020).  The Treasury Department 
+and the IRS have determined that creating the suggested process is inappropriate for 
+elective payment elections because section 6417 involves the filing of a tax return with 
+the IRS.  Accordingly, these final regulations do not adopt this comment.
+2. Any State or Political Subdivision Thereof
+Section 6417(d)(1)(A)(ii) defines “applicable entity” to include any State or 
+political subdivision thereof.  The proposed regulations would have clarified that this 
+includes the District of Columbia.  No comments addressed this definition, so these final 
+regulations adopt the definition as proposed.
+3. Indian Tribal Governments
+Section 6417(d)(1)(A)(iv) states that an applicable entity includes an Indian tribal 
+government (as defined in section 30D(g)(9)).  To provide Indian tribal governments 
+parity with State governments, proposed §1.6417-1(c)(3) would have included 
+subdivisions of Indian tribal governments in this definition.  Proposed §1.6417-1(k) 
+defined the term Indian tribal government as the recognized governing body of any 
+Indian or Alaska Native tribe, band, nation, pueblo, village, community, component 
+band, or component reservation, individually identified (including parenthetically) in the 
+most recent list published by the Department of the Interior in the Federal Register 
+pursuant to section 104 of the Federally Recognized Indian Tribe List Act of 1994 (25 
+U.S.C. 5131).  Although no comments were received that directly addressed the 
+definition of an Indian tribal government provided in proposed §1.6417-1(c)(3), these 
+final regulations clarify the proposed definition by specifying that the most recent list 
+published by the Department of the Interior in the Federal Register is the one prior to 
+the date on which a relevant elective payment election is made.  (Comments regarding 
+
+Tribal entities other than Indian tribal governments are discussed elsewhere in this 
+Summary of Comments and Explanation of Revisions.)
+4. Alaska Native Corporations
+Section 6417(d)(1)(A)(v) provides that any Alaska Native Corporation (as defined 
+in section 3 of the Alaska Native Claims Settlement Act (43 U.S.C. 1602(m)) (ANC) is 
+an applicable entity.  The proposed regulations would have adopted this definition.  The 
+proposed regulations requested comments regarding the definition in proposed 
+§1.6417-1(c)(4) and whether additional guidance is necessary regarding consolidated 
+groups with ANC common parents.  The Treasury Department and the IRS did not 
+receive comments related to this definition, but these final regulations adopt the 
+proposed regulation and broaden it to apply to consolidated groups with any applicable 
+entity as a common parent, as described in part I.B.5. of this Summary of Comments 
+and Explanation of Revisions.
+5. Rural Electric Cooperatives
+Section 6417(d)(1)(A)(vi) provides that any corporation operating on a 
+cooperative basis that is engaged in furnishing electric energy to persons in rural areas 
+is an applicable entity.  The proposed regulations did not elaborate on this definition but 
+requested comments on whether further clarification of the definition in proposed 
+§1.6417-1(c)(6) is necessary.
+A few commenters addressed this definition.  Some of these commenters stated 
+that “clarity would be better achieved” if the Treasury Department and the IRS would 
+refer to tax-exempt electric cooperatives as applicable entities described in 501(c)(12) 
+and taxable electric cooperatives as applicable entities described in section 
+1381(a)(2)(C) of the Code.  One of these commenters stated that an electric 
+cooperative may be described in section 45(e)(2)(A)(iii) as a not-for-profit electric utility 
+that had or has received a loan or loan guarantee under the Rural Electrification Act of 
+
+1936.  Another commenter asked that the final regulations also allow a “pre-1962” rural 
+electric cooperative under section 1381(a)(2)(C) to be eligible to make an elective 
+payment election.  Another commenter asked that the final regulations clarify that rural 
+electric cooperatives that file either Form 1120, U.S. Corporation Income Tax Return, or 
+Form 990, Return of Organization Exempt from Income Tax, be eligible to make an 
+elective payment election.
+The Treasury Department and the IRS have concluded that rural electric 
+cooperatives as described in section 6417(d)(1)(A)(vi) include rural electric cooperatives 
+that do not meet the requirements under section 501(c)(12), as cooperatives that meet 
+the requirements under section 501(c)(12) are already considered tax-exempt entities in 
+section 6417(d)(1)(A)(i).  To avoid rendering section 6417(d)(1)(A)(vi) superfluous, it is 
+necessary to include taxable (nonexempt) rural electric cooperatives in section 
+6417(d)(1)(A)(vi).  Taxable (nonexempt) rural electric cooperatives are described in 
+section 1381(a)(2)(C) as “any corporation operating on a cooperative basis that is 
+engaged in furnishing electric energy to persons in rural areas.”  Thus, these final 
+regulations under §1.6417-1(c)(6) clarify that section 6417(d)(1)(A)(vi) means “any 
+corporation operating on a cooperative basis that is engaged in furnishing electric 
+energy to persons in rural areas as described in section 1381(a)(2)(C) of the Code.”  
+These final regulations do not include “any electric cooperative described in section 
+45(e)(2)(A)(iii)” in the definition because such section does not exist in the Code, and 
+the Treasury Department and the IRS are unsure what cooperatives the commenter is 
+referencing.
+One commenter recommended that the final regulations clarify that local, publicly 
+owned utilities (for example, water and electric) and electric cooperatives (other than 
+rural) are eligible entities under section 6417(d)(1)(A)(vi), stating that the proposed 
+definition aligns with Congressional intent and that there are more than 2,800 public 
+
+owned utilities and cooperatives in operation combined serving millions of customers 
+across the United States.  Because section 6417(d)(1)(A)(vi) requires that a cooperative 
+be engaged in furnishing electric energy to persons “in rural areas,” these final 
+regulations do not include these entities in the definition of rural electric cooperative.  
+However, it is possible that publicly owned utilities and non-profit co-ops could qualify as 
+applicable entities under other definitions described in these rules, such as if they are 
+considered agencies or instrumentalities of a State, local, territorial, or Tribal 
+government.
+Multiple commenters asked that the final regulations expand rural electric 
+cooperatives to cover workers cooperatives that install solar panels.  These 
+commenters also requested clarification as to how to determine an organization is 
+(1) operating on a cooperative basis; (2) furnishing electricity; and (3) furnishing 
+electricity in a rural area.  The commenters generally suggest adopting existing rules 
+under subchapter T of chapter 1 of the Code (subchapter T).
+These final regulations do not adopt a specific rule covering workers 
+cooperatives that install solar panels because the revision to the definition of rural 
+electric cooperatives in the final regulations is sufficient to clarify the meaning of the 
+term.  As these final regulations include any corporation operating on a cooperative 
+basis that is engaged in furnishing electric energy to persons in rural areas as described 
+in section 1381(a)(2)(C), it is the law that applies to those corporations that will apply in 
+making the determination with respect to any respective corporation.
+With respect to operating on a cooperative basis, a summary of the taxation of 
+nonexempt rural electric cooperatives may be helpful in explaining the key principles.  
+The rules for tax treatment of most nonexempt cooperatives and their patrons were 
+codified with the enactment of subchapter T as part of the Revenue Act of 1962. Public 
+Law No. 87-834 (H.R. 10650).  However, section 1381(a)(2)(C) states that subchapter T 
+
+is not applicable to an organization engaged in furnishing electric energy (or providing 
+telephone service) to persons in rural areas.  According to the Senate Finance 
+Committee Report accompanying the 1962 Act, the intent of Congress was that 
+nonexempt rural electric cooperatives would continue to be treated as under “present 
+law” as of 1962.  While subchapter T does not expressly control the taxation of 
+nonexempt rural electric cooperatives, its foundations rest upon pre-1962 cooperative 
+tax law.  As a result, there are certain basic parallels between the tax treatment of 
+nonexempt utility (electric and telephone) cooperatives and treatment of other 
+cooperative organizations under subchapter T.  Therefore, to extent that subchapter T 
+reflects cooperative taxation as it existed prior to 1962, it is instructive in resolving 
+certain issues facing rural electric cooperatives.  This is because Congress stated that, 
+in enacting subchapter T, it was merely codifying the long common law history of 
+cooperative taxation (with the exception of ensuring at least one annual level of tax at 
+the cooperative or patron level. See S. Rep. No. 1881, 87th Cong., 1st Sess. 113 
+(1962)).  Arguably, the case law post-enactment is merely a continuation and 
+refinement of the pre-enactment common law.
+Perhaps the most succinct definition of the term “cooperative” for Federal income 
+tax purposes was provided by the U.S. Tax Court in Puget Sound Plywood, Inc. v. 
+Commissioner, 44 T.C. 305 (1965), acq. 1966-1 C.B. 3:
+Under  the  cooperative  association  form  or  organization  .  .  .  ,  the  worker-
+members of the association supply their own capital at their own risk; select 
+their  own  management  and  supply  their  own  direction  for  the  enterprise, 
+through  worker  meetings  conducted  on  a  democratic  basis;  and  then 
+themselves  receive  the  fruits  of  their  cooperative  endeavors,  through 
+allocations of the same among themselves as coworkers, in proportion to 
+the amounts of their active participation in the cooperative undertaking.
+The Tax Court went on to describe three guiding principles at the core of 
+economic cooperative theory as, id. at 308:
+(1)  Subordination  of  capital,  both  as  regards  control  over  the  cooperative 
+undertaking, and as regards the ownership of the pecuniary benefits arising 
+
+therefrom; (2) democratic control by the worker-members themselves; and, 
+(3) the vesting in and allocation among the worker-members of all fruits and 
+increases  arising  from  their  cooperative  endeavor  (i.e.,  the  excess  of 
+operating revenues over the costs incurred in generating those revenues), 
+in proportion to the worker-members active participation in the cooperative 
+endeavor.
+The mechanism by which rural electric cooperatives achieve operation at cost is 
+the patronage dividend (or capital credit).  The payment of patronage dividends (and 
+operation at cost) is critical to achieving cooperative status as defined by Puget Sound, 
+so any organization must analyze this issue to determine whether it is operating on a 
+cooperative basis.
+The comments related to the definition of “furnishing” electricity for purposes of 
+section 6417(d)(1)(A)(vi) varied.  For example, some commenters suggested using the 
+language in §1.1381-1(b)(4) as the standard, and some suggested the term should not 
+be limited to generating and transmitting electricity.  One commenter suggested that a 
+percentage of rural nameplate capacity be applied for purposes of the definition of 
+“furnishing” electricity, while another commenter stated that a more than de minimis 
+standard should be used to meet furnishing requirements.  Consistent with the 
+determination that section 6417(d)(1)(A)(vi) will cover rural electric cooperatives 
+described in section 1381(a)(2)(C), the Treasury Department and the IRS conclude that 
+“furnishing” electricity under section 6417(d)(1)(A)(vi) should be interpreted in the same 
+manner as the language in §1.1381-1(b)(4), which provides “[a]ny organization which is 
+engaged in generating, transmitting, or otherwise furnishing electric energy.”  The 
+purpose of this language in §1.1381-1(b)(4) is to identify rural electric cooperatives 
+described in section 1381(a)(2)(C).  Using a similar interpretation for purposes of 
+section 6417 means that a cooperative furnishing electric energy under §1.1381-1(b)(4) 
+would meet this portion of the definition.  Such a cooperative would not be subject to 
+subchapter T as a result of section 1381(a)(2)(C), assuming the electricity is provided to 
+rural areas.  
+
+With respect to this conclusion, the Treasury Department and the IRS note that 
+some of the commenters identified themselves as cooperatives subject to the provisions 
+of subchapter T.  The definition of applicable entity in section 6417(d)(1)(A)(vi) would 
+not include a cooperative that is subject to subchapter T, as a cooperative cannot be 
+both subject to subchapter T and excepted from subchapter T.  Further, the definition of 
+furnishing in §1.1381-1(b)(4), and thus for purposes of section 6417, does not include 
+the activity of installation of energy equipment (such as the installation of solar panels), 
+as that alone is not the generation or other furnishing of electricity.  Thus, organizations 
+evaluating whether their operations include furnishing electricity for purposes of section 
+6417 should take this into account.
+Consistent with including rural electric cooperatives described in section 
+1381(a)(2)(C) and the use of §1.1381-1(b)(4) to determine whether a cooperative is 
+“furnishing” electricity, the Treasury Department and the IRS reach a similar conclusion 
+with respect to defining “rural” for purposes of section 6417 by reference to §1.1381-
+1(b)(4).  Section 1.1381-1(b)(4) provides that the term rural area has the meaning 
+assigned to [it] in section 5 of the Rural Electrification Act of 1936, as amended (7 
+U.S.C. 924).  Currently 7 U.S.C. 924(b) provides that the term ‘rural area’ is deemed to 
+mean any area of the United States not included within the boundaries of any 
+incorporated or unincorporated city, village, or borough having a population in excess of 
+5,000 inhabitants.
+6. Tennessee Valley Authority
+Section 6417(d)(1)(A)(iii) states that the Tennessee Valley Authority is an 
+applicable entity.  The proposed regulations would have adopted this definition.  No 
+commenters addressed this definition, so these final regulations adopt the definition as 
+proposed.
+7. An Agency or Instrumentality of Certain Applicable Entities
+
+Proposed §1.6417-1(c)(7) would have clarified that an agency or instrumentality 
+of (1) any U.S. territory or a political subdivision thereof; (2) any State, the District of 
+Columbia, or political subdivision thereof; or (3) an Indian tribal government or a 
+subdivision thereof is also an applicable entity eligible to make an elective payment 
+election.  The proposed regulations requested comments on this approach to defining 
+applicable entities and on whether further guidance is necessary.  Commenters 
+addressed both the scope of the definition and whether it should be expanded to include 
+Federal agencies and instrumentalities.
+i. Scope of the definition of “agency” and “instrumentality”
+Several commenters asked for additional clarity on the definition of agencies and 
+instrumentalities, such as whether joint powers authorities, housing authorities, transit 
+authorities, air authorities, publicly owned utilities, or tax-exempt entities in the water 
+sector are included (and one commenter requested a similar clarification pertaining to 
+political subdivisions).  Various commenters mentioned application of Rev. Rul. 57-128, 
+1957-1 C.B. 311, while two of these commenters asked how the facts and 
+circumstances analysis in the revenue ruling would apply to their specific facts.  One 
+commenter requested a rule stating that whether an entity is an agency or an 
+instrumentality is determined based on (or at least influenced by) State or local law.  
+Finally, one commenter asked that the final regulations allow tribes to determine what is 
+an agency or instrumentality of an Indian tribal government.
+The determination of whether an entity is an agency, instrumentality, or a political 
+subdivision (or subdivision in the case of an Indian tribal government) is governed by 
+Federal tax law that is outside the scope of these final regulations.  Federal tax 
+determinations of whether an entity is an agency or instrumentality of any government 
+typically are analyzed on a facts and circumstances basis.  In determining whether an 
+entity is an agency or instrumentality for Federal tax purposes, Federal courts have 
+
+applied a test similar to the six-factor test in Rev. Rul. 57-128, which generally provides 
+guidance on whether an entity is an instrumentality for purposes of the exemption from 
+employment taxes under sections 3121(b)(7) and 3306(c)(7).  See, e.g., Bernini v. 
+Federal Reserve Bank of St. Louis, Eighth District, 420 F. Supp. 2d 1021 (E.D. Mo. 
+2005) and Rose v. Long Island Railroad Pension Plan, 828 F.2d 910, 918 (2d Cir. 
+1987), cert. denied, 485 U.S. 936 (1988).
+Rev. Rul. 57-128 looks to the following six factors:
+(1)    Whether the organization is used for a governmental purpose and performs 
+a governmental function;
+(2)    Whether performance of the organization’s function is on behalf of one or 
+more States or political subdivisions;
+(3)    Whether there are any private interests involved, or whether the States or 
+political subdivisions involved have the powers and interests of an owner;
+(4)    Whether control and supervision of the organization is vested in public 
+authority or authorities;
+(5)    If express or implied statutory or other authority is necessary for the creation 
+and/or use of such an instrumentality, and whether such authority exists; 
+and
+(6)    The degree of financial autonomy and the source of its operating expenses.
+The Treasury Department and the IRS are unaware of any different Federal tax 
+authority or standard that applies to determine whether an entity qualifies as an 
+instrumentality of an Indian tribal government for Federal tax purposes.  The application 
+of the facts-and-circumstances analysis in Rev. Rul. 57-128 to any particular entity is 
+outside the scope of this rulemaking.   
+With respect to political subdivisions, Rev. Rul. 78-276, 1978-2 C.B. 256, states 
+that the term “political subdivision” has been defined consistently for all Federal tax 
+
+purposes as denoting either (1) a division of a State or local government that is a 
+municipal corporation, or (2) a division of such State or local government that has been 
+delegated the right to exercise sovereign power by the State or local government.  The 
+three generally acknowledged sovereign powers are the power to tax, the power of 
+eminent domain, and the police power.  See Commissioner v. Estate of Shamberg, 3 
+T.C. 131 (1944), acq., 1945 C.B. 6, aff'd 144 F.2d 998 (2d Cir. 1944), cert denied, 323 
+U.S. 792 (1945).  It is not necessary that all three sovereign powers enumerated in 
+Shamberg be delegated.  See Rev. Rul. 77-164, 1977-1 C.B. 20.  However, possession 
+of only an insubstantial amount of any or all sovereign powers is not sufficient.  
+In determining whether an entity is a division of a State or local governmental 
+unit, important considerations are the extent that the entity is (1) controlled by the State 
+or local government unit, and (2) motivated by a wholly public purpose. See., e.g., Rev. 
+Rul. 78-276, 1978-2 C.B. 256 and Rev. Rul. 83-131, 1983-2 C.B. 184.
+Determination of agency, instrumentality, or political subdivision (or subdivision in 
+the case of an Indian tribal government) status is based on all the facts and 
+circumstances, and additional guidance on this subject is beyond the scope of these 
+final regulations.  Generally, however, taxpayers may request a private letter ruling from 
+the IRS Office of Chief Counsel to apply applicable law to the organization’s specific set 
+of facts.  See Rev. Proc. 2024-1, I.R.B. 2024-1 (containing procedures for letter rulings) 
+and Rev. Proc. 2024-3, I.R.B. 2024-1 (containing a list of areas of the Code relating to 
+matters on which the IRS will not issue letter rulings).
+One commenter asked that an instrumentality be eligible to make an elective 
+payment election with respect to its assets that are operated and maintained by a 
+private partner under a public-private partnership.  While it is not clear what kind of 
+entity the commenter means by “public-private partnership,” if the arrangement is 
+treated as a partnership for Federal tax purposes, then the partnership would not be an 
+
+applicable entity listed in section 6417(d)(1)(A).  See part I.B.4 of this Summary of 
+Comments and Explanation of Revisions.
+ii. Federal agencies and instrumentalities
+Several commenters asked that the final regulations include Federal agencies 
+and instrumentalities within the definition of applicable entity.  Commenters specifically 
+mentioned the United States Postal Service, Federal hydropower agencies, Federal 
+Power Marketing Administrations (PMAs), the Army Corps of Engineers, and the 
+Bureau of Reclamation.
+One commenter stated that the proposed regulations did not provide a 
+justification for why Federal agencies or instrumentalities were not included.  This 
+commenter did, however, note that, absent statutory authorization to the contrary, 
+agency-collected user fees and charges already must be deposited in the Treasury 
+General Fund.  Several commenters suggested that the cross-reference in section 
+6417(b)(6) – the provision setting out the list of applicable credits – to section 
+168(h)(2)(A)(i) should be read to provide Federal agencies and instrumentalities with 
+the ability to make an elective payment election for at least section 45W credits.  
+Similarly, one commenter asked that PMAs be able to apply, file, and receive all elective 
+payments under section 6417 on behalf of the power generating agencies of regional 
+Federal power programs.  This commenter stated that PMAs serve as the Federal 
+entities responsible for facilitating the funding of and ensuring repayment for the 
+regional power program, both expensed annual maintenance and capital improvements, 
+and that it would be beneficial to eliminate unnecessary overlap, confusion, and 
+administrative burdens to efficiently use elective payments for applicable projects.  
+Section 6417(a)(1), however, authorizes an election of an applicable credit only by an 
+applicable entity under section 6417(d)(1)(A).  Although the Treasury Department and 
+the IRS solicited comments on the issue, no commenter addressed how appropriations 
+
+issues raised by including Federal agencies and instrumentalities (beyond the 
+Tennessee Valley Authority, which is specifically listed in the statute) or PMAs within the 
+definition of applicable entities could or should be resolved.  The Treasury Department 
+and the IRS have thus retained the proposed approach and have not extended the 
+definition of applicable entities to those additional entities in these final regulations.
+8. Electing Taxpayers
+Certain taxpayers that are not listed in section 6417(d)(1)(A) or described in the 
+preceding paragraphs may nevertheless make an election to be treated as an 
+applicable entity with respect to applicable credit property giving rise to a section 45Q 
+credit, section 45V credit, or section 45X credit, as described more fully in part III of this 
+Summary of Comments and Explanation of Revisions.  Proposed §1.6417-1(g) would 
+have defined an “electing taxpayer” as any taxpayer that is not an applicable entity, but 
+makes an election in accordance with proposed §§1.6417-2(b), 1.6417-3, and, if 
+applicable, 1.6417-4, to be treated as an applicable entity for a taxable year with respect 
+to applicable credits determined with respect to an applicable credit property described 
+in proposed §1.6417-1(e)(3), (5), or (7).  No commenters addressed this definition; thus, 
+these final regulations adopt the definition as proposed.
+B. Entities related to an applicable entity or an electing taxpayer
+Proposed §1.6417-2(a) would have provided rules for elective payment elections 
+made by entities related to applicable entities or electing taxpayers.  Commenters 
+addressed several of these proposed rules.
+1. Disregarded Entities
+Proposed §1.6417-1(f) defined “disregarded entity” as an entity that is 
+disregarded as an entity separate from its owner for Federal income tax purposes.  
+Proposed §1.6417-2(a)(1)(ii) would have provided that, if an applicable entity or electing 
+taxpayer is the owner (directly or indirectly) of a disregarded entity that directly holds an 
+
+applicable credit property, the applicable entity may make an elective payment election 
+for applicable credits determined with respect to the applicable credit property held 
+directly by the disregarded entity.
+Several commenters asked that the final regulations clarify whether Tribal 
+corporations formed under section 17 of the Indian Reorganization Act of 1934 are 
+considered applicable entities.  In response, these final regulations clarify the definition 
+of disregarded entity under §1.6417-1(f), consistent with the current rule in §301.7701-
+1(a)(3), to expressly state that the term includes a Tribal corporation incorporated under 
+section 17 of the Indian Reorganization Act of 1934, as amended (25 U.S.C. 5124), or 
+under section 3 of the Oklahoma Indian Welfare Act, as amended (25 U.S.C. 5203), that 
+is not recognized as an entity separate from the tribe for Federal tax purposes, and 
+therefore is disregarded as an entity separate from its owner for purposes of section 
+6417.
+One commenter asked that the final regulations treat an applicable entity that is 
+the sole shareholder of an S corporation as eligible to make an elective payment 
+election for all applicable credits determined with respect to applicable property held by 
+the S corporation, in the same manner as an applicable entity that is the owner of a 
+disregarded entity would be eligible to make an elective payment election for all 
+applicable credits determined with respect to applicable credit property held by the 
+disregarded entity.  Another commenter asked that any entity wholly owned by an 
+applicable entity be treated as an applicable entity.  This commenter anticipated that 
+many applicable entities will want to create special purpose entities to own their tax 
+credit eligible projects, but that the classification of such entities as an applicable entity 
+can be uncertain.  As an example, the commenter suggested that a city that would 
+normally issue bonds through an industrial development authority that is treated as an 
+agency or instrumentality of the city may want the industrial development authority to 
+
+create a wholly-owned corporation or limited liability company to be the owner of the 
+project.  The commenter stated that it may be difficult to determine whether such wholly-
+owned entity of an industrial development authority would also be treated as an agency 
+or instrumentality since it is based on a facts and circumstances analysis.  Moreover, 
+under §301.7701-2(b)(6), the commenter pointed out that a limited liability company that 
+is wholly owned by an agency or instrumentality of a State or local governmental unit 
+may be treated as a separate corporation and, therefore, may not be treated as a 
+disregarded entity.  In sum, the commenter stated that it saw no policy reason why an 
+entity wholly owned by an applicable entity should not be treated as an applicable entity.
+The Treasury Department and the IRS have determined that special rules 
+disregarding an entity’s Federal tax status for purposes of section 6417(d)(1)(A) are not 
+appropriate.  Section 6417(d)(1)(A) is specific as to the types of entities afforded 
+applicable entity status.  Any regarded entity that has a Federal tax status separate from 
+its owner(s) and is not separately listed in section 6417(d)(1)(A) cannot be treated as an 
+applicable entity.  This is consistent with the rule for taxable C corporations discussed in 
+part I.B.2 of this Summary of Comments and Explanation of Revisions.
+2. Taxable C Corporations
+The proposed regulations would have provided that, because a taxable 
+C corporation is an entity separate from its owner, proposed §1.6417-1(c)(1) would not 
+include a C corporation that is not itself an applicable entity described in proposed 
+§1.6417-1(c)(1) as an applicable entity, even if its owner is an applicable entity 
+described in proposed §1.6417-1(c)(1).  However, an electing taxpayer may include a 
+taxable C corporation (including a member of a consolidated group).  These final 
+regulations adopt §1.6417-1(c)(1) as proposed.
+3. Undivided Ownership Interests
+Proposed §1.6417-2(a)(1)(iii) would have provided that, if an applicable entity is a 
+
+co-owner in an applicable credit property through an arrangement properly treated as a 
+tenancy-in-common (TIC) for Federal income tax purposes, or through an organization 
+that has made a valid election under section 761(a) of the Code to be excluded from the 
+application of subchapter K of chapter 1 (subchapter K), then the applicable entity's 
+undivided ownership share of the applicable credit property will be treated as a separate 
+applicable credit property owned by such applicable entity, and the applicable entity 
+may make an elective payment election for the applicable credits determined with 
+respect to such applicable credit property.  Commenters addressed TICs, valid section 
+761(a) elections, and joint ownership under section 48E.
+i. Tenancies in common and organizations that have made a valid election under 
+section 761(a)
+Several commenters asked for additional guidance and examples illustrating how 
+an applicable entity’s undivided ownership share of applicable credit property is 
+determined in the context of renewable energy projects such as wind and solar projects, 
+clean hydrogen projects, and electric vehicle infrastructure.  These comments are 
+beyond the scope of these final regulations.  The ownership share of a party to a 
+transaction will be determined based upon the agreement of the parties and other 
+relevant facts and circumstances.
+Several commenters stated that the mechanisms for co-ownership allowed under 
+the proposed regulations are in common practice today and would allow applicable 
+entities to join with other entities in developing applicable credit properties without 
+precluding elective payment election choices by project participants.  However, other 
+commenters stated that TICs and joint operating agreements (JOAs) that have validly 
+elected out of subchapter K are not commonly used in the renewable energy 
+marketplace (even by private entities) and can deprive participants of limited liability. 
+These commenters stated that these arrangements may be less familiar to applicable 
+entities as compared to traditional partnership structures used between public and 
+
+private entities for the development of clean energy projects.  Commenters also opined 
+that applicable entities may not be sufficiently resourced to navigate these newer 
+commercial law relationships and would be disadvantaged compared to non-applicable 
+entities, who can avail themselves of partnership structures in the form of limited 
+partnerships or limited liability companies, which provide most members with limited 
+liability for State law purposes.
+Commenters asked for clear guidance and clarifications as to how a renewable 
+energy project could meet the requirements for electing out of subchapter K.  For 
+example, one commenter asked how §1.761-2(a) could be applicable in the context of a 
+jointly operated renewable energy project.  Section 1.761-2(a) provides, in relevant part, 
+that an unincorporated organization the members of which are able to compute their 
+income without the necessity of computing partnership taxable income, and that is not 
+an organization classifiable as an association, may be excluded from the application of 
+subchapter K if the organization is availed of (1) for investment purposes only and not 
+for the active conduct of a business, or (2) for the joint production, extraction, or use of 
+property, but not for the purpose of selling services or property produced or extracted.  
+Specifically, the commenter stated that it is unclear how parties jointly operating a 
+renewable energy project can do so without conducting a business selling services or 
+property produced (that is, selling electricity).
+5
+Another commenter asked for clarity on what a delegation of authority under 
+§1.761-2(a)(3)(iii) would cover for a JOA of applicable credit property that produces 
+electricity.  Section 1.761-2(a)(3)(iii) provides, in relevant part, that a participant to a 
+JOA may delegate authority to sell its share of any property produced or extracted, but 
+5
+ The commenter also raised Rev. Proc. 2002-22, 2002-1 CB 733 (specifying the conditions under which 
+the IRS will consider a request for a private letter ruling that an undivided fractional interest in rental real 
+property is not an interest in a business entity), and noted that: “if the parties to a joint venture combine 
+capital or services with the intent of conducting a business or enterprise and of sharing the profits and 
+losses from the venture, a partnership (or other business entity) is created.”
+
+not for a period in excess of the minimum needs of the industry, and in no event for 
+more than one year.  This commenter also asked for examples of compliant JOAs that 
+would allow electricity generated through the joint ownership of applicable credit 
+property to be sold pursuant to a power purchase agreement.
+Commenters also requested guidance permitting a single entity or taxpayer to 
+handle the administrative affairs and day-to-day management activities of operating an 
+applicable credit property on behalf of the other joint owners without impacting the 
+owners’ ability to be properly excluded from the application of subchapter K.  One 
+commenter stated that it would be useful to illustrate a range of JOAs likely to result in 
+exclusion from the application of subchapter K and suggested that key elements of such 
+fact patterns might include: an agreement to share revenues in proportion with the co-
+owners’ respective ownership interests; an agreement to share revenues out of 
+proportion with the co-owners’ respective ownership interests; an agreement in which 
+rights to dispose of property or take other significant actions are reserved to a subset of 
+the co-owners; and/or an agreement to receive debt financing based on the anticipation 
+of funds expected to result from an elective payment election in a case in which the 
+lender is not a co-owner.
+A commenter stated that it would also be helpful to clarify the application of 
+§1.761-2(a)(3)(iii) to co-ownership ventures in cases in which co-owners generate and 
+sell power as a collective rather than on their separate accounts, or alternatively if the 
+collective entity sells power to each of the participating co-owners and then those co-
+owners sell power to third parties on their own accounts but the collective may sell 
+some other services or property incidental to the activity for which the credit is 
+determined.  This commenter highlighted that, in California and some other States, local 
+government agencies often pool resources under a Joint Powers Authority (JPA).  The 
+commenter asked that guidance clarify the conditions under which a JPA could be 
+
+treated as an organization that has made a valid election under section 761(a) of the 
+Code to be excluded from the application of subchapter K, including if the JPA is a 
+separate legal entity and sells power under its own account.
+One commenter stated that existing guidance allowing for clean energy 
+arrangements to validly elect out of subchapter K, including through the use of TIC 
+structures, is limited and should be updated.  This commenter stated that a partnership 
+is defined in the Code and in the Treasury Regulations under sections 761 and 7701, 
+but the distinction between an arrangement treated as a partnership for Federal tax 
+purposes and one that has validly elected out of subchapter K, including a valid TIC, is 
+not well defined in the energy generation context.  The commenter pointed out that pre-
+IRA partnership guidance, including guidance allowing for the use of tax-equity 
+partnership structures, is widely used as a basis for structuring projects within the 
+renewable industry and is well understood.  However, existing guidance for 
+arrangements in the energy generation context that will not be treated as a partnership 
+for Federal tax purposes is limited and outdated.  The commenter urged the Treasury 
+Department and the IRS to provide clear, updated, and timely guidance on clean energy 
+arrangements that would not be treated as partnerships for Federal tax purposes.
+The Treasury Department and the IRS agree that additional guidance is needed 
+on joint ownership arrangements of applicable credit property that produce electricity 
+that can be excluded from the application of subchapter K.  As a result, the Treasury 
+Department and the IRS have proposed regulations in the Proposed Rules section of 
+this edition of the Federal Register that would add certain exceptions to the 
+requirements contained in the regulations under section 761(a) and provide an 
+example.  These exceptions generally would allow any applicable entity described in 
+section 6417(d)(1)(A) and §1.6417-1(c) that jointly owns applicable credit property that 
+produces electricity to (1) own its interests through an entity (other than an entity 
+
+required to be treated as a corporation under the Code) and (2) delegate its authority to 
+an agent to sell its share of the electricity produced from such applicable credit property 
+for a period of more than 1 year, provided that the delegation authority to the agent is 
+not for more than 1 year.  See Election to Exclude Certain Unincorporated 
+Organizations Owned by Applicable Entities from the Application of Subchapter K, 
+REG-101552-24, in the Proposed Rules section of this edition of the Federal Register.
+ii. Applying the undivided ownership interests rule to qualified property
+One commenter requested some clarifying edits to address how proposed 
+§1.6417-2(a)(1)(iii), the rule for undivided ownership interests, would operate with 
+respect to a section 48E credit.  This commenter noted that proposed §1.6417-1(e)(12) 
+defines “applicable credit property” for purposes of section 48E as “a qualified facility 
+described in section 48E(b)(3);” however, section 48E(b) allows a section 48E credit to 
+be claimed only with respect to a qualified investment in a qualified facility.  The 
+commenter asked for clarification on what part of the qualified investment is owned by 
+such joint tenant, and suggested adding language to the final regulations to clarify that 
+an applicable entity should be able to claim applicable credits with respect to the 
+applicable credit property in proportion to its share of qualified property.
+The Treasury Department and the IRS agree with the commenter that a section 
+48E credit is determined, in part, based on an applicable entity’s qualified investment 
+with respect to a qualified facility, but do not believe that further language is needed 
+because this concept is already covered in the language under proposed §1.6417-
+2(a)(1)(iii), which provides that an applicable entity will be treated as owning a separate 
+applicable credit property equal to its undivided ownership share.  An applicable entity’s 
+undivided ownership share is determined under Federal income tax ownership 
+principles and is outside the scope of these final regulations.  Thus, these final 
+regulations do not adopt the commenter’s suggestion.
+
+4. Partnerships
+The proposed regulations would have provided that partnerships and 
+S corporations are not applicable entities described in section 6417(d)(1)(A), but 
+requested comments on whether any entity described in section 6417(d)(1)(A)(i) 
+through (vi) or proposed §1.6417-1(c) could include an entity organized as a partnership 
+or S corporation for Federal tax purposes.  No commenter stated that an entity 
+described in section 6417(d)(1)(A)(i) through (vi) or proposed §1.6417-1(c) could 
+include an entity organized as a partnership or S corporation for Federal tax purposes.  
+Therefore, these final regulations adopt the rule as proposed.
+Under the proposed regulations and these final regulations, a partnership or an 
+S corporation is eligible to make the elective payment election only with respect to a 
+section 45V credit, section 45Q credit, and section 45X credit (assuming all the other 
+requirements to make the election with respect to these credits are met).  This rule 
+applies no matter how many of the partners or shareholders are applicable entities 
+described in section 6417(d)(1)(A) and §1.6417-1(c), including if all of the partners or 
+shareholders are applicable entities described in section 6417(d)(1)(A) and §1.6417-
+1(c).  However, as the proposed regulations noted, because section 6418(f)(2) defines 
+“eligible taxpayer” for purposes of transfer eligibility as “any taxpayer which is not 
+described in section 6417(d)(1)(A)” (and thus not in proposed §1.6417-1(c)), such a 
+partnership or S corporation would be an eligible taxpayer described in section 
+6418(f)(2) and may be eligible to transfer eligible credits.
+6
+A number of commenters requested that the final regulations allow applicable 
+entities to make elective payment elections through an entity treated as a partnership 
+6
+ The Treasury Department and the IRS acknowledge that section 6418 does not contain a provision 
+parallel to section 6417(d)(2) providing that section 50(b)(3) and (4)(A)(i) do not apply to limit the 
+determination of a credit in section 6417.  Thus, section 50(b)(3) and (4)(A)(i) may limit eligible investment 
+tax credits determined with respect to a partnership or S corporation with applicable entity partners or 
+shareholders for purposes of section 6418.
+
+for Federal tax purposes, either if all the partners in the partnership are applicable 
+entities described in section 6417(d)(1)(A) or if at least one partner in the partnership is 
+an applicable entity described in section 6417(d)(1)(A).  Commenters advocating for 
+including partnerships composed entirely of applicable entities as an applicable entity 
+stated that such a rule would help cover capital needs, diversify risk, and fill gaps in 
+expertise between applicable entities.  Commenters advocating for mixed partnerships 
+(that is, partnerships consisting of both applicable entities and entities that are not 
+applicable entities) said that not allowing applicable entities to make elective payment 
+elections for applicable credit property held through mixed partnerships would reduce 
+economic incentives to invest in clean energy, undermining the objectives of the IRA.  
+Several commenters stated that applicable entities lack the required resources to 
+engage in green energy projects themselves and asked that the final regulations permit 
+a partnership to make an elective payment election with respect to the portion of the 
+underlying credits allocable to an applicable entity.  A few commenters stated that 
+structures eligible to elect out of subchapter K have numerous requirements and 
+complexities that limit their usefulness.  One commenter recommended that the final 
+regulations either (1) allow a partnership to make an elective payment election on one 
+hundred percent of the credits so long as the partnership is majority owned by an 
+applicable entity, or (2) allow a partnership with majority applicable entity ownership to 
+make an elective payment election on the portion of credits allocable to such applicable 
+entities.
+Based on the language in section 6417(c)(1) that treats a partnership as the 
+owner of any applicable credit property held directly by the partnership and requires a 
+partnership to make any elective payment election with respect to such property, these 
+final regulations retain the proposed regulations’ entity view of partnerships under 
+section 6417(c)(1).  Because an entity described in section 6417(d)(1)(A)(i) through (vi) 
+
+or proposed §1.6417-1(c) does not include an entity treated as a partnership for Federal 
+tax purposes (or as an S corporation), these final regulations do not adopt commenters’ 
+suggestions and do not allow entities treated as partnerships for Federal tax purposes 
+(or S corporations) to make elective payment elections, except with respect to a section 
+45V credit, section 45Q credit, and section 45X credit.  However, these restrictions do 
+not apply to entities, whether comprised of only applicable entities or comprised of a mix 
+of applicable and non-applicable entities, that have made a valid election out of 
+subchapter K under section 761(a), including through the exception for certain joint 
+ownership arrangements of applicable credit property identified in the proposed 
+regulations under section 761 described in part I.B.3.i of this Summary of Comments 
+and Explanation of Revisions.
+A few commenters asked that taxable entities be permitted to serve as an 
+administrative member or manager of a State law entity to which an applicable entity 
+owns all of the other interests without creating a partnership for Federal tax purposes, 
+provided that such taxable entities do not receive distributive shares of partnership 
+items or partnership distributions.  These final regulations do not attempt to establish 
+any additional criteria by which a taxpayer can provide administrative or managerial 
+services for an applicable entity without creating a partnership between the taxpayers 
+for Federal tax purposes.  However, as previously described, the Treasury Department 
+and the IRS are simultaneously issuing proposed regulations under section 761 in the 
+Proposed Rules section of this edition of the Federal Register that provide additional 
+guidance for certain renewable energy arrangements that can validly elect out of 
+subchapter K.
+Multiple commenters asked that the final regulations provide further clarity on 
+Tribal entities and allow co-ownership of projects.  A few commenters asked that the 
+final regulations allow Tribal Energy Development Organizations (TEDOs), or other 
+
+wholly owned Tribal enterprises, to be applicable entities regardless of how they are 
+chartered.  Some commenters asked that the final regulations allow tribes to form 
+special purpose vehicles under an LLC structure to jointly own renewable energy 
+projects and employ the distributive share rules for allocating the "applicable credit" to 
+each LLC member, regardless of the tax status of that member.  Commenters also 
+asked that inter-governmental partnerships, whether formed under State law such as 
+JPAs, or formed under Tribal law as inter-tribal consortiums, should be eligible to make 
+an elective payment election.
+While it is possible that in certain cases a Tribal law entity (including a TEDO) 
+and/or inter-governmental partnership could be an applicable entity, such a 
+determination is outside the scope of these final regulations.  However, the Treasury 
+Department and the IRS are actively working on guidance regarding the Federal tax 
+status of Tribal law entities organized and controlled by tribes.  The Treasury 
+Department and the IRS will not release final guidance in advance of additional Tribal 
+consultation.
+Commenters also stated that, if the Treasury Department and the IRS allow for 
+section 6417 elections to be made on behalf of applicable entity partners, the final 
+regulations should make conforming clarifications, including clarifying that the 
+“applicable credit” that is reduced to zero under section 6417(e) is only the portion of the 
+credit for which a section 6417 election has been made and clarifying the distributive 
+share rules.  Because these final regulations do not allow section 6417 elections to be 
+made on behalf of applicable entity partners, these final regulations do not adopt the 
+suggested conforming changes.
+5. Consolidated Groups
+Proposed §1.6417-2(a)(1)(v) would have provided that, for members of a 
+consolidated group (as defined in §1.1502-1) the common parent of which is an Alaska 
+
+Native Corporation, any member that is an electing taxpayer may make an elective 
+payment election with respect to applicable credits determined with respect to the 
+member.  Proposed §1.6417-2(a)(2)(vi) would have provided the same rule with respect 
+to electing taxpayers.  See §1.1502-77 (providing rules regarding the status of the 
+common parent as agent for its members).  The proposed regulations would also have 
+provided that a member of a consolidated group is required to complete pre-filing 
+registration as a condition of, and prior to, making an elective payment election.
+The preamble to the proposed regulations stated that an ANC may be the 
+common parent of a consolidated group of corporations (ANC-parented group) and 
+noted that some stakeholders had inquired whether non-ANC members of an ANC-
+parented group may separately make an elective payment election with respect to a 
+section 45V credit, section 45Q credit, or section 45X credit determined with respect to 
+such member.  In response, the preamble to the proposed regulations stated that a non-
+ANC member of an ANC-parented group may qualify as an electing taxpayer eligible to 
+make elections under section 6417(d)(1)(B), (C), or (D), based on its own corporate 
+status.  See §1.1502-80(a).  As with any other electing taxpayer, a non-ANC member of 
+an ANC-parented group would be required to complete pre-filing registration (as would 
+be required under proposed §1.6417-5) and must make its elective payment election 
+under section 6417(d)(1)(B), (C), or (D) with respect to an applicable section 45V credit, 
+section 45Q credit, or section 45X credit determined with respect to the member.  See 
+§1.1502-77 (providing rules regarding the status of the common parent as agent for its 
+members).
+The preamble to the proposed regulations requested comments (1) regarding the 
+definition in proposed §1.6417-1(c)(4) and whether additional guidance is necessary 
+regarding consolidated groups with ANC common parents; (2) whether additional 
+guidance is necessary to address any uncertainty that may exist regarding the 
+
+application of section 6417 in the context of a consolidated group with members that are 
+cooperatives subject to the rules of subchapter T of chapter 1; and (3) regarding the 
+application of section 6417 to consolidated groups with electing taxpayers (for example, 
+whether special rules are necessary for consolidated groups to apply the “denial of 
+double benefit” rule under proposed §1.6417-2(e)(2)).
+No commenter addressed these issues relating to ANCs.  However, the Treasury 
+Department and the IRS have determined that the text of proposed §1.6417-2(a)(1)(v), 
+which referred to consolidated groups “of which an Alaska Native Corporation is the 
+common parent,” was too limiting and should apply to any consolidated group with an 
+applicable entity parent.  Therefore, these final regulations expand the definition by 
+removing the specific reference to Alaska Native Corporations in §1.6417-2(a)(1)(v) and 
+broaden the rule to apply to any consolidated group of which an applicable entity is the 
+common parent.
+A few commenters requested confirmation that the “entity-specific” rules of 
+section 6417 apply to an elective payment election made by a partnership that has as 
+its only partners two or more members of the same consolidated group and suggested 
+an example confirming the treatment.  The commenters wanted confirmation that the 
+election would be made by the partnership, as required by section 6417(c)(1) and 
+proposed §1.6417-4(a), rather than by the partnership’s members, as provided in 
+proposed §1.6417-2(a)(2)(vi).  The Treasury Department and the IRS agree that any 
+entity treated as a partnership for Federal tax purposes, and not any of its partners 
+(regardless of the identity or Federal tax status of the partners), would make an elective 
+payment election with respect to section 45Q credits, section 45V credits, or section 
+45X credits pursuant to section 6417(c)(1) and §1.6417-4(a), but disagree that an 
+example illustrating this point is needed.
+6. Pooled Investment Vehicles
+
+The proposed regulations did not provide a special rule for employee plans that 
+are subject to the Employee Retirement Income Security Act of 1974 (ERISA) if they 
+choose to invest through pooled investment vehicles, whether the vehicles are 
+organized as partnerships or otherwise.  One commenter stated that ERISA plans 
+typically make investments through pooled investment vehicles, which often are 
+organized as limited partnerships or LLCs, and take minority interests in them in order 
+to avoid subjecting the vehicles to fiduciary, prohibited transaction, and other rules 
+under ERISA's "plan asset'' rules.  The commenter believed that, if pooled investment 
+vehicles are not considered to be applicable entities, then employee plans generally 
+cannot benefit from elective payment elections under section 6417 with respect to some 
+or all of the applicable credits listed in section 6417(b).  The commenter suggested that 
+ERISA plan fiduciaries might choose not to invest in applicable credit activities at all.  
+The commenter requested that the final regulations provide a mechanism by which 
+ERISA plan investors indirectly investing through pooled investment vehicles can make 
+an elective payment election.
+The Treasury Department and the IRS understand the commenter’s concern that 
+ERISA plans may be discouraged from investing in certain entities engaged in 
+applicable credit activities under the proposed regulations.  Other applicable entities 
+have similar concerns that investments in certain entities engaged in applicable credit 
+activities under the proposed regulations will not be investments in applicable entities.  
+While there are rules outside of these final regulations that may impact how ERISA 
+plans make investments, there is no indication in section 6417 that ERISA plans can or 
+should be subject to rules different than those that apply to other applicable entities.  
+Thus, these final regulations do not provide a special rule for ERISA plans investing in 
+pooled investment vehicles that would allow ERISA plans to be eligible to make an 
+elective payment election if investing through a partnership structure.
+
+II. Rules for Making Elective Payment Elections
+A. In general
+Proposed §1.6417-2 would have provided general rules for an applicable entity 
+or electing taxpayer to make an elective payment election under section 6417 with 
+respect to any applicable credit determined with respect to such entity.  Commenters 
+addressed many aspects of these proposed rules, which are discussed in this part II of 
+the Summary of Comments and Explanation of Revisions.  These final regulations 
+adopt the rules as proposed, with the modifications described in this part II.
+B. Manner of making the election
+Section 6417(a) provides that the elective payment election is made “at such 
+time and in such manner as the Secretary may provide,” and proposed §1.6417-2(b) 
+would have provided the particular requirements for properly and timely making the 
+election.
+1. Return Requirements
+Proposed §1.6417-2(b)(1)(i) would have provided that an applicable entity makes 
+an elective payment election on the applicable entity’s or electing taxpayer’s annual tax 
+return, as defined in proposed §1.6417-1(b), in the manner prescribed by the IRS in 
+guidance, along with any required completed source credit form(s) with respect to the 
+applicable credit property, a completed Form 3800, General Business Credit (or its 
+successor), and any additional information, including supporting calculations, required in 
+instructions to the relevant forms.
+To avoid any confusion about how the elective payment election should be 
+made, proposed §1.6417-1(b) would have defined “annual tax return,” for purposes of 
+the section 6417 regulations, as follows: (1) for any taxpayer normally required to file an 
+annual tax return with the IRS, such annual return (including the Form 1065, U.S. 
+Return of Partnership Income, for partnerships and the Form 990-T, Exempt 
+
+Organization Business Income Tax Return (and proxy tax under section 6033(e)), for 
+organizations with unrelated business income tax or a proxy tax under section 6033(e)); 
+(2) for any taxpayer that is not normally required to file an annual tax return with the IRS 
+(such as taxpayers located in the U.S. territories), the return they would be required to 
+file if they were located in the United States, or, if no such return is required (such as for 
+a State; the District of Columbia; or local or Indian tribal governments), the Form 990-T; 
+and (3) for taxpayers filing a return for a taxable year of less than 12 months (short 
+year), the short year tax return.  These final regulations make minor, nonsubstantive 
+edits to the definition in the proposed regulations to avoid using the phrase annual tax 
+return in defining the term.
+Several commenters requested that the IRS use a new or different form than 
+Form 990-T or revise certain forms (including Forms 990, 990-T, 1120, 3468, 3800, 
+8038-CP, and 8911).  Several commenters also requested a detailed list of the 
+documents required to complete the filing process, information on how to complete 
+required forms, or reduced information requirements for filers who had previously not 
+been required to file any returns with the IRS.
+The Treasury Department and the IRS recognize that some taxpayers may not 
+have experience or a historical filing obligation and will consider providing simplified 
+instructions or the need for a new form in future years.  The Treasury Department and 
+IRS are committed to developing educational and outreach tools to assist tribes, 
+government entities, their instrumentalities, and exempt organizations to complete the 
+forms required solely to make an elective payment election.  It is outside of the scope of 
+these final regulations to address comments related to individual forms or the kind of 
+documentation that may be required to complete those forms.  Thus, these final 
+regulations adopt the rules as proposed.
+Several commenters requested confirmation that, for those taxpayers that 
+
+normally file the Form 1120 with the IRS, the Form 1120 can be used to make the 
+elective payment election.  The Treasury Department and the IRS confirm that this is 
+the intent of the language in §1.6417-1(b)(1), which states “[f]or any taxpayer normally 
+required to file an annual tax return with the IRS, such annual return,” and have added 
+the Form 1120, as well as other examples of annual tax forms, to the parenthetical.
+Other commenters requested that the elective payment election could be made 
+on the Form 1120-W.  As the Form 1120-W is not an annual income tax return, these 
+final regulations do not adopt that suggestion.
+2. Original Return Requirements
+Proposed §1.6417-2(b)(1)(ii) would have provided that an elective payment 
+election must be made on an original return (including any revisions on a superseding 
+return) filed not later than the due date (including extensions of time) for the original 
+return for the taxable year for which the applicable credit is determined.  The proposed 
+regulations stated that no elective payment election may be made “or revised” on an 
+amended return or by filing an administrative adjustment request (AAR) under section 
+6227 of the Code.  The proposed regulations also did not provide for relief under 
+§301.9100-1 through 301.9100-3 (9100 relief) for an elective payment election that is 
+not timely filed.
+Multiple commenters asked that an elective payment election be permitted on an 
+amended return or AAR and/or that a taxpayer be permitted an extension of time under 
+the 9100 relief procedures to make a late election.  Commenters stated that not allowing 
+a late election is an unreasonable result for new market entrants and creates significant 
+barriers for entities with limited resources.  Some commenters recommended that 
+applicable entities should be allowed to make the elective payment election on late 
+returns and also be able to claim a six-month automatic extension of time to file the 
+election under §301.9100-2(b).  Commenters requested that the final regulations 
+
+provide some form of relief for taxpayers that acted in good faith and made a 
+reasonable effort in complying, particularly for new filers who may not have had a prior 
+filing obligation.  Commenters further suggested that providing additional time to make 
+an election would increase market participation and promote equity.
+In response to these comments, these final regulations remove the words “or 
+revised” in §1.6417-2(b)(1)(ii) and provide “[n]o elective payment election may be made 
+for the first time on an amended return, withdrawn on an amended return, or made or 
+withdrawn by filing an administrative adjustment request under section 6227, although a 
+numerical error with respect to a properly claimed elective payment election may be 
+corrected on an amended return or by filing an administrative adjustment request under 
+section 6227 if necessary.”  This clarification is intended to address situations in which a 
+taxpayer intended to make an elective payment election but made a reporting error with 
+respect to an element of a valid election (for example, miscalculating the amount of the 
+credit on the original return or making a typographical error in the process of inputting a 
+registration number), and to allow the taxpayer to correct any errors that would result in 
+a disallowance of the election or to correct an excessive payment before an excessive 
+payment determination is made by the IRS.  Consistently, it is appropriate to allow 
+taxpayers to correct errors that would result in a larger payment than indicated on the 
+original return as long as such larger amount is accurate.  This provision cannot be 
+used to revoke an election or to make an election for the first time on an amended 
+return.  In addition, the taxpayer’s original return, which must be signed under penalties 
+of perjury, must contain all of the information, including a registration number, required 
+by these final regulations.  To properly correct an error on an amended return or AAR, a 
+taxpayer must have made an error in the information included on the original return 
+such that there is a substantive item to correct; a taxpayer cannot correct a blank item 
+or an item that is described as being “available upon request.”
+

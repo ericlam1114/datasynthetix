@@ -1,0 +1,48 @@
+Starting clause extraction...
+Read 578965 characters from /Users/ericlam/Desktop/datasynthetix/extracted_text.txt
+Extracting clauses from text (578965 characters)...
+
+<--- Last few GCs --->
+
+[69717:0x140008000]    65121 ms: Scavenge 4057.9 (4117.4) -> 4057.6 (4128.2) MB, 7.7 / 0.0 ms  (average mu = 0.399, current mu = 0.188) allocation failure; 
+[69717:0x140008000]    65230 ms: Scavenge 4064.6 (4128.2) -> 4065.4 (4128.9) MB, 10.2 / 0.0 ms  (average mu = 0.399, current mu = 0.188) allocation failure; 
+[69717:0x140008000]    65770 ms: Scavenge 4065.4 (4128.9) -> 4064.6 (4152.2) MB, 539.8 / 0.0 ms  (average mu = 0.399, current mu = 0.188) allocation failure; 
+
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory
+ 1: 0x100291770 node::Abort() [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+ 2: 0x100291954 node::ModifyCodeGenerationFromStrings(v8::Local<v8::Context>, v8::Local<v8::Value>, bool) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+ 3: 0x1003e81a8 v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, bool) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+ 4: 0x100592b30 v8::internal::EmbedderStackStateScope::EmbedderStackStateScope(v8::internal::Heap*, v8::internal::EmbedderStackStateScope::Origin, cppgc::EmbedderStackState) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+ 5: 0x1005914d8 v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+ 6: 0x10058556c v8::internal::HeapAllocator::AllocateRawWithLightRetrySlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+ 7: 0x100585db0 v8::internal::HeapAllocator::AllocateRawWithRetryOrFailSlowPath(int, v8::internal::AllocationType, v8::internal::AllocationOrigin, v8::internal::AllocationAlignment) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+ 8: 0x10056bd30 v8::internal::Factory::NewFillerObject(int, v8::internal::AllocationAlignment, v8::internal::AllocationType, v8::internal::AllocationOrigin) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+ 9: 0x10090c490 v8::internal::Runtime_AllocateInYoungGeneration(int, unsigned long*, v8::internal::Isolate*) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+10: 0x100c5910c Builtins_CEntry_Return1_DontSaveFPRegs_ArgvOnStack_NoBuiltinExit [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+11: 0x100be3bd8 Builtins_StringSubstring [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+12: 0x105611a48 
+13: 0x100be4198 Builtins_InterpreterEntryTrampoline [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+14: 0x100be4198 Builtins_InterpreterEntryTrampoline [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+15: 0x100be4198 Builtins_InterpreterEntryTrampoline [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+16: 0x100be4198 Builtins_InterpreterEntryTrampoline [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+17: 0x100be4198 Builtins_InterpreterEntryTrampoline [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+18: 0x100be4198 Builtins_InterpreterEntryTrampoline [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+19: 0x100be4198 Builtins_InterpreterEntryTrampoline [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+20: 0x100be4198 Builtins_InterpreterEntryTrampoline [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+21: 0x100be4198 Builtins_InterpreterEntryTrampoline [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+22: 0x100be24d0 Builtins_JSEntryTrampoline [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+23: 0x100be2164 Builtins_JSEntry [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+24: 0x100514928 v8::internal::(anonymous namespace)::Invoke(v8::internal::Isolate*, v8::internal::(anonymous namespace)::InvokeParams const&) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+25: 0x100513e68 v8::internal::Execution::Call(v8::internal::Isolate*, v8::internal::Handle<v8::internal::Object>, v8::internal::Handle<v8::internal::Object>, int, v8::internal::Handle<v8::internal::Object>*) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+26: 0x100404048 v8::Function::Call(v8::Local<v8::Context>, v8::Local<v8::Value>, int, v8::Local<v8::Value>*) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+27: 0x100276e78 node::builtins::BuiltinLoader::CompileAndCall(v8::Local<v8::Context>, char const*, node::Realm*) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+28: 0x1002fded0 node::Realm::ExecuteBootstrapper(char const*) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+29: 0x10025b4a4 node::StartExecution(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+30: 0x1001d8728 node::LoadEnvironment(node::Environment*, std::__1::function<v8::MaybeLocal<v8::Value> (node::StartExecutionCallbackInfo const&)>) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+31: 0x1002cddec node::NodeMainInstance::Run() [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+32: 0x10025e30c node::LoadSnapshotDataAndRun(node::SnapshotData const**, node::InitializationResult const*) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+33: 0x10025e5c4 node::Start(int, char**) [/Users/ericlam/.nvm/versions/node/v18.20.4/bin/node]
+34: 0x1959f8274 start [/usr/lib/dyld]

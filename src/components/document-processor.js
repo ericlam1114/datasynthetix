@@ -47,8 +47,20 @@ import {
   Settings,
   Filter,
 } from "lucide-react";
+import DocumentSplitter from "./DocumentSplitter";
+import { Dialog, DialogContent } from "./ui/dialog";
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle 
+} from "./ui/alert-dialog";
 
-const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
+const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = null, autoShowProcessing = false }, ref) => {
   const { user } = useAuth();
   const [name, setName] = useState(initialDocument?.name || "");
   const [description, setDescription] = useState(
@@ -62,11 +74,11 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [progress, setProgress] = useState(0);
-  const [processingState, setProcessingState] = useState("idle"); // idle, uploading, processing, complete, error
+  const [processingState, setProcessingState] = useState(autoShowProcessing ? "processing" : "idle"); // Initialize to processing if autoShowProcessing
   const [processAttempts, setProcessAttempts] = useState(0);
   const [processResult, setProcessResult] = useState(null);
   const [previewData, setPreviewData] = useState([]);
-  const [activeTab, setActiveTab] = useState("upload");
+  const [activeTab, setActiveTab] = useState(autoShowProcessing ? "preview" : "upload"); // Start with preview if autoShowProcessing
   const [creditsAvailable, setCreditsAvailable] = useState(5000);
   const [creditsUsed, setCreditsUsed] = useState(0);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
@@ -89,13 +101,191 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
   const [uploadErrors, setUploadErrors] = useState({});
   const [useOcr, setUseOcr] = useState(false);
   const [prioritizeImportant, setPrioritizeImportant] = useState(false);
+  const [jobId, setJobId] = useState(initialJobId);
+  const [showSplitter, setShowSplitter] = useState(false);
+  const [showSizeWarning, setShowSizeWarning] = useState(false);
+  const [documentAnalysis, setDocumentAnalysis] = useState(null);
+  const [batchProcessing, setBatchProcessing] = useState(false);
+  const [batchDocuments, setBatchDocuments] = useState([]);
+  const [batchProgress, setBatchProgress] = useState({});
+  const [batchResults, setBatchResults] = useState([]);
 
-  // Expose the handleProcess function to parent components
+  // Expose functions to parent components via ref
   useImperativeHandle(ref, () => ({
     handleProcess: function () {
       return handleProcess.apply(this);
     },
+    setProcessingState: function(state, newJobId = null) {
+      setProcessingState(state);
+      if (newJobId) {
+        setJobId(newJobId);
+        startPollingStatus(newJobId);
+      }
+    }
   }));
+
+  // Initialize UI as soon as component loads with initialJobId
+  useEffect(() => {
+    // If we have an initial job ID, we should show processing UI right away
+    if (initialJobId && autoShowProcessing) {
+      console.log(`Initializing with processing view for job ID: ${initialJobId}`);
+      setProcessingState("processing"); 
+      setProgress(10);
+      
+      // Force the correct tab based on job state, but show processing UI
+      if (processingState === "complete") {
+        setActiveTab("preview");
+      } else {
+        setActiveTab("upload");
+      }
+      
+      // Start polling for job status
+      startPollingStatus(initialJobId);
+    }
+  }, [initialJobId, autoShowProcessing]);
+
+  // Function to start polling for a job status
+  const startPollingStatus = (jobIdToUse) => {
+    console.log(`Starting status polling for job: ${jobIdToUse}`);
+    
+    // Set initial processing state
+    setProcessingState("processing");
+    setProgress(10); // Start with some progress
+    
+    // Create polling interval
+    const pollingInterval = setInterval(async () => {
+      try {
+        if (!processAttempts || processAttempts > 300) {
+          clearInterval(pollingInterval);
+          return;
+        }
+
+        setLastPollingTime(new Date());
+        const progressEndpoint = `/api/process-status?jobId=${jobIdToUse}`;
+        const progressResponse = await fetch(progressEndpoint);
+
+        if (progressResponse.ok) {
+          const progressData = await progressResponse.json();
+          
+          console.log("Progress data:", progressData);
+          
+          // Handle progress updates similar to handleProcess polling
+          const processedChunks = progressData.processedChunks || 0;
+          const totalChunks = progressData.totalChunks || 100;
+          const progressPercent = Math.round((processedChunks / totalChunks) * 100);
+          
+          // Update timestamp if progress changed
+          if (progressPercent !== progress) {
+            setLastProgressUpdate(new Date());
+            setIsProcessingActive(true);
+          } else {
+            const stallTime = new Date() - new Date(lastProgressUpdate);
+            if (stallTime > 30000) {
+              setIsProcessingActive(false);
+            }
+          }
+          
+          // Update processing stats if available
+          if (progressData.processingStats) {
+            const stats = progressData.processingStats;
+            
+            if (stats.currentStage) {
+              setCurrentStage(stats.currentStage);
+            }
+            
+            setProcessingStats({
+              totalChunks: stats.totalChunks || totalChunks || 0,
+              extractedClauses: stats.totalClauses || stats.processedClauses || 0,
+              classifiedClauses: stats.classifiedClauses || stats.processedClauses || 0,
+              generatedVariants: stats.variantsGenerated || 0,
+              lastUpdateTime: stats.lastUpdateTime || new Date().toISOString()
+            });
+          }
+          
+          // Update progress
+          setProgress(progressPercent);
+          setCreditsUsed(progressData.creditsUsed || 0);
+          
+          // Check for completion
+          if (progressData.status === "complete" || progressPercent >= 100) {
+            clearInterval(pollingInterval);
+            setProcessingState("complete");
+            setProcessResult(progressData.result);
+            
+            if (progressData.result && progressData.result.classificationStats) {
+              setClassStats(progressData.result.classificationStats);
+            }
+            
+            // Update credits
+            setCreditsAvailable(progressData.creditsRemaining || 0);
+            setCreditsUsed(progressData.creditsUsed || 0);
+            
+            // Load preview data
+            if (progressData.result && progressData.result.filePath) {
+              try {
+                const previewResponse = await fetch(
+                  `/api/preview-jsonl?file=${progressData.result.filePath}&limit=5`
+                );
+                if (previewResponse.ok) {
+                  const previewData = await previewResponse.json();
+                  setPreviewData(previewData.data);
+                }
+              } catch (error) {
+                console.error("Error loading preview data:", error);
+                setPreviewData([
+                  {
+                    input: "Sample contract clause.",
+                    classification: "Critical",
+                    output: "Sample synthetic variant.",
+                  },
+                ]);
+              }
+            }
+            
+            setActiveTab("preview");
+          }
+        } else {
+          console.warn("Failed to get processing status:", progressResponse.status);
+          
+          setProcessAttempts((prev) => {
+            const newAttempts = prev + 1;
+            if (newAttempts > 10) {
+              clearInterval(pollingInterval);
+              setProcessingState("complete");
+              
+              // Create placeholder result data
+              setProcessResult({
+                documentId: initialDocument?.id,
+                resultCount: 0,
+                fileName: initialDocument?.fileName || "document.pdf",
+              });
+            }
+            return newAttempts;
+          });
+        }
+      } catch (error) {
+        console.error("Error checking progress:", error);
+      }
+    }, 2000);
+    
+    // Stop polling after 30 minutes
+    setTimeout(() => {
+      clearInterval(pollingInterval);
+      
+      if (processingState === "processing") {
+        setProgress(100);
+        setProcessingState("complete");
+        
+        if (!processResult) {
+          setProcessResult({
+            documentId: initialDocument?.id,
+            resultCount: 0,
+            fileName: initialDocument?.fileName || "document.pdf",
+          });
+        }
+      }
+    }, 30 * 60 * 1000);
+  };
 
   // Fetch user credits on component mount
   useEffect(() => {
@@ -198,6 +388,83 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
     }
   };
 
+  // This function analyzes if the document will require batching
+  const analyzeDocument = async (documentToCheck) => {
+    // Size thresholds
+    const MAX_FILE_SIZE_MB = 10; // 10MB file size warning threshold
+    const MAX_PAGES = 50; // 50 pages warning threshold
+    const MAX_TOKENS_ESTIMATE = 150000; // Approximately when API limits might be hit
+    const CHARS_PER_TOKEN = 4; // Rough estimate
+    
+    // Get document details
+    const fileSize = documentToCheck?.fileSize || (file?.size || 0);
+    const fileName = documentToCheck?.fileName || documentToCheck?.name || file?.name || "document";
+    const fileSizeMB = fileSize / (1024 * 1024);
+    const isLargeFile = fileSizeMB > MAX_FILE_SIZE_MB;
+    
+    // If we have an estimate of pages, use it
+    const estimatedPages = documentToCheck?.totalPages || documentToCheck?.pages || 
+      (isLargeFile ? Math.round(fileSizeMB * 5) : 0); // Rough estimate: 5 pages per MB
+    const isLongDocument = estimatedPages > MAX_PAGES;
+    
+    // If we have content, estimate token count
+    const contentLength = documentToCheck?.content?.length || 0;
+    const estimatedTokens = Math.ceil(contentLength / CHARS_PER_TOKEN);
+    const exceedsTokenLimit = estimatedTokens > MAX_TOKENS_ESTIMATE;
+    
+    // Determine if batching is needed
+    const needsBatching = isLargeFile || isLongDocument || exceedsTokenLimit;
+    
+    // Calculate recommended batches if needed
+    let recommendedBatches = 1;
+    if (needsBatching) {
+      // Base recommendation on the most restrictive factor
+      const batchesBySize = isLargeFile ? Math.ceil(fileSizeMB / MAX_FILE_SIZE_MB) : 1;
+      const batchesByPages = isLongDocument ? Math.ceil(estimatedPages / MAX_PAGES) : 1;
+      const batchesByTokens = exceedsTokenLimit ? Math.ceil(estimatedTokens / MAX_TOKENS_ESTIMATE) : 1;
+      
+      recommendedBatches = Math.max(2, batchesBySize, batchesByPages, batchesByTokens);
+      recommendedBatches = Math.min(recommendedBatches, 10); // Cap at 10 batches
+    }
+    
+    return {
+      fileName,
+      fileSize,
+      fileSizeMB,
+      isLargeFile,
+      estimatedPages,
+      isLongDocument,
+      estimatedTokens,
+      exceedsTokenLimit,
+      needsBatching,
+      recommendedBatches,
+      reason: isLargeFile ? 'size' : isLongDocument ? 'pages' : exceedsTokenLimit ? 'tokens' : null
+    };
+  };
+
+  // This function is called before actually processing a document
+  const prepareDocumentForProcessing = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    
+    if (!file && !initialDocument) {
+      setError("Please select a file to upload.");
+      return;
+    }
+    
+    // Analyze document size/complexity
+    const analysis = await analyzeDocument(initialDocument || file);
+    setDocumentAnalysis(analysis);
+    
+    // Warn user if document is very large
+    if (analysis.needsBatching) {
+      setShowSizeWarning(true);
+      return;
+    }
+    
+    // If document is acceptable size, process normally
+    handleProcess();
+  };
+
   const handleProcess = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
 
@@ -251,14 +518,17 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
         : initialDocument?.fileName || "document.pdf";
 
       // Create a unique job ID
-      const jobId = `job-${Date.now()}-${Math.random()
+      const newJobId = `job-${Date.now()}-${Math.random()
         .toString(36)
         .substring(2, 7)}`;
+      
+      // Save the job ID
+      setJobId(newJobId);
 
       // First, create the job in Firestore
       const jobData = {
         userId: user.uid,
-        jobId,
+        jobId: newJobId,
         fileName,
         status: "uploading",
         progress: 0,
@@ -292,7 +562,7 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
       formData.append("outputFormat", outputFormat);
       formData.append("classFilter", classFilter);
       formData.append("prioritizeImportant", prioritizeImportant);
-      formData.append("jobId", jobId); // Add job ID to form data
+      formData.append("jobId", newJobId); // Add job ID to form data
 
       // Add timeout configurations for document processing
       formData.append("documentTimeout", "600000"); // 10 minutes overall timeout
@@ -397,274 +667,8 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
           updatedAt: new Date().toISOString(),
         });
 
-        // Extract fileName and jobId from the response
-        const responseFileName = responseData.fileName || fileName;
-        const responseJobId = responseData.jobId || jobId;
-
-        // Set up polling to check progress
-        const pollingInterval = setInterval(async () => {
-          try {
-            // Skip polling if we don't have a jobId or polling has been running too long
-            if (!processAttempts || processAttempts > 300) {
-              clearInterval(pollingInterval);
-              return;
-            }
-
-            setLastPollingTime(new Date());
-            const progressEndpoint = `/api/process-status?${jobId ? `jobId=${jobId}` : `userId=${user.uid}&fileName=${fileName}`}`;
-            const progressResponse = await fetch(progressEndpoint);
-
-            if (progressResponse.ok) {
-              const progressData = await progressResponse.json();
-
-              console.log("Progress data:", progressData);
-
-              // Check if progress has changed
-              const processedChunks = progressData.processedChunks || 0;
-              const totalChunks = progressData.totalChunks || 100;
-              const progressPercent = Math.round(
-                (processedChunks / totalChunks) * 100
-              );
-
-              // If progress has changed, update the timestamp
-              if (progressPercent !== progress) {
-                setLastProgressUpdate(new Date());
-                setIsProcessingActive(true);
-              } else {
-                // Check if we've been stalled for over 30 seconds
-                const stallTime = new Date() - new Date(lastProgressUpdate);
-                if (stallTime > 30000) {
-                  // 30 seconds
-                  setIsProcessingActive(false);
-                }
-              }
-
-              // Update processing stats if available 
-              if (progressData.processingStats) {
-                // Extract stats from the response
-                const stats = progressData.processingStats;
-                
-                // Update current stage if available
-                if (stats.currentStage) {
-                  setCurrentStage(stats.currentStage);
-                }
-                
-                // Update processing stats
-                setProcessingStats({
-                  totalChunks: stats.totalChunks || totalChunks || 0,
-                  extractedClauses: stats.totalClauses || stats.processedClauses || 0,
-                  classifiedClauses: stats.classifiedClauses || stats.processedClauses || 0,
-                  generatedVariants: stats.variantsGenerated || 0,
-                  lastUpdateTime: stats.lastUpdateTime || new Date().toISOString()
-                });
-              }
-
-              // Update job status in Firestore on significant progress changes (every 10%)
-              if (progressData.status === "processing") {
-                // Calculate progress percentage safely
-                const progressPercent = Math.round(
-                  (processedChunks / totalChunks) * 100
-                );
-
-                // Only update Firestore if progress has changed significantly (every 10%)
-                if (
-                  progressPercent % 10 === 0 &&
-                  progressPercent !== progress
-                ) {
-                  await saveProcessingJob(user.uid, {
-                    ...jobData,
-                    status: "processing",
-                    progress: progressPercent,
-                    documentId: responseData.documentId,
-                    updatedAt: new Date().toISOString(),
-                    processingStats: progressData.processingStats || {}
-                  });
-                }
-
-                // Update UI
-                setProgress(progressPercent);
-                setCreditsUsed(progressData.creditsUsed || 0);
-
-                // If we've reached 100% but status is still processing, update to 'complete'
-                if (progressPercent >= 100) {
-                  clearInterval(pollingInterval);
-                  setProcessingState("complete");
-                  setProcessResult(progressData.result);
-
-                  if (
-                    progressData.result &&
-                    progressData.result.classificationStats
-                  ) {
-                    setClassStats(progressData.result.classificationStats);
-                  }
-
-                  // Final update to Firestore
-                  await saveProcessingJob(user.uid, {
-                    ...jobData,
-                    status: "complete",
-                    progress: 100,
-                    result: progressData.result,
-                    documentId: responseData.documentId,
-                    creditsUsed: progressData.creditsUsed || 0,
-                    updatedAt: new Date().toISOString(),
-                    processingStats: progressData.processingStats || {}
-                  });
-
-                  setActiveTab("preview");
-                }
-              } else if (progressData.status === "complete") {
-                clearInterval(pollingInterval);
-                setProgress(100);
-                setProcessingState("complete");
-                setProcessResult(progressData.result);
-
-                if (
-                  progressData.result &&
-                  progressData.result.classificationStats
-                ) {
-                  setClassStats(progressData.result.classificationStats);
-                }
-
-                // Update credits
-                setCreditsAvailable(progressData.creditsRemaining || 0);
-                setCreditsUsed(progressData.creditsUsed || 0);
-
-                // Final update to Firestore
-                await saveProcessingJob(user.uid, {
-                  ...jobData,
-                  status: "complete",
-                  progress: 100,
-                  result: progressData.result,
-                  documentId: responseData.documentId,
-                  creditsUsed: progressData.creditsUsed || 0,
-                  updatedAt: new Date().toISOString(),
-                  processingStats: progressData.processingStats || {}
-                });
-
-                // Load preview data if available, otherwise use placeholder data
-                if (progressData.result && progressData.result.filePath) {
-                  try {
-                    const previewResponse = await fetch(
-                      `/api/preview-jsonl?file=${progressData.result.filePath}&limit=5`
-                    );
-                    if (previewResponse.ok) {
-                      const previewData = await previewResponse.json();
-                      setPreviewData(previewData.data);
-                    } else {
-                      // Use placeholder preview data if API call fails
-                      setPreviewData([
-                        {
-                          input: "Example contract clause from the document.",
-                          classification: "Standard",
-                          output: "Synthetic variant of the contract clause.",
-                        },
-                        {
-                          input: "Another example from the document.",
-                          classification: "Important",
-                          output: "Variation of this example clause.",
-                        },
-                      ]);
-                    }
-                  } catch (error) {
-                    console.error("Error loading preview data:", error);
-                    // Use placeholder data
-                    setPreviewData([
-                      {
-                        input: "Sample contract clause.",
-                        classification: "Critical",
-                        output: "Sample synthetic variant.",
-                      },
-                    ]);
-                  }
-
-                  setActiveTab("preview");
-                }
-              }
-            } else {
-              console.warn(
-                "Failed to get processing status:",
-                progressResponse.status
-              );
-
-              // After several failed attempts, auto-complete the process
-              setProcessAttempts((prev) => {
-                const newAttempts = prev + 1;
-                if (newAttempts > 10) {
-                  clearInterval(pollingInterval);
-                  setProgress(100);
-                  setProcessingState("complete");
-
-                  // Use mock result data
-                  const mockResult = {
-                    documentId: responseData.documentId,
-                    resultCount: 42,
-                    fileName: fileName,
-                    filePath: `${user.uid}/${fileName}`,
-                  };
-
-                  setProcessResult(mockResult);
-
-                  // Use default class stats
-                  setClassStats({
-                    Critical: 12,
-                    Important: 18,
-                    Standard: 12,
-                  });
-
-                  // Use placeholder preview data
-                  setPreviewData([
-                    {
-                      input:
-                        "The company shall pay a fee of $5,000 upon signing this agreement.",
-                      classification: "Critical",
-                      output:
-                        "The client will make a payment of $7,500 upon execution of this contract.",
-                    },
-                    {
-                      input:
-                        "All proprietary information shall remain confidential for 5 years.",
-                      classification: "Important",
-                      output:
-                        "Any sensitive materials must be kept private for a period of 3 years.",
-                    },
-                  ]);
-
-                  setActiveTab("preview");
-                }
-                return newAttempts;
-              });
-            }
-          } catch (error) {
-            console.error("Error checking progress:", error);
-          }
-        }, 2000);
-
-        // Stop polling after 30 minutes (prevent infinite polling)
-        setTimeout(() => {
-          clearInterval(pollingInterval);
-
-          // If still in processing state after timeout, move to complete
-          if (processingState === "processing") {
-            setProgress(100);
-            setProcessingState("complete");
-
-            // Set a default result if we don't have one
-            if (!processResult) {
-              setProcessResult({
-                documentId: responseData.documentId,
-                resultCount: 50,
-                fileName: fileName,
-              });
-
-              // Set default class stats
-              setClassStats({
-                Critical: 15,
-                Important: 20,
-                Standard: 15,
-              });
-            }
-          }
-        }, 30 * 60 * 1000);
+        // Start polling for status
+        startPollingStatus(newJobId);
       }
     } catch (error) {
       console.error("Error processing document:", error);
@@ -728,11 +732,15 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
               <div className="animate-spin text-indigo-600 mb-4">
                 <FileText className="h-12 w-12 mx-auto" />
               </div>
-              <h3 className="text-lg font-medium mb-2">Synthesizing Data</h3>
+              <h3 className="text-lg font-medium mb-2">
+                {batchProcessing ? "Batch Processing" : "Synthesizing Data"}
+              </h3>
               <p className="text-sm text-gray-500 mb-2">
-                {currentStage 
-                  ? `${currentStage.charAt(0).toUpperCase() + currentStage.slice(1)} in progress...` 
-                  : `Processing data (${progress}% complete)`}
+                {batchProcessing 
+                  ? `Processing documents in batches (${Object.values(batchProgress).filter(p => p.completed).length}/${batchDocuments.length})`
+                  : currentStage 
+                    ? `${currentStage.charAt(0).toUpperCase() + currentStage.slice(1)} in progress...` 
+                    : `Processing data (${progress}% complete)`}
               </p>
               <p className="text-xs text-indigo-600 mb-2">
                 {`Credits used: ${creditsUsed} / ${creditsAvailable} available`}
@@ -761,6 +769,38 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
                   </>
                 )}
               </div>
+        
+              {batchProcessing && (
+                <div className="max-w-md mx-auto mt-4 text-left bg-gray-50 p-3 rounded-md border text-sm">
+                  <h4 className="font-medium text-sm mb-2 text-gray-700">
+                    Batch Processing Status:
+                  </h4>
+                  <div className="space-y-1 text-xs max-h-32 overflow-y-auto">
+                    {batchDocuments.map((doc, i) => {
+                      const status = batchProgress[doc.id] || { completed: false, progress: 0 };
+                      return (
+                        <div key={doc.id} className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            {status.completed ? (
+                              status.success ? (
+                                <CheckCircle className="h-3 w-3 mr-2 text-green-500" />
+                              ) : (
+                                <AlertCircle className="h-3 w-3 mr-2 text-red-500" />
+                              )
+                            ) : (
+                              <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500" />
+                            )}
+                            <span className="truncate max-w-[200px]">{doc.name}</span>
+                          </div>
+                          <span className={`text-xs ${status.completed ? (status.success ? 'text-green-600' : 'text-red-600') : 'text-gray-500'}`}>
+                            {status.completed ? (status.success ? 'Complete' : 'Failed') : 'Processing...'}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
         
               <div className="max-w-md mx-auto mt-4 text-left bg-gray-50 p-3 rounded-md border text-sm">
                 <h4 className="font-medium text-sm mb-2 text-gray-700">
@@ -893,11 +933,13 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
             <div className="text-green-500 mb-4">
               <CheckCircle className="h-12 w-12 mx-auto" />
             </div>
-            <h3 className="text-lg font-medium mb-2">Processing Complete</h3>
+            <h3 className="text-lg font-medium mb-2">
+              {batchProcessing ? "Batch Processing Complete" : "Processing Complete"}
+            </h3>
             <p className="text-sm text-gray-500 mb-2">
-              {`Successfully generated ${
-                processResult?.resultCount || 0
-              } synthetic variants`}
+              {batchProcessing
+                ? `Successfully processed ${Object.values(batchProgress).filter(p => p.success).length}/${batchDocuments.length} documents`
+                : `Successfully generated ${processResult?.resultCount || 0} synthetic variants`}
             </p>
             <div className="flex gap-2 justify-center items-center mb-4">
               <div className="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
@@ -913,9 +955,65 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
             <p className="text-xs text-indigo-600 mb-4">
               {`Credits used: ${creditsUsed}`}
             </p>
+            
+            {batchProcessing && (
+              <div className="max-w-md mx-auto mb-4 text-left bg-gray-50 p-3 rounded-md border text-sm">
+                <h4 className="font-medium text-sm mb-2 text-gray-700">
+                  Batch Processing Results:
+                </h4>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span>Total Documents:</span>
+                    <span>{batchDocuments.length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Successfully Processed:</span>
+                    <span>{Object.values(batchProgress).filter(p => p.success).length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Failed:</span>
+                    <span>{Object.values(batchProgress).filter(p => p.completed && !p.success).length}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Total Variants Generated:</span>
+                    <span>{processResult?.stats?.totalVariants || 0}</span>
+                  </div>
+                </div>
+                
+                <div className="mt-3 space-y-1 max-h-40 overflow-y-auto">
+                  {batchDocuments.map((doc) => {
+                    const status = batchProgress[doc.id] || {};
+                    return (
+                      <div key={doc.id} className={`flex items-center justify-between text-xs p-1 ${status.completed && !status.success ? 'bg-red-50' : ''}`}>
+                        <div className="flex items-center">
+                          {status.completed ? (
+                            status.success ? (
+                              <CheckCircle className="h-3 w-3 mr-2 text-green-500" />
+                            ) : (
+                              <AlertCircle className="h-3 w-3 mr-2 text-red-500" />
+                            )
+                          ) : (
+                            <div className="h-3 w-3 mr-2" />
+                          )}
+                          <span className="truncate max-w-[200px]">{doc.name}</span>
+                        </div>
+                        {status.success && status.result && (
+                          <span>{status.result.stats?.generatedVariants || 0} variants</span>
+                        )}
+                        {status.completed && !status.success && (
+                          <span className="text-red-600">{status.error || "Failed"}</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            
             <Button onClick={handleDownload} className="flex items-center">
               <Download className="h-4 w-4 mr-2" />
               Download {outputFormat === "csv" ? "CSV" : "JSONL"}
+              {batchProcessing ? " (Combined)" : ""}
             </Button>
           </div>
         );
@@ -1151,11 +1249,250 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
     }
   };
 
+  // Add these handlers for the document splitting workflow
+  const handleSplitDocument = () => {
+    setShowSizeWarning(false);
+    setShowSplitter(true);
+  };
+
+  const handleSplitComplete = (splitDocs) => {
+    setShowSplitter(false);
+    
+    if (splitDocs && splitDocs.length > 0) {
+      console.log("Split complete, generated documents:", splitDocs);
+      
+      // Set batch documents
+      setBatchDocuments(splitDocs);
+      
+      // Show batch processing UI
+      setBatchProcessing(true);
+      
+      // Option 1: Auto-start batch processing
+      processBatch();
+      
+      // Option 2: Ask user to confirm batch processing
+      // setShowBatchConfirmation(true);
+    }
+  };
+
+  // Document size warning dialog
+  const renderSizeWarningDialog = () => (
+    <AlertDialog open={showSizeWarning} onOpenChange={setShowSizeWarning}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Large Document Detected</AlertDialogTitle>
+          <AlertDialogDescription>
+            {documentAnalysis?.reason === 'size' && 
+              `This document is ${documentAnalysis.fileSizeMB.toFixed(1)} MB in size, which exceeds our recommended limit for efficient processing.`}
+            {documentAnalysis?.reason === 'pages' && 
+              `This document has approximately ${documentAnalysis.estimatedPages} pages, which exceeds our recommended limit for efficient processing.`}
+            {documentAnalysis?.reason === 'tokens' && 
+              'This document exceeds our recommended token limit for efficient processing.'}
+            
+            <p className="mt-2">
+              We recommend splitting it into {documentAnalysis?.recommendedBatches || 2} smaller parts for better results and faster processing.
+            </p>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleSplitDocument}>
+            Split Document
+          </AlertDialogAction>
+          <AlertDialogAction onClick={handleProcess}>
+            Process Anyway
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+
+  // Document splitter dialog
+  const renderDocumentSplitterDialog = () => (
+    <Dialog open={showSplitter} onOpenChange={setShowSplitter}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DocumentSplitter 
+          document={{
+            ...initialDocument,
+            totalPages: documentAnalysis?.estimatedPages || 0,
+            fileSize: documentAnalysis?.fileSize || 0,
+            name: documentAnalysis?.fileName || 'Document'
+          }}
+          onClose={() => setShowSplitter(false)}
+          onSplitComplete={handleSplitComplete}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+
+  // Add batch processing function
+  const processBatch = async () => {
+    if (!batchDocuments || batchDocuments.length === 0) {
+      return;
+    }
+    
+    setBatchProcessing(true);
+    setProcessingState("processing");
+    
+    try {
+      // Start parallel processing with a concurrency limit of 3
+      const concurrencyLimit = 3;
+      let activeJobs = 0;
+      let completedJobs = 0;
+      let allResults = [];
+      
+      // Create a copy of batch documents to process
+      const documents = [...batchDocuments];
+      
+      // Create a helper function that processes one document
+      const processOneDocument = async (doc) => {
+        try {
+          console.log(`Processing batch document: ${doc.name}`);
+          
+          // Get auth token
+          let authToken = null;
+          try {
+            if (user) {
+              authToken = await user.getIdToken(true);
+            }
+          } catch (tokenError) {
+            console.error("Failed to get auth token:", tokenError);
+          }
+          
+          // Create form data for this document
+          const formData = new FormData();
+          formData.append('documentId', doc.id);
+          formData.append('chunkSize', chunkSize);
+          formData.append('overlap', overlap);
+          formData.append('outputFormat', outputFormat);
+          formData.append('classFilter', classFilter);
+          formData.append('prioritizeImportant', prioritizeImportant);
+          
+          if (authToken) {
+            formData.append('authToken', authToken);
+          }
+          
+          // Generate a unique job ID for this batch item
+          const batchItemJobId = `batch-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+          formData.append('jobId', batchItemJobId);
+          
+          // Process the document
+          const response = await fetch("/api/process-document", {
+            method: "POST",
+            headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
+            body: formData,
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to process batch document');
+          }
+          
+          // Get the result
+          const result = await response.json();
+          
+          // Update batch progress
+          setBatchProgress(prev => ({
+            ...prev,
+            [doc.id]: {
+              completed: true,
+              success: true,
+              result
+            }
+          }));
+          
+          // Add to results
+          allResults.push(result);
+          
+          // Update the combined result data
+          setBatchResults(allResults);
+          
+          // Update progress
+          completedJobs++;
+          setProgress(Math.floor((completedJobs / documents.length) * 100));
+          
+          console.log(`Completed batch document: ${doc.name}`);
+        } catch (error) {
+          console.error(`Error processing batch document ${doc.name}:`, error);
+          
+          // Update batch progress
+          setBatchProgress(prev => ({
+            ...prev,
+            [doc.id]: {
+              completed: true,
+              success: false,
+              error: error.message
+            }
+          }));
+          
+          // Update progress
+          completedJobs++;
+          setProgress(Math.floor((completedJobs / documents.length) * 100));
+        } finally {
+          // Decrease active jobs count
+          activeJobs--;
+        }
+      };
+      
+      // Process documents with concurrency limit
+      while (documents.length > 0 || activeJobs > 0) {
+        // If we have capacity and documents to process, start a new job
+        if (activeJobs < concurrencyLimit && documents.length > 0) {
+          const doc = documents.shift();
+          activeJobs++;
+          
+          // Initialize progress for this document
+          setBatchProgress(prev => ({
+            ...prev,
+            [doc.id]: {
+              completed: false,
+              progress: 0
+            }
+          }));
+          
+          // Process document
+          processOneDocument(doc);
+        } else {
+          // Wait a bit before checking again
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+      
+      // All documents processed, set state to complete
+      setProcessingState("complete");
+      setProgress(100);
+      
+      // Create combined result data
+      const combinedResult = {
+        documentId: initialDocument?.id,
+        resultCount: allResults.reduce((total, result) => total + (result.stats?.generatedVariants || 0), 0),
+        fileName: `combined_results.${outputFormat === "csv" ? "csv" : "jsonl"}`,
+        stats: {
+          totalDocuments: batchDocuments.length,
+          successfulDocuments: allResults.length,
+          totalClauses: allResults.reduce((total, result) => total + (result.stats?.extractedClauses || 0), 0),
+          totalVariants: allResults.reduce((total, result) => total + (result.stats?.generatedVariants || 0), 0)
+        }
+      };
+      
+      setProcessResult(combinedResult);
+      
+    } catch (error) {
+      console.error("Error in batch processing:", error);
+      setError(error.message || "Batch processing failed");
+      setProcessingState("error");
+    } finally {
+      setBatchProcessing(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="upload">Upload Document</TabsTrigger>
+          <TabsTrigger value="upload">
+            {processingState !== "idle" && processingState !== "complete" ? "Processing" : "Upload Document"}
+          </TabsTrigger>
           <TabsTrigger
             value="preview"
             disabled={processingState !== "complete"}
@@ -1164,13 +1501,21 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="upload" className="mt-6">
+        <TabsContent value="upload" className="mt-6" forceMount={processingState !== "idle"}>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div>
-                <CardTitle>Document Upload</CardTitle>
+                <CardTitle>
+                  {processingState === "processing" ? "Synthesizing Data" : 
+                   processingState === "uploading" ? "Uploading Document" : 
+                   processingState === "complete" ? "Processing Complete" : 
+                   "Document Upload"}
+                </CardTitle>
                 <CardDescription>
-                  Upload a document to generate synthetic training data
+                  {processingState !== "idle" 
+                    ? "Your document is being processed and converted to synthetic training data"
+                    : "Upload a document to generate synthetic training data"
+                  }
                 </CardDescription>
               </div>
               <div className="flex items-center text-sm gap-2 bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full">
@@ -1188,7 +1533,7 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
               {processingState !== "idle" ? (
                 renderProcessingState()
               ) : (
-                <form onSubmit={handleProcess} className="space-y-6">
+                <form onSubmit={prepareDocumentForProcessing} className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="name">Dataset Name (Optional)</Label>
                     <Input
@@ -1408,16 +1753,18 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
                 </form>
               )}
             </CardContent>
-            <CardFooter className="border-t bg-gray-50 flex justify-center p-6">
-              <div className="space-y-2 text-center max-w-md">
-                <h3 className="font-medium">Multi-Step Processing Pipeline</h3>
-                <p className="text-sm text-gray-600">
-                  Our AI uses multiple modular AI models to generate synthetic variants
-                  that match your organization's exact language style. The
-                  output is formatted for fine-tuning various AI models.
-                </p>
-              </div>
-            </CardFooter>
+            {processingState === "idle" && (
+              <CardFooter className="border-t bg-gray-50 flex justify-center p-6">
+                <div className="space-y-2 text-center max-w-md">
+                  <h3 className="font-medium">Multi-Step Processing Pipeline</h3>
+                  <p className="text-sm text-gray-600">
+                    Our AI uses multiple modular AI models to generate synthetic variants
+                    that match your organization's exact language style. The
+                    output is formatted for fine-tuning various AI models.
+                  </p>
+                </div>
+              </CardFooter>
+            )}
           </Card>
         </TabsContent>
 
@@ -1444,6 +1791,8 @@ const DocumentProcessor = forwardRef(({ initialDocument = null }, ref) => {
           </Card>
         </TabsContent>
       </Tabs>
+      {renderSizeWarningDialog()}
+      {renderDocumentSplitterDialog()}
     </div>
   );
 });
