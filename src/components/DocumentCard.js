@@ -36,6 +36,15 @@ export default function DocumentCard({
     }
   };
 
+  // Handle Generate Data button click
+  const handleGenerateData = () => {
+    // Pass the document ID to the parent component
+    if (onGenerateData) {
+      console.log(`Generating data for document: ${id}`);
+      onGenerateData(id, title);
+    }
+  };
+
   return (
     <Card className="w-full">
       <CardContent className="pt-6">
@@ -85,7 +94,7 @@ export default function DocumentCard({
           variant="outline" 
           size="sm" 
           className="w-full"
-          onClick={() => onGenerateData(id)}
+          onClick={handleGenerateData}
         >
           Generate Data
         </Button>

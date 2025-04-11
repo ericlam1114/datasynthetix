@@ -29,6 +29,7 @@ import mammoth from "mammoth";
 import OpenAI from "openai";
 import { auth } from "../../../lib/firebase";
 import { extractTextFromPdf, extractTextFromTxt } from "./utils/extractText";
+import { extractTextFromPdfWithTextract } from './utils/extractText';
 
 // Import the modular services
 import { authenticateUser, getUserSubscription, updateUserCredits } from './services/auth';
@@ -885,23 +886,39 @@ async function processExistingDocument(userId, documentId, processingOptions = {
           console.log(`File name: ${fileName}, type: ${fileType}`);
           
           const useOcr = processingOptions?.useOcr === true || processingOptions?.ocr === true;
+          const useTextract = process.env.USE_TEXTRACT === 'true';
           
           try {
             // Extract text based on file type
             if (fileType.includes('pdf') || fileName.toLowerCase().endsWith('.pdf')) {
-              console.log(`Extracting text from PDF (OCR enabled: ${useOcr})`);
-              text = await extractTextFromPdf(fileBuffer, { 
-                useOcr: useOcr,
-                attemptAlternativeMethods: true 
-              });
+              console.log(`Extracting text from PDF (OCR enabled: ${useOcr}, Textract enabled: ${useTextract})`);
+              
+              if (useTextract) {
+                // Use Textract for PDF extraction
+                text = await extractTextFromPdfWithTextract(fileBuffer, { 
+                  useOcr: useOcr
+                });
+              } else {
+                // Use traditional methods
+                text = await extractTextFromPdf(fileBuffer, { 
+                  useOcr: useOcr,
+                  attemptAlternativeMethods: true 
+                });
+              }
 
               // If text extraction failed and OCR wasn't already enabled, try again with OCR
               if ((!text || text.trim().length < 25) && !useOcr) {
                 console.log("Initial extraction failed, retrying with OCR enabled");
-                text = await extractTextFromPdf(fileBuffer, { 
-                  useOcr: true, 
-                  attemptAlternativeMethods: true 
-                });
+                if (useTextract) {
+                  text = await extractTextFromPdfWithTextract(fileBuffer, { 
+                    useOcr: true
+                  });
+                } else {
+                  text = await extractTextFromPdf(fileBuffer, { 
+                    useOcr: true, 
+                    attemptAlternativeMethods: true 
+                  });
+                }
               }
             } else if (fileType.includes('text/plain') || fileName.toLowerCase().endsWith('.txt')) {
               console.log("Extracting text from plain text");

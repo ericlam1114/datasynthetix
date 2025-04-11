@@ -7,6 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 import DocumentProcessor from '../../../components/document-processor';
 import { getDocument } from '../../../lib/firestoreService';
 import { useAuth } from '../../../contexts/AuthContext';
+import { Spinner } from "../../../components/ui/spinner";
 
 export default function ProcessDocumentPage() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function ProcessDocumentPage() {
   const [document, setDocument] = useState(null);
   const [loading, setLoading] = useState(true);
   const [processingStarted, setProcessingStarted] = useState(false);
+  const [error, setError] = useState("");
   
   // Use a ref to store reference to the DocumentProcessor
   const processorRef = useRef(null);
@@ -24,6 +26,7 @@ export default function ProcessDocumentPage() {
   const jobId = searchParams.get('jobId');
   const tempJobId = searchParams.get('tempJobId');
   const startProcessing = searchParams.get('startProcessing') === 'true';
+  const domainType = searchParams.get("domainType") || "general";
   
   // Start API processing if directed from DocumentList
   useEffect(() => {
@@ -86,10 +89,16 @@ export default function ProcessDocumentPage() {
     async function fetchDocument() {
       if (documentId && user) {
         try {
+          setLoading(true);
+          setError("");
+          
           const fetchedDoc = await getDocument(documentId);
           
           // Verify this document belongs to the current user
           if (fetchedDoc && fetchedDoc.userId === user.uid) {
+            // Add domain type to document data
+            fetchedDoc.domainType = domainType;
+            
             setDocument(fetchedDoc);
           } else {
             // If not found or not owned by this user, go back to dashboard
@@ -97,15 +106,34 @@ export default function ProcessDocumentPage() {
           }
         } catch (error) {
           console.error('Error fetching document:', error);
+          setError("Failed to load document");
+        } finally {
+          setLoading(false);
         }
       }
       
-      setLoading(false);
+      fetchDocument();
     }
     
     fetchDocument();
-  }, [documentId, user, router]);
+  }, [documentId, user, router, domainType]);
   
+  // Handle document processing
+  const handleProcess = async () => {
+    if (processorRef.current) {
+      processorRef.current.handleProcess();
+    }
+  };
+  
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner className="h-8 w-8 text-blue-600" />
+        <span className="ml-2">Loading document...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center">
@@ -121,17 +149,28 @@ export default function ProcessDocumentPage() {
         <h1 className="text-3xl font-bold">Process Document</h1>
       </div>
       
-      {loading ? (
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
         </div>
-      ) : (
-        <DocumentProcessor 
-          initialDocument={document} 
-          ref={processorRef}
-          initialJobId={jobId || tempJobId}
-          autoShowProcessing={!!(jobId || tempJobId)}
-        />
+      )}
+      
+      <DocumentProcessor 
+        ref={processorRef}
+        initialDocument={document} 
+        domainType={domainType}
+        autoShowProcessing={!!document} 
+      />
+      
+      {document && (
+        <div className="mt-6">
+          <button
+            onClick={handleProcess}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+          >
+            Start Processing
+          </button>
+        </div>
       )}
     </div>
   );

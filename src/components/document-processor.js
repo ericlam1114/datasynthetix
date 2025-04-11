@@ -48,7 +48,7 @@ import {
   Filter,
 } from "lucide-react";
 import DocumentSplitter from "./DocumentSplitter";
-import { Dialog, DialogContent } from "./ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { 
   AlertDialog, 
   AlertDialogAction, 
@@ -58,9 +58,14 @@ import {
   AlertDialogFooter, 
   AlertDialogHeader, 
   AlertDialogTitle 
-} from "./ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
 
-const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = null, autoShowProcessing = false }, ref) => {
+const DocumentProcessor = forwardRef(({ 
+  initialDocument = null, 
+  initialJobId = null, 
+  autoShowProcessing = false,
+  domainType: initialDomainType = "general"
+}, ref) => {
   const { user } = useAuth();
   const [name, setName] = useState(initialDocument?.name || "");
   const [description, setDescription] = useState(
@@ -109,6 +114,8 @@ const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = n
   const [batchDocuments, setBatchDocuments] = useState([]);
   const [batchProgress, setBatchProgress] = useState({});
   const [batchResults, setBatchResults] = useState([]);
+  const [domainType, setDomainType] = useState(initialDomainType || "general");
+  const [useTextract, setUseTextract] = useState(true);
 
   // Expose functions to parent components via ref
   useImperativeHandle(ref, () => ({
@@ -391,9 +398,9 @@ const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = n
   // This function analyzes if the document will require batching
   const analyzeDocument = async (documentToCheck) => {
     // Size thresholds
-    const MAX_FILE_SIZE_MB = 10; // 10MB file size warning threshold
-    const MAX_PAGES = 50; // 50 pages warning threshold
-    const MAX_TOKENS_ESTIMATE = 150000; // Approximately when API limits might be hit
+    const MAX_FILE_SIZE_MB = 5; // Lowered from 10MB to 5MB file size warning threshold
+    const MAX_PAGES = 30; // Lowered from 50 to 30 pages warning threshold
+    const MAX_TOKENS_ESTIMATE = 100000; // Lowered from 150000 to 100000 tokens
     const CHARS_PER_TOKEN = 4; // Rough estimate
     
     // Get document details
@@ -412,8 +419,8 @@ const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = n
     const estimatedTokens = Math.ceil(contentLength / CHARS_PER_TOKEN);
     const exceedsTokenLimit = estimatedTokens > MAX_TOKENS_ESTIMATE;
     
-    // Determine if batching is needed
-    const needsBatching = isLargeFile || isLongDocument || exceedsTokenLimit;
+    // For testing purposes, show batching more often
+    const needsBatching = isLargeFile || isLongDocument || exceedsTokenLimit || estimatedPages > 15;
     
     // Calculate recommended batches if needed
     let recommendedBatches = 1;
@@ -438,7 +445,7 @@ const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = n
       exceedsTokenLimit,
       needsBatching,
       recommendedBatches,
-      reason: isLargeFile ? 'size' : isLongDocument ? 'pages' : exceedsTokenLimit ? 'tokens' : null
+      reason: isLargeFile ? 'size' : isLongDocument ? 'pages' : exceedsTokenLimit ? 'tokens' : estimatedPages > 15 ? 'pages' : null
     };
   };
 
@@ -455,7 +462,7 @@ const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = n
     const analysis = await analyzeDocument(initialDocument || file);
     setDocumentAnalysis(analysis);
     
-    // Warn user if document is very large
+    // Always show warning if document is very large
     if (analysis.needsBatching) {
       setShowSizeWarning(true);
       return;
@@ -563,6 +570,8 @@ const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = n
       formData.append("classFilter", classFilter);
       formData.append("prioritizeImportant", prioritizeImportant);
       formData.append("jobId", newJobId); // Add job ID to form data
+      formData.append("domainType", domainType); // Add domain type to form data
+      formData.append("useTextract", useTextract);
 
       // Add timeout configurations for document processing
       formData.append("documentTimeout", "600000"); // 10 minutes overall timeout
@@ -914,6 +923,12 @@ const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = n
                     <div className="flex items-center text-indigo-600">
                       <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
                       Finalizing output...
+                    </div>
+                  )}
+                  
+                  {useTextract && (
+                    <div className="flex items-center text-blue-600">
+                      <CheckCircle className="h-3 w-3 mr-2 inline" /> Using Amazon Textract for enhanced text extraction
                     </div>
                   )}
                 </div>
@@ -1693,6 +1708,38 @@ const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = n
                         </div>
 
                         <div className="space-y-2">
+                          <Label htmlFor="domainType">Document Domain</Label>
+                          <Select
+                            value={domainType || "general"}
+                            onValueChange={(value) => setDomainType(value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select document domain" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="general">
+                                General (Default)
+                              </SelectItem>
+                              <SelectItem value="legal">
+                                Legal Documents
+                              </SelectItem>
+                              <SelectItem value="sop">
+                                Standard Operating Procedures
+                              </SelectItem>
+                              <SelectItem value="finance">
+                                Financial Documents
+                              </SelectItem>
+                              <SelectItem value="technical">
+                                Technical Documentation
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <p className="text-xs text-gray-500">
+                            Specifies the document domain for better synthesis results
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
                           <div className="flex items-center space-x-2">
                             <Checkbox
                               id="prioritizeImportant"
@@ -1708,6 +1755,25 @@ const DocumentProcessor = forwardRef(({ initialDocument = null, initialJobId = n
                           </div>
                           <p className="text-xs text-gray-500 ml-6">
                             Focuses token usage on critical and important content when token limits are reached
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <Checkbox
+                              id="useTextract"
+                              checked={useTextract}
+                              onCheckedChange={setUseTextract}
+                            />
+                            <label
+                              htmlFor="useTextract"
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                              Use Amazon Textract
+                            </label>
+                          </div>
+                          <p className="text-xs text-gray-500 ml-6">
+                            Improves text extraction quality especially for scanned documents and complex layouts
                           </p>
                         </div>
                       </div>

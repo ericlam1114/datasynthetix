@@ -3,7 +3,13 @@
  * Centralizes text extraction from various document types with error handling
  */
 
-import { extractTextFromPdf } from '../utils/extractText';
+import {
+  extractTextFromPdf,
+  extractTextFromTxt,
+  extractTextFromDocx,
+  validateExtractedText,
+  extractTextFromPdfWithTextract
+} from '../utils/extractText';
 import { writeFile, mkdir } from 'fs/promises';
 import { tmpdir } from 'os';
 import path from 'path';
@@ -18,9 +24,13 @@ import { v4 as uuidv4 } from 'uuid';
  * @returns {Object} The extracted text and metadata
  */
 export async function extractText(buffer, mimeType, options = {}) {
+  const { enableOcr = false } = options;
+  let text = '';
+  let textExtractionMethod = 'standard';
+  
+  console.log(`Extracting text from ${mimeType} document, OCR enabled: ${enableOcr}`);
+  
   try {
-    console.log(`Starting text extraction from ${mimeType} file, size: ${buffer.length}`);
-    
     // Validate input
     if (!buffer || buffer.length === 0) {
       throw new Error('Empty file buffer provided');
@@ -28,24 +38,23 @@ export async function extractText(buffer, mimeType, options = {}) {
     
     // Set defaults
     const {
-      enableOcr = process.env.USE_OCR === 'true' || process.env.NODE_ENV === 'development',
       validateContent = process.env.BYPASS_TEXT_VALIDATION !== 'true',
       minLength = 25,
     } = options;
     
-    let text = '';
-    
     // Extract based on file type
-    if (mimeType === 'application/pdf') {
-      text = await extractTextFromPdf(buffer, { enableOcr });
-    } else if (mimeType.startsWith('text/')) {
-      // Handle plain text files
-      text = buffer.toString('utf-8');
-    } else if (['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
-                'application/msword'].includes(mimeType)) {
-      // For Word documents, we need to save the file first
-      const tempFilePath = await saveTempFile(buffer, mimeType);
-      text = await extractTextFromDocx(tempFilePath);
+    if (mimeType.includes('pdf')) {
+      // Use Textract for PDF extraction if enabled in the environment
+      if (process.env.USE_TEXTRACT === 'true') {
+        text = await extractTextFromPdfWithTextract(buffer, { useOcr: enableOcr });
+        textExtractionMethod = 'textract';
+      } else {
+        text = await extractTextFromPdf(buffer, { useOcr: enableOcr });
+      }
+    } else if (mimeType.includes('text/plain')) {
+      text = extractTextFromTxt(buffer);
+    } else if (mimeType.includes('word') || mimeType.includes('docx')) {
+      text = await extractTextFromDocx(buffer);
     } else {
       throw new Error(`Unsupported file type: ${mimeType}`);
     }
@@ -62,10 +71,11 @@ export async function extractText(buffer, mimeType, options = {}) {
     }
     
     return {
-      text,
-      length: text?.length || 0,
+      text: validation.text || text,
+      length: (validation.text || text).length,
       validation,
       mimeType,
+      method: textExtractionMethod
     };
   } catch (error) {
     console.error('Text extraction error:', error);
@@ -77,7 +87,8 @@ export async function extractText(buffer, mimeType, options = {}) {
         reason: 'extraction_error',
         error: error.message
       },
-      mimeType
+      mimeType,
+      method: textExtractionMethod
     };
   }
 }
@@ -176,23 +187,6 @@ async function saveTempFile(buffer, mimeType) {
 }
 
 /**
- * Extracts text from a Word document
- * NOTE: This is a placeholder for the actual implementation
- * 
- * @param {String} filePath - Path to the Word document
- * @returns {String} The extracted text
- */
-async function extractTextFromDocx(filePath) {
-  // This is a placeholder - in a real implementation, you'd use a library like:
-  // - docx-parser
-  // - mammoth
-  // - textract
-  
-  // For now, just return a placeholder
-  return "Text extraction from Word documents is not yet implemented";
-}
-
-/**
  * Processes text into chunks for better handling in NLP tasks
  * 
  * @param {String} text - The full text to chunk
@@ -200,88 +194,57 @@ async function extractTextFromDocx(filePath) {
  * @returns {Array} Array of text chunks
  */
 export function createTextChunks(text, options = {}) {
-  try {
-    // Default options
-    const {
-      maxChunkSize = 1000,
-      overlapSize = 100,
-      preserveSentences = true
-    } = options;
+  const {
+    chunkSize = 1000,
+    overlap = 100,
+    minLength = 50
+  } = options;
+
+  // If text is too short, return as single chunk
+  if (text.length < minLength) {
+    return [text];
+  }
+
+  const chunks = [];
+  let position = 0;
+
+  while (position < text.length) {
+    // Calculate end position for this chunk
+    let endPosition = Math.min(position + chunkSize, text.length);
     
-    if (!text) return [];
-    
-    const chunks = [];
-    let startPos = 0;
-    
-    while (startPos < text.length) {
-      // Calculate end position
-      let endPos = startPos + maxChunkSize;
+    // Adjust end position to try to break at sentence boundaries
+    if (endPosition < text.length) {
+      // Look for sentence-ending characters within the last 20% of the chunk
+      const lookbackRange = Math.max(endPosition - Math.floor(chunkSize * 0.2), position);
       
-      // Don't exceed text length
-      if (endPos > text.length) {
-        endPos = text.length;
-      } 
-      // Try to break at sentence if preserving sentences
-      else if (preserveSentences && endPos < text.length) {
-        // Look for sentence breaks (., !, ?)
-        const sentenceBreaks = ['. ', '! ', '? ', '.\n', '!\n', '?\n'];
-        
-        // Look for a natural break within the last 20% of the chunk
-        const lookbackStart = Math.max(startPos, endPos - Math.floor(maxChunkSize * 0.2));
-        
-        let foundBreak = false;
-        for (const breakChar of sentenceBreaks) {
-          // Find the last occurrence of the break within our lookback window
-          const breakPos = text.lastIndexOf(breakChar, endPos);
-          if (breakPos > lookbackStart) {
-            endPos = breakPos + 1; // Include the period but not the space
-            foundBreak = true;
-            break;
-          }
+      // Find the last sentence boundary in the lookback range
+      for (let i = endPosition; i >= lookbackRange; i--) {
+        const char = text[i];
+        if (char === '.' || char === '!' || char === '?') {
+          endPosition = i + 1;
+          break;
         }
-        
-        // If no sentence break found, try to break at a paragraph at least
-        if (!foundBreak) {
-          const paragraphBreaks = ['\n\n', '\r\n\r\n'];
-          for (const breakChar of paragraphBreaks) {
-            const breakPos = text.lastIndexOf(breakChar, endPos);
-            if (breakPos > lookbackStart) {
-              endPos = breakPos + breakChar.length;
-              foundBreak = true;
-              break;
-            }
-          }
-        }
-        
-        // Last resort: break at a space to avoid cutting words
-        if (!foundBreak) {
-          const lastSpace = text.lastIndexOf(' ', endPos);
-          if (lastSpace > startPos) {
-            endPos = lastSpace + 1;
-          }
-        }
-      }
-      
-      // Extract the chunk
-      const chunk = text.substring(startPos, endPos).trim();
-      if (chunk) {
-        chunks.push(chunk);
-      }
-      
-      // Move start position for next chunk, accounting for overlap
-      startPos = Math.min(text.length, endPos - overlapSize);
-      
-      // Avoid infinite loops if we can't make progress
-      if (startPos >= endPos) {
-        startPos = endPos;
       }
     }
     
-    console.log(`Split text into ${chunks.length} chunks`);
-    return chunks;
-  } catch (error) {
-    console.error('Error creating text chunks:', error);
-    // Return single chunk for safety
-    return [text];
+    // Extract the chunk
+    const chunk = text.substring(position, endPosition);
+    if (chunk.trim().length >= minLength) {
+      chunks.push(chunk);
+    }
+    
+    // Move position for next chunk, accounting for overlap
+    position = endPosition - overlap;
+    
+    // Ensure we're making forward progress
+    if (position <= 0 || position >= text.length - minLength) {
+      break;
+    }
   }
+
+  console.log(`Text chunked into ${chunks.length} segments (avg size: ${
+    chunks.length ? Math.round(chunks.reduce((sum, chunk) => sum + chunk.length, 0) / chunks.length) : 0
+  } chars)`);
+  
+  return chunks;
 } 

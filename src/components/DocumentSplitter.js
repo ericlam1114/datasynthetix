@@ -2,9 +2,9 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { Slider } from "./ui/slider";
-import { Progress } from "./ui/progress";
+import { Progress } from "@/components/ui/progress";
 import {
   Card,
   CardContent,
@@ -12,8 +12,19 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "@/components/ui/card";
 import { FileText, Scissors, AlertTriangle } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 
 // DocumentSplitter component to handle splitting large PDFs
 export default function DocumentSplitter({ 

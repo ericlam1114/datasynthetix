@@ -85,6 +85,12 @@ export async function processDocument(text, options = {}) {
     console.log('Starting document processing with pipeline');
     console.time('documentProcessing');
     
+    // Set environment variable for Textract if enabled in the options
+    if (options.useTextract === 'true' || options.useTextract === true) {
+      process.env.USE_TEXTRACT = 'true';
+      console.log("Amazon Textract enabled for document processing");
+    }
+    
     // Create pipeline with options
     const pipeline = createPipeline(options);
     
