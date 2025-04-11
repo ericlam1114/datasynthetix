@@ -126,3 +126,94 @@ With these settings in place, the application will now:
 3. Only use local storage in development environments
 
 This ensures reliable file storage in production environments across all deployment platforms.
+
+## File Upload System
+
+The system includes a robust file upload mechanism that supports both direct uploads and chunked uploads for large files. This ensures efficient handling of documents of various sizes.
+
+### Upload Endpoints
+
+1. **Standard Upload**: `/api/upload`
+   - Handles regular file uploads using multipart/form-data
+   - Suitable for files smaller than 10MB
+   - Returns a document ID and job ID for tracking
+
+2. **Chunked Upload**:
+   - For large files (>10MB), the system uses chunked uploading
+   - `/api/upload/init` - Initializes a chunked upload and returns an uploadId
+   - `/api/upload/chunk` - Handles individual chunk uploads
+   - Progress tracking is available through the job status
+
+### Storage Options
+
+Files are stored with fallback options:
+
+1. Firebase Storage (primary)
+2. AWS S3 (fallback if Firebase is unavailable)
+3. Local filesystem (development environment only)
+
+### Progress Tracking
+
+All uploads create job entries in Firestore that track:
+- Upload progress
+- Current processing stage
+- Error states (if any)
+- Final document location
+
+### Example Usage (Client-Side)
+
+For regular uploads:
+
+```javascript
+const formData = new FormData();
+formData.append('file', fileObject);
+formData.append('name', 'My Document');
+
+const response = await fetch('/api/upload', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${token}`
+  },
+  body: formData
+});
+
+const { documentId, jobId } = await response.json();
+```
+
+For chunked uploads:
+
+```javascript
+// Initialize upload
+const initResponse = await fetch('/api/upload/init', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    filename: file.name,
+    contentType: file.type,
+    fileSize: file.size
+  })
+});
+
+const { uploadId, totalChunks, chunkSize } = await initResponse.json();
+
+// Upload each chunk
+for (let i = 0; i < totalChunks; i++) {
+  const start = i * chunkSize;
+  const end = Math.min(file.size, start + chunkSize);
+  const chunk = file.slice(start, end);
+  
+  const chunkFormData = new FormData();
+  chunkFormData.append('file', chunk, 'chunk');
+  
+  await fetch(`/api/upload/chunk?uploadId=${uploadId}&chunkIndex=${i}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+    body: chunkFormData
+  });
+}
+```
