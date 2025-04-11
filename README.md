@@ -67,3 +67,62 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+# DataSynthetix
+
+## Setting Up AWS S3 for File Storage
+
+For production environments, the application uses S3 as a backup storage option if Firebase Storage fails. Here's how to set it up:
+
+1. **Create an S3 bucket**:
+   - Log in to your AWS Management Console
+   - Navigate to S3 and click "Create bucket"
+   - Choose a unique name for your bucket (this will be used in `AWS_S3_BUCKET`)
+   - Select the region closest to your users (will be used in `AWS_REGION`)
+   - Configure bucket settings as needed (consider enabling versioning)
+   - Set appropriate permissions (usually blocking public access is recommended)
+   - Complete the bucket creation
+
+2. **Create an IAM user with S3 access**:
+   - Go to IAM in the AWS console
+   - Create a new user with programmatic access
+   - Attach the `AmazonS3FullAccess` policy (or create a custom policy for specific S3 actions on your bucket)
+   - Save the Access Key ID and Secret Access Key that are displayed
+
+3. **Configure CORS for your bucket** (if you need to access files directly from the browser):
+   - In the S3 bucket settings, find the CORS configuration
+   - Add a configuration similar to:
+     ```json
+     [
+       {
+         "AllowedHeaders": ["*"],
+         "AllowedMethods": ["GET", "PUT", "POST", "DELETE", "HEAD"],
+         "AllowedOrigins": ["https://your-domain.com"],
+         "ExposeHeaders": ["ETag"]
+       }
+     ]
+     ```
+
+4. **Add S3 credentials to your environment variables**:
+   - Add the following to your `.env.local` file (in production, set these in your hosting platform):
+     ```
+     AWS_REGION=your-selected-region
+     AWS_S3_BUCKET=your-bucket-name
+     AWS_ACCESS_KEY_ID=your-access-key-id
+     AWS_SECRET_ACCESS_KEY=your-secret-access-key
+     ```
+
+5. **Optional: Set up CloudFront for CDN access**:
+   - Create a CloudFront distribution pointing to your S3 bucket
+   - Configure origin access identity to secure your S3 bucket
+   - After setup, add the CloudFront URL to `AWS_S3_PUBLIC_URL` in your environment variables
+     ```
+     AWS_S3_PUBLIC_URL=https://your-distribution-id.cloudfront.net
+     ```
+
+With these settings in place, the application will now:
+1. Try to save files to Firebase Storage first
+2. Fall back to S3 if Firebase fails
+3. Only use local storage in development environments
+
+This ensures reliable file storage in production environments across all deployment platforms.

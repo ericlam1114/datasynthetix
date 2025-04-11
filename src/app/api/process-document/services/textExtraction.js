@@ -7,9 +7,9 @@ import {
   extractTextFromPdf,
   extractTextFromTxt,
   extractTextFromDocx,
-  validateExtractedText,
   extractTextFromPdfWithTextract
 } from '../utils/extractText';
+import { validateExtractedText } from '../utils/validators';
 import { writeFile, mkdir } from 'fs/promises';
 import { tmpdir } from 'os';
 import path from 'path';
@@ -60,7 +60,7 @@ export async function extractText(buffer, mimeType, options = {}) {
     }
     
     // Validate the extracted text
-    const validation = validateExtractedText(text, { minLength, validateContent });
+    const validation = validateExtractedText(text);
     
     // Provide dev fallback if needed
     if (!validation.valid && process.env.NODE_ENV === 'development') {
@@ -91,61 +91,6 @@ export async function extractText(buffer, mimeType, options = {}) {
       method: textExtractionMethod
     };
   }
-}
-
-/**
- * Validates the quality of extracted text
- * 
- * @param {String} text - The extracted text
- * @param {Object} options - Validation options
- * @returns {Object} Validation results
- */
-export function validateExtractedText(text, options = {}) {
-  const { minLength = 25, validateContent = true } = options;
-  
-  console.log(`Validating extracted text (${text?.length || 0} characters)`);
-  
-  // Skip validation if requested
-  if (!validateContent) {
-    return { valid: true, reason: 'validation_bypassed' };
-  }
-  
-  if (!text || text.length < minLength) {
-    console.log("❌ Text extraction failed or produced insufficient content");
-    console.log(`Text length: ${text?.length || 0} characters`);
-    return { valid: false, reason: "insufficient_content" };
-  }
-  
-  // Check for common indicators of successful extraction
-  const containsWords = /\b\w{3,}\b/.test(text); // Has words of at least 3 chars
-  const hasPunctuation = /[.,;:?!]/.test(text); // Has punctuation
-  const hasSpaces = /\s/.test(text); // Has whitespace
-  
-  console.log(`Text validation: Has words: ${containsWords}, Has punctuation: ${hasPunctuation}, Has spaces: ${hasSpaces}`);
-  
-  // If the text doesn't have basic text indicators, it's likely poor quality
-  if (!containsWords || !hasSpaces) {
-    return { 
-      valid: false, 
-      reason: "poor_quality",
-      issues: { containsWords, hasPunctuation, hasSpaces }
-    };
-  }
-  
-  // Check for potential OCR quality issues
-  const hasExcessiveSymbols = (text.match(/[^\w\s.,;:?!'"()\-–—]/g) || []).length > text.length * 0.1;
-  const hasUnusualPatterns = /(.)\1{5,}/.test(text); // Repeated characters
-  
-  if (hasExcessiveSymbols || hasUnusualPatterns) {
-    return { 
-      valid: true, 
-      reason: "potential_ocr_issues",
-      issues: { hasExcessiveSymbols, hasUnusualPatterns },
-      quality: "low"
-    };
-  }
-  
-  return { valid: true, reason: "good_quality", quality: "good" };
 }
 
 /**
@@ -247,4 +192,4 @@ export function createTextChunks(text, options = {}) {
   } chars)`);
   
   return chunks;
-} 
+}

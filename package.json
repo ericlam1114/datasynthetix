@@ -6,7 +6,8 @@
     "dev": "NODE_OPTIONS=--openssl-legacy-provider next dev",
     "build": "NODE_OPTIONS=--openssl-legacy-provider next build",
     "start": "NODE_OPTIONS=--openssl-legacy-provider next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:pdf": "node test-pdf-extract.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.787.0",
@@ -42,8 +43,9 @@
     "node-fetch": "^2.7.0",
     "openai": "^4.93.0",
     "pdf-img-convert": "^2.0.0",
-    "pdf-lib": "^1.17.1",
     "pdf-parse": "^1.1.1",
+    "pdf.js-extract": "^0.2.1",
+    "pdf2json": "^3.1.5",
     "pdfjs-dist": "^2.16.105",
     "radix-ui": "^1.2.0",
     "react": "^19.0.0",
@@ -60,11 +62,15 @@
     "@eslint/eslintrc": "^3",
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/postcss": "^4",
+    "chalk": "^5.4.1",
+    "cli-table3": "^0.6.5",
     "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.2.5",
     "node-loader": "^2.1.0",
     "null-loader": "^4.0.1",
+    "ora": "^8.2.0",
+    "pdf-lib": "^1.17.1",
     "tailwindcss": "^4"
   }
 }

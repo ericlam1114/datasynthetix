@@ -842,95 +842,45 @@ const DocumentProcessor = forwardRef(({
               {/* Processing Status */}
               <div className="max-w-md mx-auto mt-4 text-left bg-gray-50 p-3 rounded-md border text-sm">
                 <h4 className="font-medium text-sm mb-2 text-gray-700">
-                  Processing Status:
+                  Processing Status Log:
                 </h4>
-                <div className="space-y-1 text-xs max-h-32 overflow-y-auto">
-                  <div className="flex items-center text-green-600">
-                    <CheckCircle className="h-3 w-3 mr-2 inline" /> Document
-                    uploaded successfully
-                  </div>
-                  <div className="flex items-center text-green-600">
-                    <CheckCircle className="h-3 w-3 mr-2 inline" /> Text
-                    extraction complete
-                  </div>
-                  
-                  {/* Dynamic status indicators based on current stage */}
-                  {(currentStage === 'complete' || progress >= 30) && (
-                    <div className="flex items-center text-green-600">
-                      <CheckCircle className="h-3 w-3 mr-2 inline" /> Clause
-                      extraction complete
+                <div className="space-y-1 text-xs max-h-48 overflow-y-auto border p-2 bg-black text-green-400 font-mono">
+                  <div>Starting document processing pipeline...</div>
+                  {currentStage === 'initializing' && (
+                    <div className="animate-pulse">→ Initializing document processing...</div>
+                  )}
+                  {(currentStage === 'chunking' || progress >= 15) && (
+                    <div className={currentStage === 'chunking' ? 'animate-pulse' : ''}>
+                      → Document chunked into {processingStats.totalChunks || 0} segments
                     </div>
                   )}
-                  {(currentStage === 'complete' || progress >= 60) && (
-                    <div className="flex items-center text-green-600">
-                      <CheckCircle className="h-3 w-3 mr-2 inline" />{" "}
-                      Classification complete
+                  {(currentStage === 'extracting' || progress >= 30) && (
+                    <div className={currentStage === 'extracting' ? 'animate-pulse' : ''}>
+                      → Extracting clauses from chunks ({processingStats.processedChunks || 0}/{processingStats.totalChunks || 0})
                     </div>
                   )}
-                  {(currentStage === 'complete' || progress >= 90) && (
-                    <div className="flex items-center text-green-600">
-                      <CheckCircle className="h-3 w-3 mr-2 inline" /> Synthetic
-                      generation complete
+                  {processingStats.extractedClauses > 0 && (
+                    <div>→ Found {processingStats.extractedClauses} clauses in document</div>
+                  )}
+                  {(currentStage === 'classifying' || progress >= 60) && (
+                    <div className={currentStage === 'classifying' ? 'animate-pulse' : ''}>
+                      → Classifying clauses by importance ({processingStats.classifiedClauses || 0}/{processingStats.extractedClauses || 0})
                     </div>
                   )}
-                  
-                  {/* Active processing stage indicator based on currentStage */}
-                  {currentStage === 'extracting' && (
-                    <div className="flex items-center text-indigo-600">
-                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
-                      Extracting clauses...
+                  {(currentStage === 'generating' || progress >= 75) && (
+                    <div className={currentStage === 'generating' ? 'animate-pulse' : ''}>
+                      → Generating synthetic variants ({processingStats.generatedVariants || 0} variants created)
                     </div>
                   )}
-                  {currentStage === 'classifying' && (
-                    <div className="flex items-center text-indigo-600">
-                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
-                      Classifying clauses...
+                  {(currentStage === 'formatting' || progress >= 90) && (
+                    <div className={currentStage === 'formatting' ? 'animate-pulse' : ''}>
+                      → Formatting output data...
                     </div>
                   )}
-                  {currentStage === 'generating' && (
-                    <div className="flex items-center text-indigo-600">
-                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
-                      Generating synthetic variants...
-                    </div>
+                  {progress >= 100 && (
+                    <div>→ Processing complete! Generated {processingStats.generatedVariants || 0} synthetic variants</div>
                   )}
-                  {currentStage === 'formatting' && (
-                    <div className="flex items-center text-indigo-600">
-                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
-                      Finalizing output...
-                    </div>
-                  )}
-                  
-                  {/* Default stage indicators if currentStage is not provided */}
-                  {!currentStage && progress < 30 && (
-                    <div className="flex items-center text-indigo-600">
-                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
-                      Extracting clauses...
-                    </div>
-                  )}
-                  {!currentStage && progress >= 30 && progress < 60 && (
-                    <div className="flex items-center text-indigo-600">
-                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
-                      Classifying clauses...
-                    </div>
-                  )}
-                  {!currentStage && progress >= 60 && progress < 90 && (
-                    <div className="flex items-center text-indigo-600">
-                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
-                      Generating synthetic variants...
-                    </div>
-                  )}
-                  {!currentStage && progress >= 90 && progress < 100 && (
-                    <div className="flex items-center text-indigo-600">
-                      <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500"></div>{" "}
-                      Finalizing output...
-                    </div>
-                  )}
-                  
-                  {useTextract && (
-                    <div className="flex items-center text-blue-600">
-                      <CheckCircle className="h-3 w-3 mr-2 inline" /> Using Amazon Textract for enhanced text extraction
-                    </div>
-                  )}
+                  <div className="text-xs text-gray-400 mt-1">Last updated: {new Date(processingStats.lastUpdateTime || Date.now()).toLocaleTimeString()}</div>
                 </div>
               </div>
               
@@ -1097,26 +1047,40 @@ const DocumentProcessor = forwardRef(({
     if (!file) return null;
 
     return (
-      <div className="border rounded-lg p-4 bg-gray-50">
+      <div className="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            {file.type === "application/pdf" ? (
+            {file.type === "application/pdf" || (initialDocument?.fileType || "").includes("pdf") ? (
               <FileText className="h-8 w-8 text-red-500 mr-3" />
-            ) : file.type ===
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ? (
+            ) : file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || 
+                 (initialDocument?.fileType || "").includes("docx") ? (
               <FileText className="h-8 w-8 text-blue-500 mr-3" />
             ) : (
               <File className="h-8 w-8 text-gray-500 mr-3" />
             )}
             <div>
               <p className="font-medium truncate max-w-[200px] sm:max-w-sm">
-                {file.name}
+                {file.name || initialDocument?.fileName || "Document"}
               </p>
-              <p className="text-xs text-gray-500">
-                {file.size
-                  ? `${(file.size / 1024 / 1024).toFixed(2)} MB`
-                  : "Size unknown"}
-              </p>
+              <div className="flex flex-wrap gap-2 mt-1">
+                <p className="text-xs text-gray-500">
+                  {file?.size
+                    ? `${(file.size / 1024 / 1024).toFixed(2)} MB`
+                    : initialDocument?.fileSize 
+                      ? `${(initialDocument.fileSize / 1024 / 1024).toFixed(2)} MB` 
+                      : "Size unknown"}
+                </p>
+                {initialDocument?.id && (
+                  <span className="px-2 py-0.5 text-xs bg-indigo-100 text-indigo-800 rounded-full">
+                    Existing Document
+                  </span>
+                )}
+                {useOcr && (
+                  <span className="px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full">
+                    OCR Enabled
+                  </span>
+                )}
+              </div>
             </div>
           </div>
           <Button
@@ -1785,16 +1749,55 @@ const DocumentProcessor = forwardRef(({
                     {!file && !initialDocument ? (
                       <div
                         className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:bg-gray-50 transition-colors"
-                        onClick={() =>
-                          document.getElementById("file-upload").click()
-                        }
+                        onClick={() => document.getElementById("file-upload").click()}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          e.currentTarget.classList.add('bg-gray-50', 'border-indigo-300');
+                        }}
+                        onDragLeave={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          e.currentTarget.classList.remove('bg-gray-50', 'border-indigo-300');
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          e.currentTarget.classList.remove('bg-gray-50', 'border-indigo-300');
+                          
+                          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                            const droppedFile = e.dataTransfer.files[0];
+                            // Validate file type
+                            const fileType = droppedFile.type;
+                            if (
+                              fileType !== "application/pdf" &&
+                              fileType !== "application/vnd.openxmlformats-officedocument.wordprocessingml.document" &&
+                              fileType !== "text/plain"
+                            ) {
+                              setError("Invalid file type. Please upload PDF, DOCX, or TXT files.");
+                              return;
+                            }
+                            
+                            // Check file size
+                            if (droppedFile.size > 10 * 1024 * 1024) {
+                              setError("File too large. Maximum file size is 10MB.");
+                              return;
+                            }
+                            
+                            setFile(droppedFile);
+                            setError("");
+                          }
+                        }}
                       >
                         <Upload className="h-10 w-10 text-gray-400 mx-auto mb-4" />
                         <p className="text-sm font-medium text-gray-700 mb-1">
                           Click to upload or drag and drop
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 mb-2">
                           PDF, DOCX, or TXT (Max 10MB)
+                        </p>
+                        <p className="text-xs text-indigo-600">
+                          Supported formats: .pdf, .docx, .txt
                         </p>
                         <input
                           id="file-upload"

@@ -1,23 +1,21 @@
 const { PDFDocument } = require('pdf-lib');
 const pdfjs = require('pdfjs-dist/legacy/build/pdf');
+const pdfParse = require('pdf-parse');
 const { createWorker } = require('tesseract.js');
 
 /**
- * Enhanced PDF text extraction with multiple methods and OCR fallback
+ * Enhanced PDF text extraction with multiple methods and better error handling
  * @param {Buffer} pdfBuffer - The PDF file buffer
  * @param {Object} options - Options for extraction
  * @returns {Promise<string>} - The extracted text
  */
 async function extractTextFromPdf(pdfBuffer, options = {}) {
   const {
-    useOcr = true,
-    ocrLanguage = 'eng', 
-    ocrThreshold = 200, // If extracted text characters are fewer than this, try OCR
     attemptAllMethods = true, // Whether to try all methods even if one succeeds
     logProgress = false,
+    minimumAcceptableText = 200, // Minimum characters to consider successful
   } = options;
 
-  let extractedText = '';
   let extractionMethods = [];
   
   // Log progress if enabled
@@ -25,12 +23,12 @@ async function extractTextFromPdf(pdfBuffer, options = {}) {
     if (logProgress) console.log(...args);
   };
   
-  log(`Starting PDF text extraction (OCR ${useOcr ? 'enabled' : 'disabled'})`);
+  log(`Starting PDF text extraction using multiple methods`);
   
   try {
-    // Method 1: PDF.js extraction
+    // Method 1: PDF.js extraction (position-aware, groups lines correctly)
     try {
-      log('Attempting extraction using PDF.js...');
+      log('Attempting extraction using PDF.js with position-aware layout...');
       
       // Set the PDF.js worker source
       const pdfjsWorker = require('pdfjs-dist/legacy/build/pdf.worker.js');
@@ -41,7 +39,12 @@ async function extractTextFromPdf(pdfBuffer, options = {}) {
       
       // Load the PDF document
       const pdfData = new Uint8Array(pdfBuffer);
-      const loadingTask = pdfjs.getDocument({ data: pdfData });
+      const loadingTask = pdfjs.getDocument({ 
+        data: pdfData,
+        disableFontFace: true,
+        nativeImageDecoderSupport: 'none',
+        ignoreErrors: true
+      });
       const pdf = await loadingTask.promise;
       
       log(`PDF loaded with ${pdf.numPages} pages`);
@@ -49,132 +52,138 @@ async function extractTextFromPdf(pdfBuffer, options = {}) {
       // Extract text from each page
       let allPageTexts = [];
       for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items.map(item => item.str).join(' ');
-        allPageTexts.push(pageText);
-        
-        if (i % 10 === 0 || i === pdf.numPages) {
-          log(`Processed ${i}/${pdf.numPages} pages with PDF.js`);
+        try {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent({
+            normalizeWhitespace: true,
+            disableCombineTextItems: false
+          });
+          
+          // Group text items by their approximate vertical position
+          const yPositionThreshold = 5;
+          const textByVerticalPosition = {};
+          
+          textContent.items.forEach(item => {
+            const yPosition = Math.round(item.transform[5] / yPositionThreshold) * yPositionThreshold;
+            
+            if (!textByVerticalPosition[yPosition]) {
+              textByVerticalPosition[yPosition] = [];
+            }
+            
+            textByVerticalPosition[yPosition].push(item);
+          });
+          
+          // Sort by vertical position (top to bottom)
+          const sortedYPositions = Object.keys(textByVerticalPosition).sort((a, b) => b - a);
+          
+          // For each vertical position, sort items horizontally (left to right)
+          let pageText = "";
+          sortedYPositions.forEach(yPosition => {
+            textByVerticalPosition[yPosition].sort((a, b) => a.transform[4] - b.transform[4]);
+            
+            // Add the text for this line
+            const lineText = textByVerticalPosition[yPosition].map(item => item.str).join(" ");
+            pageText += lineText + "\n";
+          });
+          
+          allPageTexts.push(pageText);
+          
+          if (i % 10 === 0 || i === pdf.numPages) {
+            log(`Processed ${i}/${pdf.numPages} pages with PDF.js`);
+          }
+        } catch (pageErr) {
+          log(`Error extracting page ${i}: ${pageErr.message}`);
         }
       }
       
       const pdfJsText = allPageTexts.join('\n\n');
-      log(`PDF.js extracted ${pdfJsText.length} characters`);
+      log(`PDF.js position-aware extraction: ${pdfJsText.length} characters`);
       
       extractionMethods.push({
-        method: 'pdfjs',
+        method: 'pdfjs-position',
         text: pdfJsText,
         length: pdfJsText.length
       });
       
-      if (pdfJsText.length > ocrThreshold && !attemptAllMethods) {
-        log('PDF.js extraction successful, skipping other methods');
+      if (pdfJsText.length > minimumAcceptableText && !attemptAllMethods) {
+        log('PDF.js position-aware extraction successful, returning result');
         return pdfJsText;
       }
     } catch (e) {
-      log('PDF.js extraction failed:', e.message);
+      log('PDF.js position-aware extraction failed:', e.message);
     }
     
-    // Method 2: pdf-lib extraction
+    // Method 2: PDF.js extraction (simple, less position aware but more reliable sometimes)
     try {
-      log('Attempting extraction using pdf-lib...');
+      log('Attempting extraction using PDF.js (simple method)...');
       
-      const pdfDoc = await PDFDocument.load(pdfBuffer);
-      const pages = pdfDoc.getPages();
-      log(`PDF loaded with ${pages.length} pages using pdf-lib`);
+      // Set the PDF.js worker source again if needed
+      if (typeof window === 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
+        const pdfjsWorker = require('pdfjs-dist/legacy/build/pdf.worker.js');
+        pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+      }
       
-      // pdf-lib doesn't have direct text extraction, so we'll use a limited approach
-      // This will likely be less successful than PDF.js but sometimes works
+      // Load the PDF document
+      const pdfData = new Uint8Array(pdfBuffer);
+      const loadingTask = pdfjs.getDocument({ 
+        data: pdfData,
+        disableFontFace: true,
+        nativeImageDecoderSupport: 'none',
+        ignoreErrors: true
+      });
+      const pdf = await loadingTask.promise;
       
-      // We can try to access text objects directly (limited functionality)
-      let extractedWithPdfLib = '';
-      let pageTexts = [];
-      
-      for (let i = 0; i < pages.length; i++) {
-        const page = pages[i];
-        // Try to get text from page (limited, usually doesn't work well)
-        // Just placeholder as pdf-lib isn't great for text extraction
-        pageTexts.push(`[Page ${i + 1} content]`);
-        
-        if ((i + 1) % 10 === 0 || i === pages.length - 1) {
-          log(`Processed ${i + 1}/${pages.length} pages with pdf-lib`);
+      // Extract text from each page (simpler method)
+      let allPageTexts = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        try {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map(item => item.str).join(" ");
+          allPageTexts.push(pageText);
+        } catch (pageErr) {
+          log(`Error extracting page ${i} (simple method): ${pageErr.message}`);
         }
       }
       
-      const pdfLibText = pageTexts.join('\n\n');
-      log(`pdf-lib processed ${pages.length} pages`);
+      const pdfJsSimpleText = allPageTexts.join('\n\n');
+      log(`PDF.js simple extraction: ${pdfJsSimpleText.length} characters`);
       
       extractionMethods.push({
-        method: 'pdf-lib',
-        text: pdfLibText,
-        length: pdfLibText.length
+        method: 'pdfjs-simple',
+        text: pdfJsSimpleText,
+        length: pdfJsSimpleText.length
       });
+      
+      if (pdfJsSimpleText.length > minimumAcceptableText && !attemptAllMethods) {
+        log('PDF.js simple extraction successful, returning result');
+        return pdfJsSimpleText;
+      }
     } catch (e) {
-      log('pdf-lib extraction failed:', e.message);
+      log('PDF.js simple extraction failed:', e.message);
     }
     
-    // Method 3: OCR with Tesseract.js
-    if (useOcr && (extractedText.length < ocrThreshold || attemptAllMethods)) {
-      try {
-        log('Attempting OCR with Tesseract.js...');
-        
-        // Convert PDF to images and OCR them
-        const worker = await createWorker(ocrLanguage);
-        
-        // Process each page
-        const pdfDoc = await PDFDocument.load(pdfBuffer);
-        const pages = pdfDoc.getPages();
-        let ocrResults = [];
-        
-        log(`Starting OCR on ${pages.length} pages`);
-        
-        // For each page, render as PNG and process with OCR
-        for (let i = 0; i < pages.length; i++) {
-          try {
-            log(`OCR processing page ${i + 1}/${pages.length}`);
-            
-            // Since we can't directly render PDFs to images in Node.js easily,
-            // in a real implementation, you would use a library like pdf2image
-            // or a service like ImageMagick to convert PDFs to images
-            
-            // This is a simplified example - in a real application, you would:
-            // 1. Convert each PDF page to an image
-            // 2. Process each image with OCR
-            
-            // For now, we'll simulate OCR text results based on the PDF metadata
-            // to show the structure of the implementation
-            const page = pages[i];
-            const { width, height } = page.getSize();
-            
-            await worker.recognize(`https://raw.githubusercontent.com/naptha/tesseract.js/master/tests/assets/images/${i % 5 + 1}.png`);
-            const { data } = await worker.recognize(new Uint8Array(pdfBuffer), { pageIndex: i });
-            ocrResults.push(data.text);
-            
-            log(`OCR complete for page ${i + 1}/${pages.length}`);
-          } catch (e) {
-            log(`Error OCR processing page ${i + 1}:`, e.message);
-          }
-        }
-        
-        await worker.terminate();
-        const ocrText = ocrResults.join('\n\n');
-        
-        log(`OCR extracted ${ocrText.length} characters`);
-        
-        extractionMethods.push({
-          method: 'ocr',
-          text: ocrText,
-          length: ocrText.length
-        });
-        
-        if (ocrText.length > ocrThreshold && !attemptAllMethods) {
-          log('OCR extraction successful, using OCR result');
-          return ocrText;
-        }
-      } catch (e) {
-        log('OCR extraction failed:', e.message);
+    // Method 3: pdf-parse extraction (simpler but sometimes works better)
+    try {
+      log('Attempting extraction using pdf-parse...');
+      
+      const data = await pdfParse(pdfBuffer);
+      const parsedText = data.text || '';
+      
+      log(`pdf-parse extracted ${parsedText.length} characters`);
+      
+      extractionMethods.push({
+        method: 'pdf-parse',
+        text: parsedText,
+        length: parsedText.length
+      });
+      
+      if (parsedText.length > minimumAcceptableText && !attemptAllMethods) {
+        log('pdf-parse extraction successful, returning result');
+        return parsedText;
       }
+    } catch (e) {
+      log('pdf-parse extraction failed:', e.message);
     }
     
     // Choose the best extraction result
@@ -182,18 +191,73 @@ async function extractTextFromPdf(pdfBuffer, options = {}) {
       // Sort by text length (descending) to get the most comprehensive result
       extractionMethods.sort((a, b) => b.length - a.length);
       
-      log(`Using best extraction method: ${extractionMethods[0].method} with ${extractionMethods[0].length} characters`);
-      return extractionMethods[0].text;
+      // Get the method with the most text
+      const bestMethod = extractionMethods[0];
+      log(`Using best extraction method: ${bestMethod.method} with ${bestMethod.length} characters`);
+      
+      // If the best method has a reasonable amount of text, use it
+      if (bestMethod.length > 50) {
+        return bestMethod.text;
+      }
     }
     
-    log('All extraction methods failed');
-    return '';
+    // Ultimate fallback: Basic string extraction from buffer (rarely useful but better than nothing)
+    log('All extraction methods failed or produced minimal text, attempting basic fallback');
+    const fallbackText = Buffer.from(pdfBuffer).toString('utf8', 0, 10000)
+      .replace(/[^\x20-\x7E\n]/g, ' ') // Keep only ASCII printable chars
+      .replace(/\s+/g, ' '); // Normalize whitespace
+    
+    return fallbackText;
   } catch (error) {
     log('PDF extraction error:', error);
     return '';
   }
 }
 
+/**
+ * Validates extracted text to ensure quality
+ * @param {string} text - The extracted text to validate
+ * @returns {Object} Validation result with details
+ */
+function validateExtractedText(text) {
+  if (!text || text.length < 50) {
+    return {
+      valid: false,
+      reason: "Insufficient text extracted",
+      details: { length: text?.length || 0 }
+    };
+  }
+  
+  // Check for common indicators of successful extraction
+  const containsWords = /\b\w{3,}\b/.test(text); // Has words of at least 3 chars
+  const hasPunctuation = /[.,;:?!]/.test(text); // Has punctuation
+  const hasSpaces = /\s/.test(text); // Has whitespace
+  
+  if (containsWords && (hasPunctuation || hasSpaces)) {
+    return {
+      valid: true,
+      details: {
+        length: text.length,
+        hasWords: containsWords,
+        hasPunctuation,
+        hasSpaces
+      }
+    };
+  } else {
+    return {
+      valid: false,
+      reason: "Content doesn't appear to be valid text",
+      details: {
+        length: text.length,
+        hasWords: containsWords,
+        hasPunctuation,
+        hasSpaces
+      }
+    };
+  }
+}
+
 module.exports = {
-  extractTextFromPdf
+  extractTextFromPdf,
+  validateExtractedText
 }; 

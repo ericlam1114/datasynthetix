@@ -2,9 +2,9 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import { Slider } from "./ui/slider";
-import { Progress } from "@/components/ui/progress";
+import { Button } from "./ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Progress } from "./ui/progress";
 import {
   Card,
   CardContent,

@@ -11,13 +11,14 @@ const textractClient = new TextractClient({
   }
 });
 
-// Initialize S3 client for async operations
+// Initialize S3 client with the correct region (us-east-2 for your bucket)
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION || "us-east-1",
+  region: process.env.AWS_S3_REGION || process.env.AWS_REGION || "us-east-2", // Use specific S3 region
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-  }
+  },
+  forcePathStyle: false, // Important for addressing the bucket correctly
 });
 
 // Initialize SQS client
@@ -271,12 +272,24 @@ export async function extractTextAsync(documentBuffer) {
  */
 export async function extractTextWithTextract(documentBuffer, options = {}) {
   // For documents larger than 5MB, use async API (requires S3)
-  const useAsyncApi = documentBuffer.length > 5 * 1024 * 1024 || options.forceAsync;
+  // But only if explicitly enabled since it requires additional permissions
+  const useAsyncApi = options.forceAsync === true && 
+                      process.env.AWS_S3_BUCKET && 
+                      documentBuffer.length > 5 * 1024 * 1024;
   
   try {
-    if (useAsyncApi && process.env.AWS_S3_BUCKET) {
-      return await extractTextAsync(documentBuffer);
+    // Use synchronous API by default
+    if (useAsyncApi) {
+      try {
+        console.log("Using asynchronous Textract API for large document");
+        return await extractTextAsync(documentBuffer);
+      } catch (asyncError) {
+        // If async fails, try sync as fallback
+        console.warn(`Async Textract failed (${asyncError.message}), falling back to sync API`);
+        return await extractTextSync(documentBuffer);
+      }
     } else {
+      // Default to synchronous API - simpler and doesn't require S3/SNS/SQS setup
       return await extractTextSync(documentBuffer);
     }
   } catch (error) {
