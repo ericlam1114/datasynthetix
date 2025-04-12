@@ -15,7 +15,7 @@ import {
 } from '../../components/ui/dropdown-menu';
 import { 
   Database, Home, Upload, FileText, Settings, 
-  User, LogOut, Bell, Search, CreditCard, FolderClosed
+  User, LogOut, Bell, Search, CreditCard, FolderClosed, Code
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }) {
@@ -36,6 +36,7 @@ export default function DashboardLayout({ children }) {
     { path: '/dashboard/documents', label: 'My Documents', icon: FolderClosed },
     { path: '/dashboard/datasets', label: 'My Datasets', icon: FileText },
     { path: '/dashboard/credits', label: 'Credits', icon: CreditCard },
+    { path: '/dashboard/api-test', label: 'API Testing', icon: Code },
     { path: '/dashboard/settings', label: 'Settings', icon: Settings },
   ];
 

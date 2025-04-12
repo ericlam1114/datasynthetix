@@ -1,43 +1,97 @@
-import { auth, db } from '@/lib/firebase/firebaseAdmin';
+import { getFirebaseAdmin } from '../firebase/firebaseAdmin';
 
 /**
  * Verifies a Firebase authentication token
- * 
- * @param {string} token - The Firebase ID token to verify
- * @returns {Promise<Object|null>} The decoded token if valid, null otherwise
+ * @param {string} token - The JWT token to verify
+ * @returns {Promise<object|null>} The decoded token payload or null if invalid
  */
 export async function verifyAuthToken(token) {
   if (!token) {
+    console.warn('No token provided for verification');
     return null;
   }
-  
+
   try {
-    // Verify the ID token using Firebase Admin SDK
-    const decodedToken = await auth.verifyIdToken(token);
+    const admin = getFirebaseAdmin();
+    const decodedToken = await admin.auth().verifyIdToken(token);
     return decodedToken;
   } catch (error) {
-    console.error('Error verifying auth token:', error);
+    console.error('Token verification failed:', error.message);
     return null;
   }
 }
 
 /**
- * Extracts the user ID from an authorization header
- * 
- * @param {Headers} headers - The request headers object
- * @returns {Promise<string|null>} The user ID if authenticated, null otherwise
+ * Extracts user ID from authorization header
+ * @param {Headers} headers - Request headers
+ * @returns {Promise<string|null>} User ID or null if not authenticated
  */
 export async function getUserIdFromAuthHeader(headers) {
-  // Extract the Bearer token from the Authorization header
   const authHeader = headers.get('authorization');
+  
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.warn('Invalid or missing authorization header');
     return null;
   }
-  
+
   const token = authHeader.split('Bearer ')[1];
   const decodedToken = await verifyAuthToken(token);
   
-  return decodedToken ? decodedToken.uid : null;
+  if (!decodedToken) {
+    return null;
+  }
+
+  return decodedToken.uid;
+}
+
+/**
+ * Checks if a user has the required permissions
+ * @param {string} userId - The user's ID
+ * @param {string|string[]} requiredPermissions - The required permission(s)
+ * @returns {Promise<boolean>} Whether the user has the required permissions
+ */
+export async function hasPermission(userId, requiredPermissions) {
+  if (!userId) {
+    return false;
+  }
+
+  try {
+    const admin = getFirebaseAdmin();
+    const db = admin.firestore();
+    
+    // Get user document with permissions
+    const userDoc = await db.collection('users').doc(userId).get();
+    
+    if (!userDoc.exists) {
+      console.warn(`User ${userId} not found in Firestore`);
+      return false;
+    }
+    
+    const userData = userDoc.data();
+    
+    // Check if user is admin (admins have all permissions)
+    if (userData.isAdmin === true) {
+      return true;
+    }
+    
+    // If no permissions specified in user data, deny access
+    if (!userData.permissions || !Array.isArray(userData.permissions)) {
+      return false;
+    }
+    
+    // Handle single permission or array of permissions
+    const permissionsToCheck = Array.isArray(requiredPermissions) 
+      ? requiredPermissions 
+      : [requiredPermissions];
+    
+    // Check if user has ANY of the required permissions
+    return permissionsToCheck.some(permission => 
+      userData.permissions.includes(permission)
+    );
+  } catch (error) {
+    console.error('Error checking user permissions:', error);
+    return false;
+  }
 }
 
 /**
@@ -69,47 +123,4 @@ export async function retryWithBackoff(operation, maxRetries = 3, baseDelay = 30
   
   // If we've exhausted retries, throw the last error
   throw lastError;
-}
-
-/**
- * Checks if a user has the required permissions for an operation
- * 
- * @param {string} userId - The user ID to check
- * @param {string|string[]} requiredPermissions - The permissions to check for
- * @returns {Promise<boolean>} True if the user has the required permissions
- */
-export async function hasPermission(userId, requiredPermissions) {
-  if (!userId) {
-    return false;
-  }
-  
-  try {
-    // Get user data from Firestore
-    const userDoc = await db.collection('users').doc(userId).get();
-    
-    if (!userDoc.exists) {
-      return false;
-    }
-    
-    const userData = userDoc.data();
-    
-    // Check if user is an admin (admins have all permissions)
-    if (userData.isAdmin === true) {
-      return true;
-    }
-    
-    // Get user permissions
-    const userPermissions = userData.permissions || [];
-    
-    // Convert required permissions to array if it's a string
-    const permissions = Array.isArray(requiredPermissions) 
-      ? requiredPermissions 
-      : [requiredPermissions];
-    
-    // Check if user has all required permissions
-    return permissions.every(permission => userPermissions.includes(permission));
-  } catch (error) {
-    console.error('Error checking user permissions:', error);
-    return false;
-  }
 } 

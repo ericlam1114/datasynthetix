@@ -1,28 +1,28 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { formatDistanceToNow } from 'date-fns';
-import Link from 'next/link';
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { format } from 'date-fns';
+import { DocumentApi } from '@/lib/api/apiClient';
+import { useToast } from '@/components/ui/use-toast';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardFooter
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,41 +32,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
-import { 
-  MoreHorizontal,
-  FileText, 
-  Trash2, 
-  Clock, 
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-  Loader2,
-  RefreshCw,
-  Trash,
-  ChevronLeft,
-  ChevronRight,
-  RotateCcw,
-  Filter,
-  Users
-} from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from '@/components/ui/use-toast';
 import {
   Pagination,
   PaginationContent,
@@ -83,837 +49,615 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Trash2,
+  RefreshCw,
+  AlertTriangle,
+  X,
+  Loader2,
+  FileText,
+  ArrowUpDown,
+} from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function DocumentManagementPage() {
-  const { user, getIdToken } = useAuth();
+  const { toast } = useToast();
+  const router = useRouter();
+  
+  // State for pagination and view
   const [documents, setDocuments] = useState([]);
-  const [activeJobs, setActiveJobs] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [deleteInProgress, setDeleteInProgress] = useState({});
-  const [cancelInProgress, setCancelInProgress] = useState({});
-  const [restoreInProgress, setRestoreInProgress] = useState({});
-  const [confirmDelete, setConfirmDelete] = useState({
-    isOpen: false,
-    documentId: null,
-    documentName: '',
-    withDatasets: false,
-    permanent: false
-  });
+  const [loading, setLoading] = useState(true);
+  const [loadingError, setLoadingError] = useState(null);
+  const [viewMode, setViewMode] = useState('active');
   const [pagination, setPagination] = useState({
-    currentPage: 1,
+    page: 1,
     pageSize: 10,
+    totalPages: 1,
     totalCount: 0,
-    totalPages: 1
   });
-  const [viewMode, setViewMode] = useState('active'); // 'active', 'trash', 'all'
+  
+  // State for confirmation dialogs
+  const [deletingDocument, setDeletingDocument] = useState(null);
+  const [deleteOptions, setDeleteOptions] = useState({
+    permanent: false,
+    deleteDatasets: false,
+  });
+  
+  // State for monitoring active jobs
+  const [activeJobs, setActiveJobs] = useState([]);
+  const [pollingInterval, setPollingInterval] = useState(null);
 
-  // Load documents and active jobs
-  const loadDocuments = async (page = pagination.currentPage, pageSize = pagination.pageSize) => {
-    if (!user?.uid) return;
+  // Load documents based on current pagination and view settings
+  const loadDocuments = useCallback(async () => {
+    setLoading(true);
+    setLoadingError(null);
     
-    setIsLoading(true);
     try {
-      // Get the auth token for secured API calls
-      const token = await getIdToken();
-      if (!token) {
-        throw new Error('Authentication required');
-      }
-      
-      // Build query parameters
-      const includeDeleted = viewMode === 'trash' || viewMode === 'all';
-      const queryParams = new URLSearchParams({
-        page,
-        pageSize,
-        includeDeleted: includeDeleted.toString()
+      const response = await DocumentApi.getDocuments({
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        viewMode,
       });
       
-      const response = await fetch(`/api/document-management?${queryParams.toString()}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      setDocuments(response.documents || []);
+      setPagination({
+        ...pagination,
+        totalPages: response.pagination?.totalPages || 1,
+        totalCount: response.pagination?.totalCount || 0,
+      });
+      
+      // Filter active jobs for polling
+      const jobs = response.documents.filter(doc => 
+        doc.status === 'processing' || doc.status === 'queued'
+      );
+      setActiveJobs(jobs);
+      
+      // Set up polling if we have active jobs
+      if (jobs.length > 0 && !pollingInterval) {
+        const interval = setInterval(() => {
+          refreshActiveJobs(jobs.map(job => job.id));
+        }, 5000); // Poll every 5 seconds
+        setPollingInterval(interval);
+      } else if (jobs.length === 0 && pollingInterval) {
+        // Clear polling if no active jobs
+        clearInterval(pollingInterval);
+        setPollingInterval(null);
+      }
+    } catch (error) {
+      console.error('Error loading documents:', error);
+      setLoadingError(error.message || 'Failed to load documents');
+      toast({
+        variant: "destructive",
+        title: "Error loading documents",
+        description: error.message || "Something went wrong.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [pagination.page, pagination.pageSize, viewMode, pollingInterval, toast]);
+
+  // Refresh active jobs
+  const refreshActiveJobs = async (jobIds) => {
+    if (!jobIds.length) return;
+    
+    try {
+      const response = await DocumentApi.getDocuments({
+        page: 1,
+        pageSize: 100, // Larger size to ensure we get all active jobs
+        viewMode: 'all',
+      });
+      
+      // Update our local documents list with refreshed job status
+      const updatedDocs = [...documents];
+      
+      response.documents.forEach(freshDoc => {
+        if (jobIds.includes(freshDoc.id)) {
+          const index = updatedDocs.findIndex(doc => doc.id === freshDoc.id);
+          if (index >= 0) {
+            updatedDocs[index] = freshDoc;
+          }
         }
       });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch documents');
+      setDocuments(updatedDocs);
+      
+      // Stop polling if no more active jobs
+      const stillActive = updatedDocs.filter(doc => 
+        doc.status === 'processing' || doc.status === 'queued'
+      );
+      
+      if (stillActive.length === 0 && pollingInterval) {
+        clearInterval(pollingInterval);
+        setPollingInterval(null);
+        
+        // Reload all documents to ensure we have the latest data
+        loadDocuments();
       }
-      
-      const data = await response.json();
-      
-      // Filter documents based on view mode
-      let filteredDocuments = data.documents || [];
-      if (viewMode === 'active') {
-        filteredDocuments = filteredDocuments.filter(doc => !doc.isDeleted);
-      } else if (viewMode === 'trash') {
-        filteredDocuments = filteredDocuments.filter(doc => doc.isDeleted && !doc.isPendingPermanentDeletion);
-      }
-      
-      setDocuments(filteredDocuments);
-      setActiveJobs(data.activeJobs || []);
-      setPagination(data.pagination || {
-        currentPage: page,
-        pageSize,
-        totalCount: filteredDocuments.length,
-        totalPages: Math.ceil(filteredDocuments.length / pageSize)
-      });
     } catch (error) {
-      console.error('Error loading documents:', error);
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to load your documents. Please try again.',
-        variant: 'destructive'
-      });
-    } finally {
-      setIsLoading(false);
+      console.error('Error refreshing active jobs:', error);
     }
   };
 
-  // Load documents when user is available or view mode changes
+  // Load documents on mount and when pagination/view changes
   useEffect(() => {
-    if (user?.uid) {
-      loadDocuments(1, pagination.pageSize); // Reset to first page on view mode change
-    }
-  }, [user, viewMode]);
-
-  // Poll for active jobs status
-  useEffect(() => {
-    let interval;
+    loadDocuments();
     
-    if (activeJobs.length > 0 && user?.uid) {
-      interval = setInterval(() => {
-        // Only re-fetch if we're on the active view
-        if (viewMode === 'active') {
-          loadDocuments(pagination.currentPage, pagination.pageSize);
-        }
-      }, 5000); // Poll every 5 seconds
-    }
-    
+    // Clean up polling interval on unmount
     return () => {
-      if (interval) clearInterval(interval);
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+      }
     };
-  }, [activeJobs, user, viewMode, pagination.currentPage, pagination.pageSize]);
+  }, [loadDocuments, pollingInterval]);
 
   // Handle document deletion
-  const handleDeleteDocument = async (documentId, withDatasets = false, permanent = false) => {
-    if (!user?.uid) return;
+  const handleDeleteDocument = async () => {
+    if (!deletingDocument) return;
     
-    setDeleteInProgress(prev => ({ ...prev, [documentId]: true }));
+    setLoading(true);
     
     try {
-      // Get the auth token for secured API calls
-      const token = await getIdToken();
-      if (!token) {
-        throw new Error('Authentication required');
-      }
-      
-      // Build query parameters
-      const queryParams = new URLSearchParams({
-        documentId,
-        includeDatasets: withDatasets.toString(),
-        permanent: permanent.toString()
+      await DocumentApi.deleteDocument({
+        documentId: deletingDocument.id,
+        permanent: deleteOptions.permanent,
+        deleteDatasets: deleteOptions.deleteDatasets,
       });
-      
-      const response = await fetch(`/api/document-management?${queryParams.toString()}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete document');
-      }
-      
-      const data = await response.json();
       
       toast({
-        title: 'Success',
-        description: permanent
-          ? 'Document permanently deleted'
-          : 'Document moved to trash',
+        title: "Document deleted",
+        description: deleteOptions.permanent 
+          ? "Document has been permanently deleted" 
+          : "Document moved to trash",
       });
       
-      // Refresh documents list
-      loadDocuments(pagination.currentPage, pagination.pageSize);
+      // Reload documents
+      loadDocuments();
     } catch (error) {
       console.error('Error deleting document:', error);
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to delete document',
-        variant: 'destructive'
+        variant: "destructive",
+        title: "Error deleting document",
+        description: error.message || "Failed to delete document",
       });
     } finally {
-      setDeleteInProgress(prev => ({ ...prev, [documentId]: false }));
-      setConfirmDelete({
-        isOpen: false,
-        documentId: null,
-        documentName: '',
-        withDatasets: false,
-        permanent: false
+      setDeletingDocument(null);
+      setDeleteOptions({ permanent: false, deleteDatasets: false });
+      setLoading(false);
+    }
+  };
+
+  // Handle document restoration
+  const handleRestoreDocument = async (documentId) => {
+    setLoading(true);
+    
+    try {
+      await DocumentApi.restoreDocument(documentId);
+      
+      toast({
+        title: "Document restored",
+        description: "Document has been restored from trash",
       });
+      
+      // Reload documents
+      loadDocuments();
+    } catch (error) {
+      console.error('Error restoring document:', error);
+      toast({
+        variant: "destructive",
+        title: "Error restoring document",
+        description: error.message || "Failed to restore document",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   // Handle job cancellation
-  const handleCancelJob = async (jobId) => {
-    if (!user?.uid) return;
-    
-    setCancelInProgress(prev => ({ ...prev, [jobId]: true }));
+  const handleCancelJob = async (documentId) => {
+    setLoading(true);
     
     try {
-      // Get the auth token for secured API calls
-      const token = await getIdToken();
-      if (!token) {
-        throw new Error('Authentication required');
-      }
-      
-      const response = await fetch('/api/document-management', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          jobId,
-          action: 'cancel'
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to cancel job');
-      }
+      await DocumentApi.cancelJob(documentId);
       
       toast({
-        title: 'Success',
-        description: 'Job cancelled successfully',
+        title: "Job cancelled",
+        description: "Document processing job has been cancelled",
       });
       
-      // Refresh jobs list
-      loadDocuments(pagination.currentPage, pagination.pageSize);
+      // Reload documents
+      loadDocuments();
     } catch (error) {
       console.error('Error cancelling job:', error);
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to cancel job',
-        variant: 'destructive'
+        variant: "destructive",
+        title: "Error cancelling job",
+        description: error.message || "Failed to cancel job",
       });
     } finally {
-      setCancelInProgress(prev => ({ ...prev, [jobId]: false }));
-    }
-  };
-  
-  // Handle document restoration
-  const handleRestoreDocument = async (documentId) => {
-    if (!user?.uid) return;
-    
-    setRestoreInProgress(prev => ({ ...prev, [documentId]: true }));
-    
-    try {
-      // Get the auth token for secured API calls
-      const token = await getIdToken();
-      if (!token) {
-        throw new Error('Authentication required');
-      }
-      
-      const response = await fetch('/api/document-management', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          documentId,
-          action: 'restore'
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to restore document');
-      }
-      
-      toast({
-        title: 'Success',
-        description: 'Document restored successfully',
-      });
-      
-      // Refresh documents list
-      loadDocuments(pagination.currentPage, pagination.pageSize);
-    } catch (error) {
-      console.error('Error restoring document:', error);
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to restore document',
-        variant: 'destructive'
-      });
-    } finally {
-      setRestoreInProgress(prev => ({ ...prev, [documentId]: false }));
+      setLoading(false);
     }
   };
 
-  // Handle page change
-  const handlePageChange = (newPage) => {
-    if (newPage < 1 || newPage > pagination.totalPages) return;
-    loadDocuments(newPage, pagination.pageSize);
-  };
-  
-  // Handle page size change
-  const handlePageSizeChange = (newSize) => {
-    const size = parseInt(newSize, 10);
-    loadDocuments(1, size); // Reset to first page when changing page size
+  // Change page
+  const handlePageChange = (page) => {
+    setPagination({
+      ...pagination,
+      page,
+    });
   };
 
-  // Status badge component
-  const StatusBadge = ({ status }) => {
-    const statusConfig = {
-      pending: { label: 'Pending', variant: 'outline', icon: <Clock className="h-3 w-3 mr-1" /> },
-      processing: { label: 'Processing', variant: 'secondary', icon: <Loader2 className="h-3 w-3 mr-1 animate-spin" /> },
-      completed: { label: 'Completed', variant: 'default', icon: <CheckCircle2 className="h-3 w-3 mr-1" /> },
-      cancelled: { label: 'Cancelled', variant: 'secondary', icon: <XCircle className="h-3 w-3 mr-1" /> },
-      failed: { label: 'Failed', variant: 'destructive', icon: <AlertTriangle className="h-3 w-3 mr-1" /> },
-      deleted: { label: 'In Trash', variant: 'destructive', icon: <Trash className="h-3 w-3 mr-1" /> },
-    };
+  // Change page size
+  const handlePageSizeChange = (size) => {
+    setPagination({
+      ...pagination,
+      page: 1, // Reset to first page when changing page size
+      pageSize: parseInt(size),
+    });
+  };
+
+  // Render pagination controls
+  const renderPagination = () => {
+    const { page, totalPages } = pagination;
     
-    const config = statusConfig[status] || statusConfig.pending;
+    if (totalPages <= 1) return null;
+    
+    let pages = [];
+    
+    // Always show first page, last page, current page, and one page before and after current
+    if (totalPages <= 7) {
+      // Show all pages if 7 or fewer
+      pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+    } else {
+      // Complex pagination for many pages
+      pages.push(1); // First page
+      
+      if (page > 3) {
+        pages.push('ellipsis-start');
+      }
+      
+      // Pages around current
+      const start = Math.max(2, page - 1);
+      const end = Math.min(totalPages - 1, page + 1);
+      
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      
+      if (page < totalPages - 2) {
+        pages.push('ellipsis-end');
+      }
+      
+      pages.push(totalPages); // Last page
+    }
     
     return (
-      <Badge variant={config.variant} className="flex items-center">
-        {config.icon}
-        {config.label}
-      </Badge>
+      <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">
+            Items per page:
+          </span>
+          <Select 
+            value={pagination.pageSize.toString()} 
+            onValueChange={handlePageSizeChange}
+          >
+            <SelectTrigger className="h-8 w-20">
+              <SelectValue placeholder={pagination.pageSize} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="5">5</SelectItem>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="20">20</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious 
+                onClick={() => page > 1 && handlePageChange(page - 1)}
+                className={page <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+              />
+            </PaginationItem>
+            
+            {pages.map((p, i) => 
+              p === 'ellipsis-start' || p === 'ellipsis-end' ? (
+                <PaginationItem key={p}>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              ) : (
+                <PaginationItem key={p}>
+                  <PaginationLink
+                    isActive={page === p}
+                    onClick={() => handlePageChange(p)}
+                    className="cursor-pointer"
+                  >
+                    {p}
+                  </PaginationLink>
+                </PaginationItem>
+              )
+            )}
+            
+            <PaginationItem>
+              <PaginationNext 
+                onClick={() => page < totalPages && handlePageChange(page + 1)}
+                className={page >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+        
+        <div className="text-sm text-muted-foreground">
+          {pagination.totalCount > 0 
+            ? `Showing ${(page - 1) * pagination.pageSize + 1} to ${Math.min(page * pagination.pageSize, pagination.totalCount)} of ${pagination.totalCount} items` 
+            : 'No items'}
+        </div>
+      </div>
     );
   };
 
-  // Format file size
-  const formatFileSize = (bytes) => {
-    if (!bytes) return 'Unknown';
-    
-    const units = ['B', 'KB', 'MB', 'GB'];
-    let size = bytes;
-    let unitIndex = 0;
-    
-    while (size >= 1024 && unitIndex < units.length - 1) {
-      size /= 1024;
-      unitIndex++;
-    }
-    
-    return `${size.toFixed(1)} ${units[unitIndex]}`;
-  };
-
-  // Get document time display
-  const getTimeDisplay = (timestamp) => {
-    if (!timestamp) return 'Unknown';
-    
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-    return formatDistanceToNow(date, { addSuffix: true });
-  };
-  
-  // Document table row component for reusability
-  const DocumentRow = ({ doc }) => {
-    const isInTrash = doc.isDeleted && !doc.isPendingPermanentDeletion;
-    const isPendingDeletion = doc.isPendingPermanentDeletion;
+  // Render document row
+  const DocumentRow = ({ document }) => {
+    const isActive = document.status === 'processing' || document.status === 'queued';
+    const isDeleted = document.deleted === true;
     
     return (
-      <TableRow key={doc.id} className={isPendingDeletion ? 'opacity-50' : ''}>
-        <TableCell className="font-medium">
-          {doc.fileName || 'Unnamed document'}
-          {isPendingDeletion && (
-            <span className="ml-2 text-xs text-destructive">(pending deletion)</span>
-          )}
-        </TableCell>
-        <TableCell className="hidden md:table-cell">{doc.fileType || 'Unknown'}</TableCell>
-        <TableCell className="hidden md:table-cell">{formatFileSize(doc.fileSize)}</TableCell>
-        <TableCell className="hidden md:table-cell">
-          {isInTrash
-            ? getTimeDisplay(doc.deletedAt)
-            : getTimeDisplay(doc.createdAt)
-          }
+      <TableRow key={document.id}>
+        <TableCell>
+          <div className="flex flex-col gap-1">
+            <span className="font-medium">{document.name || 'Untitled Document'}</span>
+            <span className="text-xs text-muted-foreground">ID: {document.id.substring(0, 8)}...</span>
+          </div>
         </TableCell>
         <TableCell>
-          <StatusBadge status={isInTrash ? 'deleted' : (doc.status || 'completed')} />
+          <Badge variant={getStatusVariant(document.status)}>
+            {document.status}
+          </Badge>
         </TableCell>
-        <TableCell className="text-right">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreHorizontal className="h-4 w-4" />
-                <span className="sr-only">Actions</span>
+        <TableCell>
+          <div className="flex flex-col">
+            <span>{formatDate(document.createdAt)}</span>
+            <span className="text-xs text-muted-foreground">
+              {formatTime(document.createdAt)}
+            </span>
+          </div>
+        </TableCell>
+        <TableCell>
+          <div className="flex flex-col">
+            <span>{formatDate(document.lastUpdated)}</span>
+            <span className="text-xs text-muted-foreground">
+              {formatTime(document.lastUpdated)}
+            </span>
+          </div>
+        </TableCell>
+        <TableCell>
+          <div className="flex justify-end gap-2">
+            {isDeleted ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleRestoreDocument(document.id)}
+                disabled={loading}
+              >
+                <RefreshCw className="h-4 w-4 mr-1" />
+                Restore
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              
-              {!isInTrash && doc.resultId && (
-                <DropdownMenuItem asChild>
-                  <Link href={`/results/${doc.resultId}`}>
-                    View Results
-                  </Link>
-                </DropdownMenuItem>
-              )}
-              
-              {isInTrash && (
-                <DropdownMenuItem
-                  onClick={() => handleRestoreDocument(doc.id)}
-                  disabled={restoreInProgress[doc.id]}
+            ) : isActive ? (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => handleCancelJob(document.id)}
+                disabled={loading}
+              >
+                <X className="h-4 w-4 mr-1" />
+                Cancel
+              </Button>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.push(`/dashboard/viewer/${document.id}`)}
+                  disabled={loading}
                 >
-                  {restoreInProgress[doc.id] ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Restoring...
-                    </>
-                  ) : (
-                    <>
-                      <RotateCcw className="h-4 w-4 mr-2" />
-                      Restore Document
-                    </>
-                  )}
-                </DropdownMenuItem>
-              )}
-              
-              <DropdownMenuSeparator />
-              
-              {!isInTrash ? (
-                // Regular document actions
-                <>
-                  <DropdownMenuItem
-                    onClick={() => setConfirmDelete({
-                      isOpen: true,
-                      documentId: doc.id,
-                      documentName: doc.fileName || 'this document',
-                      withDatasets: false,
-                      permanent: false
-                    })}
-                    className="text-destructive"
-                  >
-                    <Trash className="h-4 w-4 mr-2" />
-                    Move to Trash
-                  </DropdownMenuItem>
-                  
-                  <DropdownMenuItem
-                    onClick={() => setConfirmDelete({
-                      isOpen: true,
-                      documentId: doc.id,
-                      documentName: doc.fileName || 'this document',
-                      withDatasets: true,
-                      permanent: false
-                    })}
-                    className="text-destructive"
-                  >
-                    <Trash className="h-4 w-4 mr-2" />
-                    Move to Trash (with Datasets)
-                  </DropdownMenuItem>
-                </>
-              ) : (
-                // Trash actions
-                <DropdownMenuItem
-                  onClick={() => setConfirmDelete({
-                    isOpen: true,
-                    documentId: doc.id,
-                    documentName: doc.fileName || 'this document',
-                    withDatasets: true,
-                    permanent: true
-                  })}
-                  className="text-destructive"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Permanently
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <FileText className="h-4 w-4 mr-1" />
+                  View
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Delete
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Delete options</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => {
+                      setDeletingDocument(document);
+                      setDeleteOptions({ permanent: false, deleteDatasets: false });
+                    }}>
+                      Move to trash
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {
+                      setDeletingDocument(document);
+                      setDeleteOptions({ permanent: true, deleteDatasets: false });
+                    }}>
+                      <AlertTriangle className="h-4 w-4 mr-1 text-destructive" />
+                      Delete permanently
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {
+                      setDeletingDocument(document);
+                      setDeleteOptions({ permanent: true, deleteDatasets: true });
+                    }}>
+                      <AlertTriangle className="h-4 w-4 mr-1 text-destructive" />
+                      Delete with all datasets
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            )}
+          </div>
         </TableCell>
       </TableRow>
     );
   };
 
-  // Pagination renderer
-  const renderPagination = () => {
-    const { currentPage, totalPages } = pagination;
-    
-    if (totalPages <= 1) return null;
-    
-    return (
-      <Pagination className="mt-4">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious 
-              onClick={() => handlePageChange(currentPage - 1)}
-              className={currentPage <= 1 ? 'pointer-events-none opacity-50' : ''}
-            />
-          </PaginationItem>
-          
-          {[...Array(totalPages)].map((_, i) => {
-            const pageNumber = i + 1;
-            
-            // Show current page, first page, last page, and pages around current
-            if (
-              pageNumber === 1 ||
-              pageNumber === totalPages ||
-              (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
-            ) {
-              return (
-                <PaginationItem key={pageNumber}>
-                  <PaginationLink
-                    isActive={pageNumber === currentPage}
-                    onClick={() => handlePageChange(pageNumber)}
-                  >
-                    {pageNumber}
-                  </PaginationLink>
-                </PaginationItem>
-              );
-            }
-            
-            // Show ellipsis for page gaps
-            if (
-              (pageNumber === 2 && currentPage > 3) ||
-              (pageNumber === totalPages - 1 && currentPage < totalPages - 2)
-            ) {
-              return (
-                <PaginationItem key={pageNumber}>
-                  <PaginationEllipsis />
-                </PaginationItem>
-              );
-            }
-            
-            return null;
-          })}
-          
-          <PaginationItem>
-            <PaginationNext 
-              onClick={() => handlePageChange(currentPage + 1)}
-              className={currentPage >= totalPages ? 'pointer-events-none opacity-50' : ''}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
-    );
+  // Helper for status badge variant
+  const getStatusVariant = (status) => {
+    switch (status) {
+      case 'processing': return 'default';
+      case 'completed': return 'success';
+      case 'failed': return 'destructive';
+      case 'queued': return 'secondary';
+      case 'cancelled': return 'outline';
+      default: return 'default';
+    }
   };
 
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <p>Please sign in to access your documents</p>
-      </div>
-    );
-  }
+  // Helper for date formatting
+  const formatDate = (timestamp) => {
+    if (!timestamp) return 'N/A';
+    
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return format(date, 'MMM d, yyyy');
+  };
+
+  // Helper for time formatting
+  const formatTime = (timestamp) => {
+    if (!timestamp) return '';
+    
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return format(date, 'h:mm a');
+  };
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">Document Management</h1>
-      
-      <Tabs defaultValue="documents">
-        <TabsList className="mb-6">
-          <TabsTrigger value="documents">Documents</TabsTrigger>
-          <TabsTrigger value="jobs" className="relative">
-            Active Jobs
-            {activeJobs.length > 0 && (
-              <Badge variant="destructive" className="ml-2">{activeJobs.length}</Badge>
-            )}
-          </TabsTrigger>
-        </TabsList>
-        
-        {/* Documents Tab */}
-        <TabsContent value="documents">
-          <Card>
-            <CardHeader>
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                  <CardTitle>Your Documents</CardTitle>
-                  <CardDescription>
-                    Manage your uploaded documents and generated datasets
-                  </CardDescription>
-                </div>
-                
-                <div className="flex flex-col sm:flex-row gap-2">
-                  {/* View mode switcher */}
-                  <Select 
-                    defaultValue={viewMode} 
-                    onValueChange={setViewMode}
+    <div className="container py-6 space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Document Management</CardTitle>
+          <CardDescription>
+            View, manage, and organize your uploaded documents
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs 
+            defaultValue="active"
+            value={viewMode}
+            onValueChange={setViewMode}
+            className="w-full"
+          >
+            <TabsList className="grid grid-cols-3 w-full max-w-md mb-6">
+              <TabsTrigger value="active">Active Documents</TabsTrigger>
+              <TabsTrigger value="trash">Trash</TabsTrigger>
+              <TabsTrigger value="all">All Documents</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value={viewMode} className="mt-0">
+              {loadingError ? (
+                <div className="p-6 text-center">
+                  <AlertTriangle className="h-10 w-10 text-destructive mx-auto mb-2" />
+                  <h3 className="font-semibold text-lg">Error Loading Documents</h3>
+                  <p className="text-muted-foreground">{loadingError}</p>
+                  <Button 
+                    onClick={loadDocuments} 
+                    variant="secondary" 
+                    className="mt-4"
                   >
-                    <SelectTrigger className="w-[140px]">
-                      <Filter className="h-4 w-4 mr-2" />
-                      <SelectValue placeholder="Filter" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">Active Documents</SelectItem>
-                      <SelectItem value="trash">Trash</SelectItem>
-                      <SelectItem value="all">All Documents</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  
-                  <Button size="sm" variant="outline" onClick={() => loadDocuments(pagination.currentPage, pagination.pageSize)}>
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Refresh
+                    Try Again
                   </Button>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {/* Page size selector */}
-              <div className="flex justify-between items-center mb-4">
-                <div className="text-sm text-muted-foreground">
-                  {pagination.totalCount > 0 && (
-                    <>
-                      Showing {Math.min((pagination.currentPage - 1) * pagination.pageSize + 1, pagination.totalCount)} to {Math.min(pagination.currentPage * pagination.pageSize, pagination.totalCount)} of {pagination.totalCount} documents
-                    </>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Items per page:</span>
-                  <Select 
-                    defaultValue={pagination.pageSize.toString()} 
-                    onValueChange={handlePageSizeChange}
-                  >
-                    <SelectTrigger className="w-[70px]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="20">20</SelectItem>
-                      <SelectItem value="50">50</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              
-              {isLoading ? (
-                <div className="space-y-3">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="flex items-center space-x-4">
-                      <Skeleton className="h-12 w-12 rounded-md" />
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-[250px]" />
-                        <Skeleton className="h-4 w-[200px]" />
-                      </div>
-                    </div>
-                  ))}
+              ) : loading && documents.length === 0 ? (
+                <div className="p-10 flex justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                 </div>
               ) : documents.length === 0 ? (
-                <div className="text-center py-12">
-                  <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium">
-                    {viewMode === 'trash' 
-                      ? 'Trash is empty' 
-                      : viewMode === 'all'
-                        ? 'No documents found'
-                        : 'No active documents found'
-                    }
-                  </h3>
-                  <p className="text-muted-foreground mt-2">
-                    {viewMode === 'trash' 
-                      ? 'Documents moved to trash will appear here' 
-                      : 'Upload a document to get started'
-                    }
+                <div className="p-6 text-center border rounded-lg">
+                  <FileText className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
+                  <h3 className="font-semibold text-lg">No Documents Found</h3>
+                  <p className="text-muted-foreground">
+                    {viewMode === 'active' && "You haven't uploaded any documents yet."}
+                    {viewMode === 'trash' && "Your trash is empty."}
+                    {viewMode === 'all' && "No documents found."}
                   </p>
-                  {viewMode !== 'trash' && (
-                    <Link href="/upload">
-                      <Button className="mt-4">Upload Document</Button>
-                    </Link>
+                  {viewMode === 'active' && (
+                    <Button 
+                      onClick={() => router.push('/dashboard/upload')} 
+                      className="mt-4"
+                    >
+                      Upload Document
+                    </Button>
                   )}
                 </div>
               ) : (
-                <div className="overflow-x-auto">
+                <div className="overflow-hidden rounded-md border">
                   <Table>
-                    <TableCaption>
-                      {viewMode === 'trash' 
-                        ? 'Documents in trash (will be permanently deleted after 30 days)'
-                        : 'A list of your documents'
-                      }
-                    </TableCaption>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead className="hidden md:table-cell">Type</TableHead>
-                        <TableHead className="hidden md:table-cell">Size</TableHead>
-                        <TableHead className="hidden md:table-cell">
-                          {viewMode === 'trash' ? 'Deleted' : 'Uploaded'}
-                        </TableHead>
+                        <TableHead>Document Name</TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead>Last Updated</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {documents.map((doc) => (
-                        <DocumentRow key={doc.id} doc={doc} />
+                      {documents.map(document => (
+                        <DocumentRow key={document.id} document={document} />
                       ))}
                     </TableBody>
                   </Table>
+                  
+                  {renderPagination()}
                 </div>
               )}
-              
-              {/* Pagination controls */}
-              {renderPagination()}
-            </CardContent>
-            
-            {viewMode === 'trash' && documents.length > 0 && (
-              <CardFooter className="flex justify-end gap-2 pt-4 border-t">
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => setConfirmDelete({
-                    isOpen: true,
-                    documentId: 'all',
-                    documentName: 'all documents in trash',
-                    withDatasets: true,
-                    permanent: true
-                  })}
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Empty Trash
-                </Button>
-              </CardFooter>
-            )}
-          </Card>
-        </TabsContent>
-        
-        {/* Active Jobs Tab */}
-        <TabsContent value="jobs">
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>Active Jobs</CardTitle>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  onClick={() => loadDocuments(pagination.currentPage, pagination.pageSize)}
-                  disabled={isLoading}
-                >
-                  <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-                  Refresh
-                </Button>
-              </div>
-              <CardDescription>
-                Monitor and manage your active document processing jobs
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="space-y-3">
-                  {[1, 2].map((i) => (
-                    <div key={i} className="flex items-center space-x-4">
-                      <Skeleton className="h-12 w-12 rounded-md" />
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-[250px]" />
-                        <Skeleton className="h-4 w-[200px]" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : activeJobs.length === 0 ? (
-                <div className="text-center py-12">
-                  <CheckCircle2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium">No active jobs</h3>
-                  <p className="text-muted-foreground mt-2">
-                    All document processing jobs are complete
-                  </p>
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableCaption>A list of your active jobs</TableCaption>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Document</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Progress</TableHead>
-                        <TableHead className="hidden md:table-cell">Started</TableHead>
-                        <TableHead className="hidden md:table-cell">Message</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {activeJobs.map((job) => (
-                        <TableRow key={job.id}>
-                          <TableCell className="font-medium">
-                            {job.documentName || job.documentId || 'Unknown document'}
-                          </TableCell>
-                          <TableCell>
-                            <StatusBadge status={job.status} />
-                          </TableCell>
-                          <TableCell>
-                            <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
-                              <div 
-                                className="bg-primary h-full" 
-                                style={{ width: `${job.progress || 0}%` }}
-                              />
-                            </div>
-                            <span className="text-xs text-muted-foreground mt-1 inline-block">
-                              {job.progress || 0}%
-                            </span>
-                          </TableCell>
-                          <TableCell className="hidden md:table-cell">{getTimeDisplay(job.createdAt)}</TableCell>
-                          <TableCell className="hidden md:table-cell max-w-[200px] truncate">
-                            {job.statusMessage || 'Processing...'}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => handleCancelJob(job.id)}
-                              disabled={cancelInProgress[job.id]}
-                            >
-                              {cancelInProgress[job.id] ? (
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              ) : (
-                                <XCircle className="h-4 w-4 mr-2" />
-                              )}
-                              Cancel
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+      
       {/* Delete Confirmation Dialog */}
-      <AlertDialog 
-        open={confirmDelete.isOpen} 
-        onOpenChange={(open) => !open && setConfirmDelete(prev => ({ ...prev, isOpen: false }))}
-      >
+      <AlertDialog open={!!deletingDocument} onOpenChange={(open) => !open && setDeletingDocument(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {deleteOptions.permanent 
+                ? 'Permanently Delete Document?' 
+                : 'Move Document to Trash?'}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This will {confirmDelete.permanent ? 'permanently delete' : 'move to trash'} {confirmDelete.documentName}
-              {confirmDelete.withDatasets ? ' and all associated datasets' : ''}.
-              {confirmDelete.permanent && ' This action cannot be undone.'}
+              {deleteOptions.permanent ? (
+                <>
+                  This will permanently delete{' '}
+                  <span className="font-semibold">{deletingDocument?.name || 'this document'}</span>.
+                  {deleteOptions.deleteDatasets && ' All associated datasets will also be deleted.'}
+                  <p className="mt-2 text-destructive font-semibold">This action cannot be undone.</p>
+                </>
+              ) : (
+                <>
+                  Move <span className="font-semibold">{deletingDocument?.name || 'this document'}</span>{' '}
+                  to trash? You can restore it later if needed.
+                </>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => handleDeleteDocument(
-                confirmDelete.documentId,
-                confirmDelete.withDatasets,
-                confirmDelete.permanent
-              )}
-              disabled={deleteInProgress[confirmDelete.documentId]}
-              className="bg-destructive text-destructive-foreground"
+              onClick={handleDeleteDocument}
+              className={deleteOptions.permanent ? 'bg-destructive hover:bg-destructive/90' : ''}
+              disabled={loading}
             >
-              {deleteInProgress[confirmDelete.documentId] ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  {confirmDelete.permanent ? 'Deleting...' : 'Moving...'}
-                </>
-              ) : (
-                <>
-                  {confirmDelete.permanent ? (
-                    <Trash2 className="h-4 w-4 mr-2" />
-                  ) : (
-                    <Trash className="h-4 w-4 mr-2" />
-                  )}
-                  {confirmDelete.permanent ? 'Delete Permanently' : 'Move to Trash'}
-                </>
-              )}
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {deleteOptions.permanent ? 'Delete Permanently' : 'Move to Trash'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

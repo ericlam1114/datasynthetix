@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "datasynthetix",
+  "private_key_id": "key-id",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDfXFIepLMukJhV\njzxVyiVTMYx/dWcxZMnEygEM7a9FqW7SHGRz0z8UofNsw2u/rOL2TaVSxoxgSKxw\nHxqDncUtFWvdFD26LKTGI9yKQCNnSMq3wueGm/8eL7/oF9cjc+jhZSeWERbC0ZKe\nxmJpYmUWu2EQ362xYd46smxMX740tk6WL9MlScravgIgxpF1scQlTwUGNScKRXJ6\nWbgzwPFFy93+RgKI0XraxEhA1DWC4yXXZ5W/FMPp1lw1CycGSwagGcMSv9sk1Jx/\n8+9zhFiWIBqtnRrofEzT8uf3p8hWNep23K44ryfmIYpkvjdKzlNGKLeERwZH4nB2\n2/5dJigRAgMBAAECggEAEsmYrLQs0C9gaN319L9emVtTFouBBRIVuKRHJ1e8xO7G\nAA1cU7PCnBEtQQpE/2fi5VXNoKNLvnOOcZXkLIryQWMKYhuoP4cuyu3MSKKxd6gT\nSRavU86+TEM28KZEtdozjfXsuP4x/GwVWZ6VO4kHuLxFI161JPT29Nf6LQhmntdI\ngMi6Tb0ffLFg+18yELJFn9QpKNqoMpAk+zA3FAZUD63BL1ydxKbeoYlZR6EqQzqJ\nhhXQUZRD1p3MCfOY2SfV5n+1fGnfPioRsg7NgSFTYKwdMGZCbownrnKpVWIY38yl\n0GX1f9CNO14s+E1KPHfdYjFSHC2n6Z1pcEDOkieDMwKBgQD+3hqksECnhlFhU6zK\nMbG6mI3a6izN+o6YIBX72nppzwUWvYkMkCY1MB9KzF3uyUHQ2p83/F5vAeRtM9qS\nFOmTVK+fhCoBSPQvdmfoLPNk7+oZfLVkvcZERj5YUOnS7d3n+d+V1rQQXMU0lNax\n24g3qbt/hPXLKILOYffvEvghbwKBgQDgWmEnMN2FO9FBWwNH+pYR256XLEWZiHEw\n5rCUGO/2D27ZxumJf530NyBL6om9Vmuuok1UA2A8ZCpfxb2JRlV9T2FQ5l0GRuf6\nmnxr9eJ/97CunsjKWpwb+946VtJ5HbDMLLRgBt0FGolACGjguTmHjtVekNMMq4mQ\n3jJLwZ6OfwKBgAJoQKIrlADBEQW1T519SKt1g2l86r1rT2t6ahq93ogfT3H+ikvX\nFLVNg3DzmNR/VAmsHhL5uxvfSPW6IqWrfoZQ6tjCS6H7N6B5MtZmVbruS9ScTgp\nXrUIYNBeu0alvoHRZ1437+1zot0zRq/ZXfkAnme+7r9je5DNdhUI/dT7AoGAN5rO\n53q5/JKVy3/2MTnPRf/Lr6YeXe4uN7OFYj9IAhFTJRCiwxxpFqUvEQHBP7cSm0bI\nqaDoki81PWVyE3rmJ1esQ/PEbJDYYAk3+z4G9DZ8iNr74wNQG7NyIb1xDumn7wLJ\ndd9dmi04hTFQZRojQxDIm1aDqGk/gDNB/fqwBJsCgYEAnVMioskdAMU6jM1ARQvD\nhqPybygERvbkKArDJZf0TUNXm645CmIr0+/WLdtWbPcPr1jEq4DZwu+kbkxrMlYP\nrwuCs4nDubONt7kM7wmz2aVwZiQvUP3ed1J91wFUbap0zNiNNgXTNC+cF2EC6/xM\nQG0MG5lo2DGey5WYRw0g38A=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@datasynthetix.iam.gserviceaccount.com",
+  "client_id": "",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": ""
+}

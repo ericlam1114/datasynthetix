@@ -92,136 +92,89 @@ else {
     }
   }
 
+  /**
+   * Initializes the Firebase Admin SDK if it hasn't been initialized already
+   * @returns {Promise<Object>} The initialized Firebase Admin app
+   */
   async function initializeAdminApp() {
-    // If Firebase Admin is disabled, always return null
-    if (DISABLE_ADMIN_SDK) {
-      console.warn('Firebase Admin SDK is disabled, skipping initialization');
-      return null;
-    }
-    
-    // If Firebase Admin modules not available, return null immediately
-    if (!adminAppModule.initializeApp || typeof adminAppModule.initializeApp !== 'function') {
-      console.warn('Firebase Admin modules not properly loaded - cannot initialize');
-      return null;
-    }
-
+    // If already initialized, return the existing app
     if (adminApp) {
       return adminApp;
     }
 
-    const apps = getApps();
-    
-    // If an admin app already exists, return it
-    if (apps.length > 0) {
-      adminApp = apps[0];
-      console.log('Using existing Firebase Admin app');
+    // Check if the Firebase apps have already been initialized
+    if (getApps().length > 0) {
+      adminApp = getApps()[0];
       return adminApp;
     }
 
-    // Initialize a new admin app
     try {
-      console.log('Attempting to initialize Firebase Admin SDK');
+      let credentials;
       
-      // Check for service account credentials in environment variables
-      let hasCredentials = false;
-      let projectId, clientEmail, privateKey;
+      // Try to load credentials from firebase-key.json file first
+      const keyFilePath = path.join(process.cwd(), 'firebase-key.json');
       
-      if (process.env.FIREBASE_ADMIN_PROJECT_ID && 
-          process.env.FIREBASE_ADMIN_CLIENT_EMAIL && 
-          process.env.FIREBASE_ADMIN_PRIVATE_KEY) {
-        hasCredentials = true;
-        projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
-        clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
-        
-        // Properly process the private key to avoid OpenSSL issues
+      if (fs.existsSync(keyFilePath)) {
+        console.log('Loading Firebase Admin credentials from firebase-key.json');
         try {
-          // First, make sure to replace any literal '\n' with actual newlines
-          privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n');
-          
-          // Make sure the key includes the PEM format headers and footers
-          if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
-            privateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`;
-          }
-          
-          console.log('Private key processed successfully');
-        } catch (keyError) {
-          console.error('Error processing private key:', keyError);
-          throw keyError;
-        }
-        
-        console.log(`Found Firebase Admin credentials for project: ${projectId}`);
-      } else {
-        console.warn('Firebase Admin SDK credentials not found in environment variables');
-        
-        // For development only: Try to use the client-side project ID if available
-        projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-        if (projectId) {
-          console.log(`Using client-side project ID for dev mode: ${projectId}`);
-        } else {
-          throw new Error('No Firebase project ID available');
+          const keyFileContent = fs.readFileSync(keyFilePath, 'utf8');
+          credentials = JSON.parse(keyFileContent);
+        } catch (error) {
+          console.error('Error reading firebase-key.json:', error);
         }
       }
-
-      if (hasCredentials) {
-        try {
-          // For debugging - log a sample of the private key
-          console.log('Private key length:', privateKey.length);
-          console.log('Private key sample (first 50 chars):', privateKey.substring(0, 50));
+      
+      // Fall back to environment variables if file doesn't exist or couldn't be parsed
+      if (!credentials) {
+        console.log('Loading Firebase Admin credentials from environment variables');
+        
+        const projectId = process.env.FIREBASE_ADMIN_PROJECT_ID;
+        const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL;
+        let privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY;
+        
+        if (projectId && clientEmail && privateKey) {
+          // Handle private key format - ensure it has proper PEM format
+          if (privateKey.includes('\\n')) {
+            // Replace \\n with actual newlines
+            privateKey = privateKey.replace(/\\n/g, '\n');
+          }
           
-          // Alternative initialization approach
-          const serviceAccount = {
+          // Make sure it has the right headers and footers
+          if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+            privateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----\n`;
+          }
+          
+          credentials = {
             projectId,
             clientEmail,
             privateKey
           };
-          
-          // Initialize with modified approach
-          adminApp = initializeApp({
-            credential: cert(serviceAccount),
-            projectId,
-            databaseURL: `https://${projectId}.firebaseio.com`,
-            storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-          });
-        } catch (certError) {
-          console.error('Error creating credential certificate:', certError);
-          
-          // As a fallback, temporarily disable the auth check
-          console.warn('⚠️ DEVELOPER MODE: Bypassing Firebase Admin authentication for development');
-          
-          // Set environment variable to identify we're running in fallback mode
-          process.env.FIREBASE_ADMIN_FALLBACK_MODE = 'true';
-          
-          // Initialize with application default credentials as a fallback
-          adminApp = initializeApp({
-            projectId,
-          });
         }
-      } else {
-        // For development only: initialize with application default credentials
-        // This requires running `firebase login` on the dev machine
-        adminApp = initializeApp({
-          projectId,
-        });
       }
       
-      console.log('Firebase Admin SDK initialized successfully');
+      // Initialize with service account if we have credentials, otherwise use app default
+      if (credentials) {
+        adminApp = initializeApp({
+          credential: cert(credentials)
+        });
+        console.log('Firebase Admin SDK initialized with service account');
+      } else {
+        // For local development without credentials
+        adminApp = initializeApp({
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+        });
+        console.log('Firebase Admin SDK initialized with application default credentials');
+      }
+      
       return adminApp;
     } catch (error) {
-      console.error('Failed to initialize Firebase Admin SDK:', error);
-      console.error('Error details:', error.message);
+      console.error('Error initializing Firebase Admin SDK:', error);
       
-      // Check for OpenSSL errors
-      if (error.message && (
-          error.message.includes('DECODER routines::unsupported') || 
-          error.message.includes('ERR_OSSL_UNSUPPORTED'))) {
-        console.error('OpenSSL compatibility error detected. Try setting DISABLE_FIREBASE_ADMIN_SDK=true in your .env file');
-        console.error('Alternatively, run your app with NODE_OPTIONS=--openssl-legacy-provider');
+      // Handle specific OpenSSL compatibility errors
+      if (error.message && error.message.includes('error:')) {
+        console.error('This may be an OpenSSL compatibility error. Check your Node.js version and private key format.');
       }
       
-      // Fallback mode - log that we're continuing without admin SDK
-      console.warn('Continuing without Firebase Admin SDK - some server-side operations may fail');
-      
-      // Return null so the calling code can use an alternative approach
       return null;
     }
   }

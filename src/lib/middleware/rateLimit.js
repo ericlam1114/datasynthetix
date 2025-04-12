@@ -3,102 +3,127 @@
  * Handles tracking request counts per IP/user and rejecting over-limit requests
  */
 
-// In-memory cache to track requests
-// In production, consider using Redis or a persistent store
-const rateLimitCache = new Map();
+import { LRUCache } from 'lru-cache';
 
 /**
- * Lightweight rate limiter implementation for API routes
- * @param {Object} options - Configuration options
+ * Creates a rate limiter
+ * @param {Object} options - Rate limiting options
  * @param {number} options.interval - Time window in milliseconds
- * @param {number} options.limit - Maximum requests allowed in interval
- * @param {number} options.uniqueTokenPerInterval - Max number of tokens in storage
- * @returns {Object} Limiter with check method
+ * @param {number} options.limit - Max number of requests per interval
+ * @param {number} options.uniqueTokenPerInterval - Max number of tokens to track
+ * @returns {Object} Rate limiter functions
  */
 export function rateLimit(options) {
-  const { interval, limit, uniqueTokenPerInterval = 500 } = options;
-  
-  // Cleanup function to prevent memory leaks
-  const cleanup = () => {
-    const now = Date.now();
-    for (const [key, value] of rateLimitCache.entries()) {
-      if (now - value.timestamp > interval) {
-        rateLimitCache.delete(key);
-      }
-    }
-  };
-  
-  // Schedule periodic cleanup
-  const cleanupInterval = setInterval(cleanup, interval);
-  
-  // Make sure we clean up in case of server restart
-  if (typeof window === 'undefined') {
-    // Only in Node.js environment
-    process.on('SIGTERM', () => {
-      clearInterval(cleanupInterval);
-      rateLimitCache.clear();
-    });
-  }
-  
+  const tokenCache = new LRUCache({
+    max: options.uniqueTokenPerInterval || 500, // Max unique tokens to track
+    ttl: options.interval || 60000, // Default: 1 minute
+  });
+
   return {
     /**
-     * Checks if the request should be rate limited
-     * @param {Object} request - Next.js request object
-     * @param {number} customLimit - Optional custom limit for this check
-     * @returns {Promise<void>} Resolves if allowed, rejects if limited
+     * Check if the request exceeds rate limits
+     * @param {Request} request - The HTTP request
+     * @param {number} [limit] - Optional custom limit for this request
+     * @returns {Promise<void>} Resolves if under limit, rejects if rate limited
      */
-    check: async (request, customLimit = limit) => {
-      cleanup();
+    check: async (request, limit) => {
+      const requestLimit = limit || options.limit;
+      const ip = request.headers.get('x-forwarded-for') || 'unknown-ip';
+      const token = getIdentifier(request, ip);
       
-      // Get identifier for rate limiting (IP address or token)
-      const clientIp = 
-        request.headers.get('x-forwarded-for')?.split(',')[0] || 
-        request.ip || 
-        'unknown';
+      // Current count for this token
+      const tokenCount = (tokenCache.get(token) || 0) + 1;
       
-      // Get Authorization token if present (for user-based rate limiting)
-      const token = request.headers.get('authorization');
-      
-      // Create a unique key using IP and token (if available)
-      const key = `${clientIp}:${token || ''}`;
-      
-      // Get current timestamp
-      const now = Date.now();
-      
-      // Initialize or increment counter
-      if (!rateLimitCache.has(key)) {
-        // If cache is full, deny the request
-        if (rateLimitCache.size >= uniqueTokenPerInterval) {
-          throw new Error('Rate limit exceeded');
-        }
-        
-        rateLimitCache.set(key, {
-          timestamp: now,
-          count: 1
-        });
-      } else {
-        const current = rateLimitCache.get(key);
-        
-        // If within interval, increment count
-        if (now - current.timestamp < interval) {
-          // Check if limit exceeded
-          if (current.count >= customLimit) {
-            throw new Error('Rate limit exceeded');
-          }
-          
-          // Increment count
-          rateLimitCache.set(key, {
-            timestamp: current.timestamp,
-            count: current.count + 1
-          });
-        } else {
-          // Reset if interval expired
-          rateLimitCache.set(key, {
-            timestamp: now,
-            count: 1
-          });
-        }
+      // Check if over the limit
+      if (tokenCount > requestLimit) {
+        throw new Error('Rate limit exceeded');
       }
+      
+      // Set the new count in the cache
+      tokenCache.set(token, tokenCount);
+      return;
+    },
+    
+    /**
+     * Get current usage for a request
+     * @param {Request} request - The HTTP request 
+     * @returns {Object} Usage information
+     */
+    getUsage: (request) => {
+      const ip = request.headers.get('x-forwarded-for') || 'unknown-ip';
+      const token = getIdentifier(request, ip);
+      return {
+        current: tokenCache.get(token) || 0,
+        limit: options.limit,
+        remaining: Math.max(0, options.limit - (tokenCache.get(token) || 0))
+      };
+    }
+  };
+}
+
+/**
+ * Get a unique identifier for the request
+ * @param {Request} request - The HTTP request
+ * @param {string} ip - The client IP address
+ * @returns {string} A unique token for this request
+ */
+function getIdentifier(request, ip) {
+  // Get the Authorization header
+  const authHeader = request.headers.get('authorization');
+  
+  // If we have a Bearer token, extract the user ID
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split('Bearer ')[1];
+    return `auth_${token.slice(0, 12)}`;
+  }
+  
+  // Use a combination of IP and user agent as fallback
+  const userAgent = request.headers.get('user-agent') || 'unknown-ua';
+  return `${ip}_${userAgent.slice(0, 20)}`;
+}
+
+/**
+ * Higher-order function to apply rate limiting to a route handler
+ * @param {Function} handler - The route handler function
+ * @param {Object} options - Rate limiting options
+ * @returns {Function} The rate-limited handler
+ */
+export function withRateLimit(handler, options = {}) {
+  const limiter = rateLimit({
+    interval: options.interval || 60000, // Default: 1 minute
+    limit: options.limit || 60, // Default: 60 requests per minute
+    uniqueTokenPerInterval: options.uniqueTokenPerInterval || 500,
+  });
+
+  return async (request, ...args) => {
+    try {
+      await limiter.check(request);
+      
+      // Add rate limit headers to track usage
+      const response = await handler(request, ...args);
+      const usage = limiter.getUsage(request);
+      
+      // Clone response to modify headers
+      const newResponse = new Response(response.body, response);
+      newResponse.headers.set('X-RateLimit-Limit', usage.limit.toString());
+      newResponse.headers.set('X-RateLimit-Remaining', usage.remaining.toString());
+      
+      return newResponse;
+    } catch (error) {
+      if (error.message === 'Rate limit exceeded') {
+        return new Response(
+          JSON.stringify({ error: 'Too many requests', details: 'Rate limit exceeded' }),
+          {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': '60'
+            }
+          }
+        );
+      }
+      
+      throw error;
     }
   };
 } 

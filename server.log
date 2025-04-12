@@ -1,0 +1,21 @@
+
+> datasynthetix@0.1.0 dev
+> NODE_OPTIONS=--openssl-legacy-provider next dev
+
+   ▲ Next.js 15.2.5
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.12.114:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ⚠ Invalid next.config.js options detected: 
+ ⚠     Expected object, received boolean at "experimental.serverActions"
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+ ✓ Ready in 1290ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1541ms (1035 modules)
+Firebase initialized successfully
+[2025-04-12T21:02:46.219Z]  @firebase/firestore: Firestore (11.6.0): enableIndexedDbPersistence() will be deprecated in the future, you can use `FirestoreSettings.cache` instead.
+ GET / 200 in 1957ms
+ ✓ Compiled in 633ms (367 modules)
+[?25h
