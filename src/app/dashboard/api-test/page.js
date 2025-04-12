@@ -1,566 +1,563 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2 } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { JsonView } from 'react-json-view-lite';
-import 'react-json-view-lite/dist/index.css';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { 
+  Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle 
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
+import { JsonView } from "@/components/ui/json-view";
+import { useToast } from "@/components/ui/use-toast";
 import { UserInfoCard } from '@/components/UserInfoCard';
-import { useAuth } from '@/contexts/AuthContext';
+import { X, Loader2 } from "lucide-react";
 
-export default function APITestPage() {
-  const { toast } = useToast();
-  const { getIdToken } = useAuth();
+export default function ApiTestPage() {
+  // State
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
   const [error, setError] = useState(null);
-  
-  // State for auth test
   const [authToken, setAuthToken] = useState(null);
-  const [checkAdmin, setCheckAdmin] = useState(false);
-  const [specificPermission, setSpecificPermission] = useState("");
+  const [activeTab, setActiveTab] = useState("auth");
   
-  // State for document test
-  const [documentPage, setDocumentPage] = useState(1);
-  const [documentPageSize, setDocumentPageSize] = useState(10);
-  const [includeDeleted, setIncludeDeleted] = useState(false);
-
-  // State for document operation test
-  const [documentId, setDocumentId] = useState('');
-  const [jobId, setJobId] = useState('');
+  // Document management state
+  const [viewMode, setViewMode] = useState("active");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [documentId, setDocumentId] = useState("");
   const [permanentDelete, setPermanentDelete] = useState(false);
-  const [operationType, setOperationType] = useState('delete');
+  const [deleteDatasets, setDeleteDatasets] = useState(false);
+  
+  // Custom API state
+  const [requestBody, setRequestBody] = useState("{}");
 
-  // State for custom API test
-  const [endpoint, setEndpoint] = useState('/api/auth-test');
-  const [method, setMethod] = useState('GET');
-  const [body, setBody] = useState('');
+  const { toast } = useToast();
+  const { user, getIdToken, isAuthenticated } = useAuth();
 
+  // Get auth token on component mount or when user changes
   useEffect(() => {
-    async function fetchToken() {
-      try {
-        const token = await getIdToken();
-        if (token) {
-          setAuthToken(`Bearer ${token}`);
-        }
-      } catch (error) {
-        console.error("Error getting token:", error);
-      }
-    }
-    
-    fetchToken();
-  }, [getIdToken]);
-
-  const testAuthUtils = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const url = new URL('/api/auth-test', window.location.origin);
-      
-      if (checkAdmin) {
-        url.searchParams.append('checkAdmin', 'true');
-      }
-      
-      if (specificPermission) {
-        url.searchParams.append('permission', specificPermission);
-      }
-      
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': authToken
-        }
-      });
-      
-      const data = await response.json();
-      setResults(data);
-      
-      if (!response.ok) {
-        setError(`Error: ${data.error || "Unknown error occurred"}`);
-        toast({
-          title: "Authentication Test Failed",
-          description: data.error || "Unknown error occurred",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Authentication Test Complete",
-          description: "Authentication successful",
-        });
-      }
-    } catch (error) {
-      setError(error.message);
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getDocuments = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const url = new URL('/api/document-management', window.location.origin);
-      url.searchParams.append('page', documentPage);
-      url.searchParams.append('pageSize', documentPageSize);
-      if (includeDeleted) {
-        url.searchParams.append('includeDeleted', 'true');
-      }
-      
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': authToken
-        }
-      });
-      
-      const data = await response.json();
-      setResults(data);
-      
-      if (!response.ok) {
-        setError(`Error: ${data.error || "Unknown error occurred"}`);
-        toast({
-          title: "Error",
-          description: data.error || "Failed to retrieve documents",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Documents Retrieved",
-          description: `Found ${data.documents?.length || 0} documents`,
-        });
-      }
-    } catch (error) {
-      setError(error.message);
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const performDocumentOperation = async () => {
-    if (!documentId && operationType !== 'getJobs') {
-      toast({
-        title: "Error",
-        description: "Document ID is required",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setLoading(true);
-    setError(null);
-    
-    try {
-      let url, fetchOptions;
-      
-      switch(operationType) {
-        case 'delete':
-          url = `/api/document-management?documentId=${documentId}${permanentDelete ? '&permanent=true' : ''}`;
-          fetchOptions = {
-            method: 'DELETE',
-            headers: {
-              'Authorization': authToken
-            }
-          };
-          break;
-        case 'restore':
-          url = `/api/document-management`;
-          fetchOptions = {
-            method: 'PATCH',
-            headers: {
-              'Authorization': authToken,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              documentId,
-              action: 'restore'
-            })
-          };
-          break;
-        case 'cancelJob':
-          if (!jobId) {
-            toast({
-              title: "Error",
-              description: "Job ID is required for cancel operation",
-              variant: "destructive",
-            });
-            setLoading(false);
-            return;
-          }
-          url = `/api/document-management`;
-          fetchOptions = {
-            method: 'PATCH',
-            headers: {
-              'Authorization': authToken,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              documentId,
-              jobId,
-              action: 'cancel'
-            })
-          };
-          break;
-        case 'getJobs':
-          url = `/api/document-management?activeJobsOnly=true`;
-          fetchOptions = {
-            headers: {
-              'Authorization': authToken
-            }
-          };
-          break;
-        default:
-          throw new Error('Invalid operation type');
-      }
-      
-      const response = await fetch(url, fetchOptions);
-      const data = await response.json();
-      setResults(data);
-      
-      if (!response.ok) {
-        throw new Error(data.error || `Failed to ${operationType} document`);
-      }
-      
-      toast({
-        title: "Operation Successful",
-        description: `${operationType.charAt(0).toUpperCase() + operationType.slice(1)} operation completed successfully`,
-      });
-    } catch (error) {
-      setError(error.message);
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const testCustomApi = async () => {
-    if (!endpoint) {
-      toast({
-        title: "Error",
-        description: "Endpoint is required",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const options = {
-        method: method,
-        headers: {
-          'Authorization': authToken
-        }
-      };
-      
-      if (method !== 'GET' && method !== 'HEAD' && body) {
+    const fetchToken = async () => {
+      if (isAuthenticated && user) {
         try {
-          // Try to parse as JSON
-          JSON.parse(body);
-          options.headers['Content-Type'] = 'application/json';
-          options.body = body;
-        } catch (e) {
-          // If not valid JSON, send as plain text
-          options.headers['Content-Type'] = 'text/plain';
-          options.body = body;
+          const token = await getIdToken();
+          setAuthToken(token);
+        } catch (err) {
+          console.error("Error getting auth token:", err);
+          setError("Failed to get authentication token. Please sign in again.");
         }
+      } else {
+        setAuthToken(null);
       }
+    };
+
+    fetchToken();
+  }, [getIdToken, isAuthenticated, user]);
+
+  // Test authentication
+  const testAuth = async () => {
+    if (!authToken) {
+      setError("You must be logged in to test authentication");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch("/api/auth-test", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${authToken}`
+        }
+      });
       
-      const response = await fetch(endpoint, options);
-      let data;
-      
-      try {
-        data = await response.json();
-      } catch (e) {
-        data = { rawText: await response.text() };
-      }
-      
+      const data = await response.json();
       setResults(data);
       
       if (!response.ok) {
-        throw new Error(data.error || `API request failed with status ${response.status}`);
+        setError(`Error ${response.status}: ${data.error || "Unknown error"}`);
       }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Test authenticated user info
+  const testUserInfo = async () => {
+    if (!authToken) {
+      setError("You must be logged in to test user info");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch("/api/auth-test", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${authToken}`
+        }
+      });
       
-      toast({
-        title: "API Request Complete",
-        description: `${method} request to ${endpoint} completed with status ${response.status}`,
+      const data = await response.json();
+      setResults(data);
+      
+      if (!response.ok) {
+        setError(`Error ${response.status}: ${data.error || "Unknown error"}`);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get documents
+  const getDocuments = async () => {
+    if (!authToken) {
+      setError("You must be logged in to get documents");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const params = new URLSearchParams({
+        viewMode,
+        page,
+        pageSize
       });
-    } catch (error) {
-      setError(error.message);
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
+      
+      const response = await fetch(`/api/document-management?${params.toString()}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${authToken}`
+        }
       });
+      
+      const data = await response.json();
+      setResults(data);
+      
+      if (!response.ok) {
+        setError(`Error ${response.status}: ${data.error || "Unknown error"}`);
+      } else if (data.documents) {
+        toast({
+          title: "Success",
+          description: `Retrieved ${data.documents.length} documents`
+        });
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete document
+  const deleteDocument = async () => {
+    if (!authToken) {
+      setError("You must be logged in to delete documents");
+      return;
+    }
+
+    if (!documentId) {
+      setError("Document ID is required");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch("/api/document-management", {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${authToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          documentId,
+          permanent: permanentDelete,
+          deleteDatasets
+        })
+      });
+      
+      const data = await response.json();
+      setResults(data);
+      
+      if (!response.ok) {
+        setError(`Error ${response.status}: ${data.error || "Unknown error"}`);
+      } else {
+        toast({
+          title: "Success",
+          description: permanentDelete 
+            ? "Document permanently deleted" 
+            : "Document moved to trash",
+        });
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Restore document
+  const restoreDocument = async () => {
+    if (!authToken) {
+      setError("You must be logged in to restore documents");
+      return;
+    }
+
+    if (!documentId) {
+      setError("Document ID is required");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch("/api/document-management", {
+        method: "PATCH",
+        headers: {
+          "Authorization": `Bearer ${authToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          documentId,
+          action: "restore"
+        })
+      });
+      
+      const data = await response.json();
+      setResults(data);
+      
+      if (!response.ok) {
+        setError(`Error ${response.status}: ${data.error || "Unknown error"}`);
+      } else {
+        toast({
+          title: "Success",
+          description: "Document restored from trash"
+        });
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Cancel job
+  const cancelJob = async () => {
+    if (!authToken) {
+      setError("You must be logged in to cancel jobs");
+      return;
+    }
+
+    if (!documentId) {
+      setError("Document ID is required");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch("/api/document-management", {
+        method: "PATCH",
+        headers: {
+          "Authorization": `Bearer ${authToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          documentId,
+          action: "cancelJob"
+        })
+      });
+      
+      const data = await response.json();
+      setResults(data);
+      
+      if (!response.ok) {
+        setError(`Error ${response.status}: ${data.error || "Unknown error"}`);
+      } else {
+        toast({
+          title: "Success",
+          description: "Job cancelled successfully"
+        });
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Test custom API endpoint
+  const testCustomApi = async () => {
+    if (!authToken) {
+      setError("You must be logged in to test custom APIs");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    
+    let parsedBody = {};
+    try {
+      parsedBody = JSON.parse(requestBody);
+    } catch (err) {
+      setError(`Invalid JSON in request body: ${err.message}`);
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      const response = await fetch("/api/custom-endpoint", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${authToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(parsedBody)
+      });
+      
+      const data = await response.json();
+      setResults(data);
+      
+      if (!response.ok) {
+        setError(`Error ${response.status}: ${data.error || "Unknown error"}`);
+      }
+    } catch (err) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="space-y-6">
-        <h1 className="text-3xl font-bold">API Testing Tool</h1>
-        <p className="text-muted-foreground">Test and debug API endpoints with authentication</p>
+    <div className="container py-8">
+      <h1 className="text-3xl font-bold mb-6">API Testing Tool</h1>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+        <div className="lg:col-span-1">
+          <UserInfoCard />
+        </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
-            <UserInfoCard />
-          </div>
-          
-          <div className="lg:col-span-2">
-            <Tabs defaultValue="auth">
-              <TabsList className="grid grid-cols-4 mb-4">
-                <TabsTrigger value="auth">Auth Test</TabsTrigger>
-                <TabsTrigger value="documents">Documents</TabsTrigger>
-                <TabsTrigger value="operations">Document Ops</TabsTrigger>
-                <TabsTrigger value="custom">Custom API</TabsTrigger>
-              </TabsList>
-            
-              <TabsContent value="auth">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Authentication Test</CardTitle>
-                    <CardDescription>Test authentication and permission checking</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="check-admin" 
-                        checked={checkAdmin}
-                        onCheckedChange={setCheckAdmin}
-                      />
-                      <Label htmlFor="check-admin">Check Admin Permission</Label>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="specificPermission">Check Specific Permission (optional)</Label>
-                      <Input 
-                        id="specificPermission" 
-                        value={specificPermission} 
-                        onChange={(e) => setSpecificPermission(e.target.value)}
-                        placeholder="Enter permission name (e.g., 'delete:documents')" 
-                      />
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button onClick={testAuthUtils} disabled={loading || !authToken}>
-                      {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Testing...</> : "Test Authentication"}
+        <div className="lg:col-span-3">
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle>API Testing</CardTitle>
+              <CardDescription>Test the various API endpoints with your auth token</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
+                <TabsList className="grid grid-cols-4">
+                  <TabsTrigger value="auth">Authentication</TabsTrigger>
+                  <TabsTrigger value="documents">Documents</TabsTrigger>
+                  <TabsTrigger value="operations">Operations</TabsTrigger>
+                  <TabsTrigger value="custom">Custom API</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="auth" className="space-y-4 py-4">
+                  <p className="text-sm text-muted-foreground">Test authentication endpoints</p>
+                  <div className="space-y-2">
+                    <Button onClick={testAuth} disabled={loading || !authToken} className="mr-2">
+                      {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      Test Auth (GET)
                     </Button>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="documents">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Retrieve Documents</CardTitle>
-                    <CardDescription>Test fetching document list with pagination</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="page">Page</Label>
-                        <Input 
-                          id="page" 
-                          type="number" 
-                          value={documentPage} 
-                          onChange={(e) => setDocumentPage(Number(e.target.value))}
-                          min={1}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="pageSize">Page Size</Label>
-                        <Input 
-                          id="pageSize" 
-                          type="number" 
-                          value={documentPageSize} 
-                          onChange={(e) => setDocumentPageSize(Number(e.target.value))}
-                          min={1}
-                          max={100}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="include-deleted" 
-                        checked={includeDeleted}
-                        onCheckedChange={setIncludeDeleted}
-                      />
-                      <Label htmlFor="include-deleted">Include Deleted Documents</Label>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button onClick={getDocuments} disabled={loading || !authToken}>
-                      {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Fetching...</> : "Get Documents"}
+                    <Button onClick={testUserInfo} disabled={loading || !authToken}>
+                      {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      Get User Info (POST)
                     </Button>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="operations">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Document Operations</CardTitle>
-                    <CardDescription>Test document management operations</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="documents" className="space-y-4 py-4">
+                  <p className="text-sm text-muted-foreground">Get document listings with filters</p>
+                  <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="operation-type">Operation Type</Label>
-                      <Select value={operationType} onValueChange={setOperationType}>
-                        <SelectTrigger id="operation-type">
-                          <SelectValue placeholder="Select operation" />
+                      <Label htmlFor="viewMode">View Mode</Label>
+                      <Select value={viewMode} onValueChange={setViewMode}>
+                        <SelectTrigger id="viewMode">
+                          <SelectValue placeholder="View Mode" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="delete">Delete Document</SelectItem>
-                          <SelectItem value="restore">Restore Document</SelectItem>
-                          <SelectItem value="cancelJob">Cancel Job</SelectItem>
-                          <SelectItem value="getJobs">Get Active Jobs</SelectItem>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="trash">Trash</SelectItem>
+                          <SelectItem value="all">All</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="page">Page</Label>
+                      <Input 
+                        id="page" 
+                        type="number" 
+                        min="1" 
+                        value={page} 
+                        onChange={(e) => setPage(parseInt(e.target.value) || 1)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="pageSize">Page Size</Label>
+                      <Input 
+                        id="pageSize" 
+                        type="number" 
+                        min="1" 
+                        max="50" 
+                        value={pageSize} 
+                        onChange={(e) => setPageSize(parseInt(e.target.value) || 10)}
+                      />
+                    </div>
+                  </div>
+                  <Button onClick={getDocuments} disabled={loading || !authToken}>
+                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    Get Documents
+                  </Button>
+                </TabsContent>
+                
+                <TabsContent value="operations" className="space-y-4 py-4">
+                  <p className="text-sm text-muted-foreground">Perform document operations</p>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="documentId">Document ID</Label>
+                      <Input 
+                        id="documentId" 
+                        value={documentId} 
+                        onChange={(e) => setDocumentId(e.target.value)}
+                        placeholder="Enter document ID"
+                      />
+                    </div>
                     
-                    {operationType !== 'getJobs' && (
-                      <div className="space-y-2">
-                        <Label htmlFor="document-id">Document ID</Label>
-                        <Input 
-                          id="document-id" 
-                          value={documentId} 
-                          onChange={(e) => setDocumentId(e.target.value)}
-                          placeholder="Enter document ID"
-                        />
-                      </div>
-                    )}
-                    
-                    {operationType === 'cancelJob' && (
-                      <div className="space-y-2">
-                        <Label htmlFor="job-id">Job ID</Label>
-                        <Input 
-                          id="job-id" 
-                          value={jobId} 
-                          onChange={(e) => setJobId(e.target.value)}
-                          placeholder="Enter job ID"
-                        />
-                      </div>
-                    )}
-                    
-                    {operationType === 'delete' && (
+                    <div className="space-y-2">
+                      <h4 className="font-medium">Delete Options</h4>
                       <div className="flex items-center space-x-2">
                         <Checkbox 
-                          id="permanent-delete" 
+                          id="permanentDelete" 
                           checked={permanentDelete}
                           onCheckedChange={setPermanentDelete}
                         />
-                        <Label htmlFor="permanent-delete">Permanent Delete</Label>
+                        <Label htmlFor="permanentDelete">Permanent Delete</Label>
                       </div>
-                    )}
-                  </CardContent>
-                  <CardFooter>
-                    <Button onClick={performDocumentOperation} disabled={loading || !authToken}>
-                      {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...</> : "Execute Operation"}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="custom">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Custom API Request</CardTitle>
-                    <CardDescription>Test any API endpoint with custom parameters</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="endpoint">API Endpoint</Label>
-                      <Input 
-                        id="endpoint" 
-                        value={endpoint} 
-                        onChange={(e) => setEndpoint(e.target.value)}
-                        placeholder="/api/endpoint"
-                      />
+                      
+                      {permanentDelete && (
+                        <div className="flex items-center space-x-2 ml-6 mt-2">
+                          <Checkbox 
+                            id="deleteDatasets" 
+                            checked={deleteDatasets}
+                            onCheckedChange={setDeleteDatasets}
+                          />
+                          <Label htmlFor="deleteDatasets">Delete Associated Datasets</Label>
+                        </div>
+                      )}
                     </div>
                     
-                    <div className="space-y-2">
-                      <Label htmlFor="method">HTTP Method</Label>
-                      <Select value={method} onValueChange={setMethod}>
-                        <SelectTrigger id="method">
-                          <SelectValue placeholder="Select method" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="GET">GET</SelectItem>
-                          <SelectItem value="POST">POST</SelectItem>
-                          <SelectItem value="PUT">PUT</SelectItem>
-                          <SelectItem value="PATCH">PATCH</SelectItem>
-                          <SelectItem value="DELETE">DELETE</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    <div className="space-x-2">
+                      <Button 
+                        onClick={deleteDocument} 
+                        disabled={loading || !authToken || !documentId}
+                        variant={permanentDelete ? "destructive" : "default"}
+                      >
+                        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                        {permanentDelete ? "Permanently Delete" : "Move to Trash"}
+                      </Button>
+                      
+                      <Button 
+                        onClick={restoreDocument} 
+                        disabled={loading || !authToken || !documentId}
+                        variant="outline"
+                      >
+                        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                        Restore
+                      </Button>
+                      
+                      <Button 
+                        onClick={cancelJob} 
+                        disabled={loading || !authToken || !documentId}
+                        variant="outline"
+                      >
+                        {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                        Cancel Job
+                      </Button>
                     </div>
-                    
-                    {method !== 'GET' && method !== 'HEAD' && (
-                      <div className="space-y-2">
-                        <Label htmlFor="body">Request Body (JSON)</Label>
-                        <Textarea 
-                          id="body" 
-                          value={body} 
-                          onChange={(e) => setBody(e.target.value)}
-                          placeholder="Enter request body as JSON"
-                          rows={5}
-                        />
-                      </div>
-                    )}
-                  </CardContent>
-                  <CardFooter>
-                    <Button onClick={testCustomApi} disabled={loading || !endpoint || !authToken}>
-                      {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending Request...</> : "Send Request"}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
-        </div>
-        
-        {error && (
-          <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        
-        {results && (
-          <Card>
-            <CardHeader>
-              <CardTitle>API Response</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="p-4 bg-muted rounded-md overflow-auto max-h-[500px]">
-                <JsonView data={results} />
-              </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="custom" className="space-y-4 py-4">
+                  <p className="text-sm text-muted-foreground">Test custom API endpoints</p>
+                  <div className="space-y-2">
+                    <Label htmlFor="requestBody">Request Body (JSON)</Label>
+                    <Textarea 
+                      id="requestBody" 
+                      value={requestBody} 
+                      onChange={(e) => setRequestBody(e.target.value)}
+                      rows={8}
+                    />
+                  </div>
+                  <Button onClick={testCustomApi} disabled={loading || !authToken}>
+                    {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    Send Request
+                  </Button>
+                </TabsContent>
+              </Tabs>
             </CardContent>
           </Card>
-        )}
+        </div>
       </div>
+      
+      {error && (
+        <Alert variant="destructive" className="mb-6">
+          <div className="flex justify-between items-start">
+            <div>
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setError(null)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </Alert>
+      )}
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>API Response</CardTitle>
+          <CardDescription>Results from the API call</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          ) : results ? (
+            <JsonView data={results} />
+          ) : (
+            <p className="text-sm text-muted-foreground text-center py-8">
+              No results to display. Make an API call to see the response.
+            </p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 } 

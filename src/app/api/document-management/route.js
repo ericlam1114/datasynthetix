@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getFirebaseAdmin } from '@/lib/firebase/firebaseAdmin';
 import { S3Client, DeleteObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
-import { getUserIdFromAuthHeader } from '@/lib/auth/authUtils';
+import { verifyAuthToken, getUserIdFromAuthHeader, hasPermission } from '@/lib/auth/authUtils';
 import { withAuth } from '@/lib/middleware/authMiddleware';
 import { withRateLimit } from '@/lib/middleware/rateLimit';
 import { withErrorHandling, ApiError } from '@/lib/middleware/errorHandler';
@@ -10,11 +10,6 @@ import { withErrorHandling, ApiError } from '@/lib/middleware/errorHandler';
 // Constants
 const MAX_RETRY_ATTEMPTS = 3;
 const DEFAULT_PAGE_SIZE = 10;
-
-// Initialize Firebase admin
-const firebaseAdmin = getFirebaseAdmin();
-const db = firebaseAdmin.firestore();
-const bucket = firebaseAdmin.storage().bucket();
 
 // Initialize AWS S3
 const s3Client = new S3Client({
@@ -37,6 +32,7 @@ function validateParams(params, requiredFields) {
 // Log user activity for audit purposes
 async function logActivity(userId, action, resourceId, details) {
   try {
+    const { db } = getFirebaseAdmin();
     await db.collection('activityLogs').add({
       userId,
       action,
@@ -102,6 +98,9 @@ async function handleGetDocuments(request) {
   // Extract userId from request (added by withAuth middleware)
   const userId = request.userId;
 
+  // Get Firestore instance
+  const { db } = getFirebaseAdmin();
+
   // Calculate pagination
   const offset = (page - 1) * pageSize;
   
@@ -162,6 +161,10 @@ async function handleDeleteDocument(request) {
 
   const { documentId, permanent = false, deleteDatasets = false } = body;
   const userId = request.userId;
+
+  // Get Firebase Admin instances
+  const { db, storage } = getFirebaseAdmin();
+  const bucket = storage.bucket();
 
   // Transaction for atomic operations
   const result = await db.runTransaction(async (transaction) => {
@@ -277,6 +280,9 @@ async function handlePatchDocument(request) {
 
   const { documentId, action } = body;
   const userId = request.userId;
+
+  // Get Firestore instance
+  const { db } = getFirebaseAdmin();
 
   // Verify document exists and belongs to user
   const docRef = db.collection('documents').doc(documentId);

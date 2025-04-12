@@ -2,6 +2,8 @@
 import "@ungap/with-resolvers"; // Polyfill for Promise.withResolvers
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+import fs from 'fs/promises';
 
 // Validators and helpers
 import { validateFormData, parseProcessingOptions } from "./utils/validators";
@@ -181,85 +183,142 @@ function addToProcessingQueue(jobId, text, options) {
  */
 export async function POST(request) {
   try {
-    const body = await request.json();
-    const { text, options = {} } = body;
+    // Check the content type to determine how to handle the request
+    const contentType = request.headers.get('content-type') || '';
     
-    // Validate input
-    if (!text) {
-      return NextResponse.json(
-        { error: 'Text is required' },
-        { status: 400 }
-      );
-    }
-    
-    // Check system capacity
-    const memStatus = checkMemoryStatus();
-    if (memStatus.isCritical) {
-      return NextResponse.json(
-        { 
-          error: 'Server is currently under high memory load, please try again later',
-          memoryUsage: memStatus.usagePercent,
-          queueStatus: {
-            size: requestQueue.length,
-            maxSize: MAX_QUEUE_SIZE
+    // For multipart form data (file uploads)
+    if (contentType.includes('multipart/form-data')) {
+      // Parse form data for file uploads
+      const formData = await request.formData();
+      
+      // Get user ID from form data or auth token
+      const authToken = formData.get('authToken') || request.headers.get('Authorization')?.replace('Bearer ', '');
+      let userId = null;
+      
+      if (authToken) {
+        try {
+          // Authenticate the user with just the token string
+          const authResult = await authenticateUser(authToken);
+          if (authResult.authenticated) {
+            userId = authResult.uid;
+          } else {
+            return Response.json({ error: 'Authentication failed' }, { status: 401 });
           }
-        },
-        { status: 503 } // Service Unavailable
-      );
-    }
-    
-    // Generate a job ID for tracking
-    const jobId = options.jobId || uuidv4();
-    
-    // Get complexity estimate
-    const complexity = evaluateTextComplexity(text);
-    
-    // Initialize job status
-    await updateJobStatus(jobId, { 
-      status: 'initialized',
-      text: text.length > 500 ? `${text.substring(0, 500)}...` : text,
-      complexity,
-      options
-    });
-    
-    // For very large documents or when system is under load, use queue
-    const shouldQueue = complexity.level === 'high' || 
-                       text.length > 50000 || 
-                       memStatus.isWarning || 
-                       isProcessing;
-    
-    if (shouldQueue) {
-      // Add to processing queue
-      const queueInfo = addToProcessingQueue(jobId, text, options);
+        } catch (authError) {
+          console.error('Authentication error:', authError);
+          return Response.json({ error: 'Authentication error', details: authError.message }, { status: 401 });
+        }
+      } else {
+        return Response.json({ error: 'Authentication token required' }, { status: 401 });
+      }
       
-      return NextResponse.json({
-        jobId,
-        status: 'queued',
+      // Get the file from form data
+      const file = formData.get('file');
+      if (!file) {
+        return Response.json({ error: 'No file provided' }, { status: 400 });
+      }
+      
+      // Check if this is for an existing document
+      const documentId = formData.get('documentId');
+      
+      // Parse processing options
+      const processingOptions = parseProcessingOptions(formData);
+      
+      // Generate a job ID
+      const jobId = formData.get('jobId') || uuidv4();
+      
+      // Create error handler with context
+      const errorHandler = createErrorHandler({ userId, sourceType: 'file_upload' });
+      
+      // Process based on whether it's an existing or new document
+      if (documentId) {
+        return processExistingDocumentRequest(userId, documentId, processingOptions, jobId, errorHandler);
+      } else {
+        return processNewDocumentRequest(userId, file, processingOptions, jobId, errorHandler);
+      }
+    } 
+    // For JSON requests (direct text processing)
+    else {
+      const body = await request.json();
+      const { text, options = {} } = body;
+      
+      // Validate input
+      if (!text) {
+        return NextResponse.json(
+          { error: 'Text is required' },
+          { status: 400 }
+        );
+      }
+      
+      // Check system capacity
+      const memStatus = checkMemoryStatus();
+      if (memStatus.isCritical) {
+        return NextResponse.json(
+          { 
+            error: 'Server is currently under high memory load, please try again later',
+            memoryUsage: memStatus.usagePercent,
+            queueStatus: {
+              size: requestQueue.length,
+              maxSize: MAX_QUEUE_SIZE
+            }
+          },
+          { status: 503 } // Service Unavailable
+        );
+      }
+      
+      // Generate a job ID for tracking
+      const jobId = options.jobId || uuidv4();
+      
+      // Get complexity estimate
+      const complexity = evaluateTextComplexity(text);
+      
+      // Initialize job status
+      await updateJobStatus(jobId, { 
+        status: 'initialized',
+        text: text.length > 500 ? `${text.substring(0, 500)}...` : text,
         complexity,
-        queuePosition: queueInfo.queuePosition,
-        queueLength: requestQueue.length,
-        estimatedProcessingTime: complexity.estimatedProcessingTime
-      });
-    } else {
-      // For smaller documents, process immediately
-      updateJobStatus(jobId, { status: 'processing' });
-      
-      // Process document with the pipeline
-      const result = await processWithPipeline(text, options, jobId, complexity, updateJobStatus);
-      
-      // Update job status with results
-      updateJobStatus(jobId, { 
-        status: 'completed',
-        result
+        options
       });
       
-      // Return results
-      return NextResponse.json({
-        jobId,
-        status: 'completed',
-        result,
-        complexity
-      });
+      // For very large documents or when system is under load, use queue
+      const shouldQueue = complexity.level === 'high' || 
+                        text.length > 50000 || 
+                        memStatus.isWarning || 
+                        isProcessing;
+      
+      if (shouldQueue) {
+        // Add to processing queue
+        const queueInfo = addToProcessingQueue(jobId, text, options);
+        
+        return NextResponse.json({
+          jobId,
+          status: 'queued',
+          complexity,
+          queuePosition: queueInfo.queuePosition,
+          queueLength: requestQueue.length,
+          estimatedProcessingTime: complexity.estimatedProcessingTime
+        });
+      } else {
+        // For smaller documents, process immediately
+        updateJobStatus(jobId, { status: 'processing' });
+        
+        // Process document with the pipeline
+        const result = await processWithPipeline(text, options, jobId, complexity, updateJobStatus);
+        
+        // Update job status with results
+        updateJobStatus(jobId, { 
+          status: 'completed',
+          result
+        });
+        
+        // Return results
+        return NextResponse.json({
+          jobId,
+          status: 'completed',
+          result,
+          complexity
+        });
+      }
     }
   } catch (error) {
     console.error('Error processing document:', error);
@@ -535,91 +594,98 @@ async function processNewDocumentRequest(userId, file, options, jobId, errorHand
 }
 
 /**
- * API route for downloading files
- */
-export async function GET(request) {
-  const url = new URL(request.url);
-  const filePath = url.searchParams.get("file");
-
-  if (!filePath) {
-    return NextResponse.json(
-      { error: "File path is required" },
-      { status: 400 }
-    );
-  }
-
-  try {
-    // Parse file path to get userId and fileName
-    const [userId, fileName] = filePath.split("/");
-
-    if (!userId || !fileName) {
-      throw new Error("Invalid file path format");
-    }
-
-    const fullPath = path.join(process.cwd(), "uploads", userId, fileName);
-
-    // Check if file exists
-    try {
-      await fs.access(fullPath);
-    } catch (error) {
-      return NextResponse.json({ error: "File not found" }, { status: 404 });
-    }
-
-    // Read file content
-    const fileContent = await fs.readFile(fullPath);
-
-    // Determine content type
-    let contentType = "application/octet-stream";
-    if (fileName.endsWith(".jsonl")) {
-      contentType = "application/json";
-    } else if (fileName.endsWith(".csv")) {
-      contentType = "text/csv";
-    }
-
-    // Return file
-    return new NextResponse(fileContent, {
-      headers: {
-        "Content-Type": contentType,
-        "Content-Disposition": `attachment; filename=${fileName}`,
-      },
-    });
-  } catch (error) {
-    console.error("Error serving file:", error);
-    return NextResponse.json(
-      { error: "Failed to serve file" },
-      { status: 500 }
-    );
-  }
-}
-
-/**
- * GET handler to check job status
+ * Unified GET handler for both file downloads and job status checks
  */
 export async function GET(request) {
   const url = new URL(request.url);
   const jobId = url.searchParams.get('jobId');
+  const filePath = url.searchParams.get("file");
+
+  // Handle job status check
+  if (jobId) {
+    if (!jobId) {
+      return NextResponse.json(
+        { error: 'Job ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    // Get status for the specified job
+    const status = jobStatuses.get(jobId);
+    
+    if (!status) {
+      return NextResponse.json(
+        { error: 'Job not found' },
+        { status: 404 }
+      );
+    }
+    
+    // Return the current job status
+    return NextResponse.json({
+      jobId,
+      ...status,
+      memoryStatus: checkMemoryStatus()
+    });
+  }
   
-  if (!jobId) {
+  // Handle file download
+  else if (filePath) {
+    if (!filePath) {
+      return NextResponse.json(
+        { error: "File path is required" },
+        { status: 400 }
+      );
+    }
+
+    try {
+      // Parse file path to get userId and fileName
+      const [userId, fileName] = filePath.split("/");
+
+      if (!userId || !fileName) {
+        throw new Error("Invalid file path format");
+      }
+
+      const fullPath = path.join(process.cwd(), "uploads", userId, fileName);
+
+      // Check if file exists
+      try {
+        await fs.access(fullPath);
+      } catch (error) {
+        return NextResponse.json({ error: "File not found" }, { status: 404 });
+      }
+
+      // Read file content
+      const fileContent = await fs.readFile(fullPath);
+
+      // Determine content type
+      let contentType = "application/octet-stream";
+      if (fileName.endsWith(".jsonl")) {
+        contentType = "application/json";
+      } else if (fileName.endsWith(".csv")) {
+        contentType = "text/csv";
+      }
+
+      // Return file
+      return new NextResponse(fileContent, {
+        headers: {
+          "Content-Type": contentType,
+          "Content-Disposition": `attachment; filename=${fileName}`,
+        },
+      });
+    } catch (error) {
+      console.error("Error serving file:", error);
+      return NextResponse.json(
+        { error: "Failed to serve file" },
+        { status: 500 }
+      );
+    }
+  }
+  
+  // No recognized parameters
+  else {
     return NextResponse.json(
-      { error: 'Job ID is required' },
+      { error: "Missing required parameters. Use either 'jobId' to check status or 'file' to download." },
       { status: 400 }
     );
   }
-  
-  // Get status for the specified job
-  const status = jobStatuses.get(jobId);
-  
-  if (!status) {
-    return NextResponse.json(
-      { error: 'Job not found' },
-      { status: 404 }
-    );
-  }
-  
-  // Return the current job status
-  return NextResponse.json({
-    jobId,
-    ...status,
-    memoryStatus: checkMemoryStatus()
-  });
 }

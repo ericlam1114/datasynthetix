@@ -12,8 +12,11 @@ export async function verifyAuthToken(token) {
   }
 
   try {
-    const admin = getFirebaseAdmin();
-    const decodedToken = await admin.auth().verifyIdToken(token);
+    // Get the Firebase Admin services
+    const { auth } = getFirebaseAdmin();
+    
+    // Verify the token using the auth service
+    const decodedToken = await auth.verifyIdToken(token);
     return decodedToken;
   } catch (error) {
     console.error('Token verification failed:', error.message);
@@ -51,48 +54,64 @@ export async function getUserIdFromAuthHeader(headers) {
  * @returns {Promise<boolean>} Whether the user has the required permissions
  */
 export async function hasPermission(userId, requiredPermissions) {
-  if (!userId) {
-    return false;
-  }
-
-  try {
-    const admin = getFirebaseAdmin();
-    const db = admin.firestore();
-    
-    // Get user document with permissions
-    const userDoc = await db.collection('users').doc(userId).get();
-    
-    if (!userDoc.exists) {
-      console.warn(`User ${userId} not found in Firestore`);
+    if (!userId) {
       return false;
     }
-    
-    const userData = userDoc.data();
-    
-    // Check if user is admin (admins have all permissions)
-    if (userData.isAdmin === true) {
+  
+    // For development, allow bypassing if the flag is enabled
+    if (process.env.BYPASS_DOCUMENT_PERMISSIONS === 'true') {
+      console.log(`[Auth Utils] Bypassing permission check for ${userId} (development)`);
       return true;
     }
-    
-    // If no permissions specified in user data, deny access
-    if (!userData.permissions || !Array.isArray(userData.permissions)) {
+  
+    try {
+      // Get the Firebase Admin services
+      const { db } = getFirebaseAdmin();
+      
+      // Get user document with permissions
+      const userDocRef = db.collection('users').doc(userId);
+      const userDoc = await userDocRef.get();
+      
+      if (!userDoc.exists) {
+        console.warn(`User ${userId} not found in Firestore`);
+        return false;
+      }
+      
+      const userData = userDoc.data();
+      
+      // Check if user is admin (admins have all permissions)
+      if (userData.isAdmin === true) {
+        return true;
+      }
+      
+      // If no permissions specified in user data, deny access
+      if (!userData.permissions || !Array.isArray(userData.permissions)) {
+        return false;
+      }
+      
+      // Handle single permission or array of permissions
+      const permissionsToCheck = Array.isArray(requiredPermissions) 
+        ? requiredPermissions 
+        : [requiredPermissions];
+      
+      // Check if user has ANY of the required permissions
+      const hasRequiredPermission = permissionsToCheck.some(permission => 
+        userData.permissions.includes(permission)
+      );
+      
+      return hasRequiredPermission;
+    } catch (error) {
+      console.error('Error checking user permissions:', error);
+      
+      // For development only
+      if (process.env.NODE_ENV === 'development' && process.env.BYPASS_DOCUMENT_PERMISSIONS === 'true') {
+        console.warn('[Auth Utils] Development bypass activated for error');
+        return true;
+      }
+      
       return false;
     }
-    
-    // Handle single permission or array of permissions
-    const permissionsToCheck = Array.isArray(requiredPermissions) 
-      ? requiredPermissions 
-      : [requiredPermissions];
-    
-    // Check if user has ANY of the required permissions
-    return permissionsToCheck.some(permission => 
-      userData.permissions.includes(permission)
-    );
-  } catch (error) {
-    console.error('Error checking user permissions:', error);
-    return false;
   }
-}
 
 /**
  * Retries an operation with exponential backoff

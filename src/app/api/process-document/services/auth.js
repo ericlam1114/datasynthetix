@@ -9,26 +9,59 @@ import { getFirebaseApp } from '../../../../lib/firebase';
 import { initializeAdminApp, getAdminFirestore }  from '../../../../lib/firebase-admin';
 
 /**
- * Verifies a user's authentication from a request
+ * Verifies a user's authentication from a request or token
  * 
- * @param {Request} request - The incoming request
+ * @param {Request|string} requestOrToken - The incoming request or a token string
  * @param {Object} options - Optional configuration
  * @returns {Object} The authenticated user data or null
  */
-export async function authenticateUser(request, options = {}) {
+export async function authenticateUser(requestOrToken, options = {}) {
   const { requireUser = true } = options;
   
   try {
-    // Extract auth token from Authorization header
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    let token;
+    
+    // Handle both request objects and direct token strings
+    if (typeof requestOrToken === 'string') {
+      // If a string is provided, assume it's the token
+      token = requestOrToken;
+    } else if (requestOrToken && typeof requestOrToken === 'object') {
+      // Extract token from request object
+      if (requestOrToken.headers && typeof requestOrToken.headers.get === 'function') {
+        // Next.js Request object
+        const authHeader = requestOrToken.headers.get('Authorization');
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+          if (requireUser) {
+            throw new Error('Authentication required');
+          }
+          return null;
+        }
+        token = authHeader.split('Bearer ')[1];
+      } else if (requestOrToken.headers && requestOrToken.headers.authorization) {
+        // Express-style request
+        const authHeader = requestOrToken.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+          if (requireUser) {
+            throw new Error('Authentication required');
+          }
+          return null;
+        }
+        token = authHeader.split('Bearer ')[1];
+      } else {
+        // No recognizable headers format
+        if (requireUser) {
+          throw new Error('Invalid request format');
+        }
+        return null;
+      }
+    } else {
+      // Neither a string nor an object with headers
       if (requireUser) {
-        throw new Error('Authentication required');
+        throw new Error('Invalid authentication input');
       }
       return null;
     }
 
-    const token = authHeader.split('Bearer ')[1];
     if (!token) {
       if (requireUser) {
         throw new Error('Invalid authorization format');
@@ -44,6 +77,7 @@ export async function authenticateUser(request, options = {}) {
       // For development, provide a fallback user
       if (process.env.NODE_ENV === 'development') {
         return {
+          authenticated: true,
           uid: 'dev-user-id',
           email: 'dev@example.com',
           developmentMode: true

@@ -1,133 +1,64 @@
 import admin from 'firebase-admin';
 
-// Variable to cache the initialized Firebase Admin instance
-let firebaseAdmin = null;
+// Keep track if we've initialized
+let isInitialized = false;
 
 /**
- * Get the Firebase Admin instance, initializing it if necessary
- * @returns {Object} The Firebase Admin instance
+ * Get an initialized Firebase Admin SDK instance
  */
 export function getFirebaseAdmin() {
-  if (firebaseAdmin) {
-    return firebaseAdmin;
+  // Initialize Firebase Admin if not already done
+  if (!isInitialized) {
+    initializeFirebaseAdmin();
+    isInitialized = true;
   }
-
-  // Check if the app has already been initialized
-  if (admin.apps.length === 0) {
-    try {
-      // Extract private key from environment
-      const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY
-        ? process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n')
-        : undefined;
-
-      // Initialize the app with credentials
-      admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId: process.env.FIREBASE_ADMIN_PROJECT_ID,
-          clientEmail: process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
-          privateKey: privateKey
-        }),
-        storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-      });
-
-      console.log('Firebase Admin initialized successfully');
-    } catch (error) {
-      console.error('Error initializing Firebase Admin:', error);
-      
-      // Fallback for development environments or CI/CD
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn('Using development mode Firebase Admin');
-        admin.initializeApp({
-          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
-        });
-      } else {
-        throw error; // In production, fail if we can't initialize properly
-      }
-    }
-  }
-
-  firebaseAdmin = admin;
-  return firebaseAdmin;
+  
+  return {
+    db: admin.firestore(),
+    auth: admin.auth(),
+    storage: admin.storage()
+  };
 }
 
 /**
- * Verify a user has access to a document
- * @param {string} documentId - The document ID to verify
- * @param {string} userId - The user ID requesting access
- * @returns {Promise<boolean>} - Whether the user has access to the document
+ * Initialize Firebase Admin SDK with service account 
  */
-export async function verifyUserDocumentAccess(documentId, userId) {
-  try {
-    const admin = getFirebaseAdmin();
-    const db = admin.firestore();
-    
-    const docRef = await db.collection('documents').doc(documentId).get();
-    
-    if (!docRef.exists) {
-      return false;
-    }
-    
-    const docData = docRef.data();
-    return docData.userId === userId;
-  } catch (error) {
-    console.error('Error verifying document access:', error);
-    return false;
+function initializeFirebaseAdmin() {
+  // If already initialized, don't do it again
+  if (admin.apps.length > 0) {
+    return;
   }
-}
 
-/**
- * Clean up storage for a user's inactive resources
- * @param {string} userId - The user ID to clean up resources for
- * @returns {Promise<object>} - Results of the cleanup operation
- */
-export async function cleanupInactiveUserResources(userId) {
+  console.log("[Firebase Admin] Initializing Firebase Admin with service account");
+  
   try {
-    const admin = getFirebaseAdmin();
-    const db = admin.firestore();
-    const bucket = admin.storage().bucket();
+    // Get private key from environment and properly format it
+    const privateKey = process.env.FIREBASE_ADMIN_PRIVATE_KEY.replace(/\\n/g, '\n');
     
-    const ONE_WEEK_AGO = new Date();
-    ONE_WEEK_AGO.setDate(ONE_WEEK_AGO.getDate() - 7);
-    
-    // Find temp documents older than a week
-    const tempDocsQuery = await db.collection('documents')
-      .where('userId', '==', userId)
-      .where('isTemporary', '==', true)
-      .where('createdAt', '<', ONE_WEEK_AGO)
-      .get();
-    
-    const results = {
-      deletedDocuments: 0,
-      deletedStorageFiles: 0,
-      errors: []
+    // Create service account using environment variables
+    const serviceAccount = {
+      "type": "service_account",
+      "project_id": process.env.FIREBASE_ADMIN_PROJECT_ID,
+      "private_key_id": "3b18923cae93f7931e94e0ccd4397fbe2b2dd6a2",
+      "private_key": privateKey,
+      "client_email": process.env.FIREBASE_ADMIN_CLIENT_EMAIL,
+      "client_id": "108772651922362806679",
+      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+      "token_uri": "https://oauth2.googleapis.com/token",
+      "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+      "client_x509_cert_url": `https://www.googleapis.com/robot/v1/metadata/x509/${encodeURIComponent(
+        process.env.FIREBASE_ADMIN_CLIENT_EMAIL
+      )}`
     };
     
-    // Delete each document and its storage
-    for (const doc of tempDocsQuery.docs) {
-      try {
-        const data = doc.data();
-        
-        // Delete storage file if it exists
-        if (data.storagePath) {
-          try {
-            await bucket.file(data.storagePath).delete();
-            results.deletedStorageFiles++;
-          } catch (storageError) {
-            results.errors.push(`Failed to delete storage file: ${storageError.message}`);
-          }
-        }
-        
-        // Delete the document record
-        await doc.ref.delete();
-        results.deletedDocuments++;
-      } catch (docError) {
-        results.errors.push(`Failed to delete document ${doc.id}: ${docError.message}`);
-      }
-    }
+    // Initialize with explicit credentials
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
     
-    return results;
+    console.log("[Firebase Admin] Successfully initialized Firebase Admin");
   } catch (error) {
-    console.error('Error cleaning up user resources:', error);
-    throw new Error(`Resource cleanup failed: ${error.message}`);
+    console.error("[Firebase Admin] Failed to initialize:", error);
+    throw error;
   }
-} 
+}

@@ -5,6 +5,53 @@
 
 import { LRUCache } from 'lru-cache';
 
+// Simple in-memory cache alternative for environments where LRUCache might not work
+class SimpleCache {
+  constructor(options = {}) {
+    this.max = options.max || 500;
+    this.ttl = options.ttl || 60000;
+    this.cache = new Map();
+    this.timestamps = new Map();
+  }
+
+  get(key) {
+    // Check if key exists and hasn't expired
+    if (this.cache.has(key) && Date.now() - this.timestamps.get(key) < this.ttl) {
+      return this.cache.get(key);
+    }
+    // Remove expired key
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+      this.timestamps.delete(key);
+    }
+    return undefined;
+  }
+
+  set(key, value) {
+    // Evict oldest item if at capacity
+    if (this.cache.size >= this.max) {
+      let oldestKey = null;
+      let oldestTime = Date.now();
+      
+      for (const [k, time] of this.timestamps.entries()) {
+        if (time < oldestTime) {
+          oldestTime = time;
+          oldestKey = k;
+        }
+      }
+      
+      if (oldestKey) {
+        this.cache.delete(oldestKey);
+        this.timestamps.delete(oldestKey);
+      }
+    }
+    
+    this.cache.set(key, value);
+    this.timestamps.set(key, Date.now());
+    return true;
+  }
+}
+
 /**
  * Creates a rate limiter
  * @param {Object} options - Rate limiting options
@@ -14,7 +61,8 @@ import { LRUCache } from 'lru-cache';
  * @returns {Object} Rate limiter functions
  */
 export function rateLimit(options) {
-  const tokenCache = new LRUCache({
+  // Use a simpler cache implementation that works in all environments
+  const tokenCache = new SimpleCache({
     max: options.uniqueTokenPerInterval || 500, // Max unique tokens to track
     ttl: options.interval || 60000, // Default: 1 minute
   });

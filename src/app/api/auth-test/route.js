@@ -1,72 +1,122 @@
 import { NextResponse } from 'next/server';
 import { verifyAuthToken, getUserIdFromAuthHeader, hasPermission } from '@/lib/auth/authUtils';
+import { getFirebaseAdmin } from '@/lib/firebase/firebaseAdmin';
+import { withAuth } from '@/lib/middleware/authMiddleware';
+import { withErrorHandling, ApiError } from '@/lib/middleware/errorHandler';
+import { withRateLimit } from '@/lib/middleware/rateLimit';
 
 /**
- * Handle GET requests to test authentication utilities
+ * Test API endpoint to verify authentication utilities
  * @param {Request} request - The HTTP request
- * @returns {Promise<NextResponse>} The HTTP response
+ * @returns {Promise<Response>} The HTTP response
+ */
+async function handleAuthTest(request) {
+  // Extract userId that was already verified and added by withAuth middleware
+  const userId = request.userId;
+  
+  // Get the Firebase Admin services
+  const { db, auth } = getFirebaseAdmin();
+  
+  try {
+    // Get additional user information from Firestore
+    const userDoc = await db.collection('users').doc(userId).get();
+    
+    // Check if the user is an admin via Firestore permissions
+    const isAdmin = await hasPermission(userId, 'admin');
+    
+    // Get detailed user info from Auth
+    const userRecord = await auth.getUser(userId);
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Authentication test successful',
+      user: {
+        uid: userId,
+        exists: userDoc.exists,
+        isAdmin,
+        email: userRecord.email,
+        emailVerified: userRecord.emailVerified,
+        displayName: userRecord.displayName,
+        photoURL: userRecord.photoURL,
+        // Include select Firestore user data if available
+        firestore: userDoc.exists ? {
+          role: userDoc.data().role,
+          createdAt: userDoc.data().createdAt?.toDate()?.toISOString(),
+          permissions: userDoc.data().permissions || [],
+        } : null,
+      },
+      timestamp: new Date().toISOString(),
+      serverInfo: {
+        environment: process.env.NODE_ENV,
+        firebaseConfigured: !!process.env.FIREBASE_ADMIN_PROJECT_ID
+      }
+    });
+  } catch (error) {
+    throw new ApiError(
+      'Error retrieving user information',
+      500,
+      process.env.NODE_ENV === 'development' ? error.message : undefined
+    );
+  }
+}
+
+/**
+ * Endpoint for testing public access without authentication
+ * @returns {Promise<Response>} The HTTP response
  */
 export async function GET(request) {
   try {
-    // Get authorization header
     const authHeader = request.headers.get('authorization');
     
-    // Response data structure
-    const response = {
-      success: false,
-      authenticated: false,
-      userId: null,
-      tokenInfo: null,
-      hasAdminPermission: false,
-      error: null
-    };
-    
-    // Step 1: Check if authorization header exists
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      response.error = "No authorization header or invalid format. Expected 'Bearer TOKEN'";
-      return NextResponse.json(response, { status: 401 });
+      return NextResponse.json({
+        success: false,
+        error: 'Authentication required',
+        message: 'No Bearer token provided in Authorization header'
+      }, { status: 401 });
     }
     
-    // Step 2: Extract token and verify it
     const token = authHeader.split('Bearer ')[1];
     const decodedToken = await verifyAuthToken(token);
     
     if (!decodedToken) {
-      response.error = "Invalid or expired token";
-      return NextResponse.json(response, { status: 401 });
+      return NextResponse.json({
+        success: false,
+        error: 'Invalid token',
+        message: 'The provided authentication token is invalid or expired'
+      }, { status: 401 });
     }
     
-    response.authenticated = true;
-    response.tokenInfo = {
-      uid: decodedToken.uid,
-      email: decodedToken.email,
-      emailVerified: decodedToken.email_verified,
-      issuer: decodedToken.iss,
-      expiration: new Date(decodedToken.exp * 1000).toISOString(),
-      issuedAt: new Date(decodedToken.iat * 1000).toISOString()
-    };
+    const userId = decodedToken.uid;
     
-    // Step 3: Extract user ID from auth header
-    const userId = await getUserIdFromAuthHeader(request.headers);
-    if (!userId) {
-      response.error = "Could not extract user ID from token";
-      return NextResponse.json(response, { status: 401 });
-    }
+    // Check for admin permissions (optional)
+    const isAdmin = await hasPermission(userId, 'admin');
     
-    response.userId = userId;
-    
-    // Step 4: Check if user has admin permission (optional)
-    response.hasAdminPermission = await hasPermission(userId, 'admin');
-    
-    // Set success flag
-    response.success = true;
-    
-    return NextResponse.json(response);
+    return NextResponse.json({
+      success: true,
+      message: 'Authentication successful',
+      user: {
+        uid: userId,
+        isAdmin
+      },
+      token: {
+        exp: decodedToken.exp,
+        iat: decodedToken.iat,
+        auth_time: decodedToken.auth_time
+      }
+    });
   } catch (error) {
-    console.error('Error in auth-test endpoint:', error);
+    console.error('Auth test error:', error);
     return NextResponse.json({
       success: false,
-      error: error.message || 'Internal server error'
+      error: 'Authentication error',
+      message: error.message
     }, { status: 500 });
   }
-} 
+}
+
+// Protected endpoint that checks authentication using middleware
+export const POST = withErrorHandling(withRateLimit(withAuth(handleAuthTest), {
+  limit: 20,
+  interval: 60 * 1000
+})); 

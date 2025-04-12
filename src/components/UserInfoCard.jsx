@@ -40,11 +40,11 @@ export function UserInfoCard() {
           <p><span className="font-semibold">UID:</span> {user.uid}</p>
           <p><span className="font-semibold">Email Verified:</span> {user.emailVerified ? 'Yes' : 'No'}</p>
           {user.metadata?.lastSignInTime && (
-            <p className="mt-2 flex">
+            <div className="mt-2 flex">
               <Badge variant="outline" className="text-xs">
                 Last Login: {format(new Date(user.metadata.lastSignInTime), 'MMM d, yyyy h:mm a')}
               </Badge>
-            </p>
+            </div>
           )}
         </div>
       </CardContent>

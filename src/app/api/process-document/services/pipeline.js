@@ -666,112 +666,56 @@ function postProcessCombinedResults(combinedOutput) {
 }
 
 /**
- * Process a document and extract structured information
+ * Process document text with the pipeline
  * @param {string} text - Document text to process
  * @param {Object} options - Processing options
- * @param {string} jobId - Job identifier
+ * @param {string} jobId - Job ID for status updates
+ * @param {Object} complexity - Text complexity metrics
  * @param {Function} updateStatusFn - Function to update processing status
- * @returns {Promise<Object>} - Processing result
+ * @returns {Object} Processing results
  */
-async function processWithPipeline(text, options, jobId, complexity, updateStatusFn) {
-  const startTime = Date.now();
-  
-  // Create a progress tracking callback
-  const progressCallback = createProgressCallback(jobId, complexity, updateStatusFn || (() => {}));
-  
-  // Check if this is a development environment with simulation enabled
-  if (process.env.NODE_ENV === 'development' && process.env.SIMULATE_PROCESSING === 'true') {
-    progressCallback('Simulating processing in development mode');
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    const result = createSimulatedResult(text, options);
-    return {
-      ...result,
-      processingTimeMs: Date.now() - startTime,
-      complexity
-    };
-  }
-
+export async function processWithPipeline(text, options = {}, jobId, complexity, updateStatusFn) {
   try {
-    // Initialize our pipeline
-    const openai = createPipelineInstance(options);
-    
-    // Update status to indicate we're starting
-    progressCallback('Initializing pipeline');
-
-    // Get max concurrent operations based on memory conditions
-    const memoryUsage = getMemoryUsage();
-    const maxConcurrent = memoryUsage > MEMORY_WARNING_THRESHOLD 
-      ? LOW_MEMORY_MAX_CONCURRENT 
-      : (options.maxConcurrent || DEFAULT_MAX_CONCURRENT);
-    
-    // Split text into chunks if it's a large document
-    const chunks = chunkText(text, options.chunkSize || CHUNK_SIZE);
-    progressCallback('Analyzing document structure', { chunks: chunks.length });
-    
-    // If we have multiple chunks, process them with controlled concurrency
-    let results = [];
-    
-    if (chunks.length > 1) {
-      // Process chunks with controlled concurrency
-      progressCallback('Processing document in chunks', { 
-        chunkCount: chunks.length, 
-        maxConcurrent 
+    // Update status if we have an update function
+    if (updateStatusFn && jobId) {
+      await updateStatusFn(jobId, { 
+        status: 'processing',
+        message: 'Initializing processing pipeline',
+        progress: 20
       });
+    }
+    
+    // Check memory status
+    const memoryStatus = getMemoryUsage();
+    const useSimulation = 
+      process.env.NEXT_PUBLIC_USE_SIMULATION === 'true' || 
+      options.useSimulation === true;
+    
+    // Use simulation mode in development or if memory is constrained
+    if (useSimulation || memoryStatus > MEMORY_WARNING_THRESHOLD) {
+      console.log(`Using simulation mode for processing. Memory: ${memoryStatus}%, Simulation flag: ${useSimulation}`);
       
-      // Process chunks in batches to control concurrency
-      for (let i = 0; i < chunks.length; i += maxConcurrent) {
-        const batch = chunks.slice(i, i + maxConcurrent);
-        const batchResults = await Promise.all(
-          batch.map((chunk, index) => {
-            return processChunk(openai, chunk, {
-              ...options,
-              chunkIndex: i + index,
-              totalChunks: chunks.length
-            });
-          })
-        );
-        
-        // Check memory after each batch
-        const memUsage = getMemoryUsage();
-        if (memUsage > GC_THRESHOLD) {
-          progressCallback('Memory cleanup required', { memoryUsage: memUsage });
-          triggerMemoryCleanup();
-        }
-        
-        // Add results and report progress
-        results = [...results, ...batchResults];
-        progressCallback('Chunk processing progress', { 
-          completedChunks: Math.min(i + maxConcurrent, chunks.length),
-          totalChunks: chunks.length
-        });
-      }
+      // Create simulated result with artificial delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Merge the results
-      progressCallback('Merging results');
-      const mergedResult = mergeChunkResults(results);
-      
-      return {
-        ...mergedResult,
-        processingTimeMs: Date.now() - startTime,
-        complexity,
-        chunks: chunks.length
-      };
+      // Return simulated data
+      return createSimulatedResult(text, options);
+    }
+    
+    // For real processing
+    const progressCallback = createProgressCallback(jobId, complexity, updateStatusFn);
+    
+    // Process based on text size and complexity
+    if (complexity.level === 'high' || text.length > 50000) {
+      // For large documents or high complexity, use batched processing
+      return await processBatched(text, options, jobId, complexity, updateStatusFn);
     } else {
-      // For single chunks, process directly
-      progressCallback('Processing document');
-      const result = await processChunk(openai, text, options);
-      
-      progressCallback('Finalizing results');
-      return {
-        ...result,
-        processingTimeMs: Date.now() - startTime,
-        complexity,
-        chunks: 1
-      };
+      // For smaller documents, use standard processing
+      const openai = createPipelineInstance(options);
+      return await processChunk(openai, text, options);
     }
   } catch (error) {
-    // Handle any errors that occurred
-    progressCallback('Processing error', { error: error.message });
+    console.error('Pipeline processing error:', error);
     throw error;
   }
 }

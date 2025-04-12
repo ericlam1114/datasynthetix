@@ -3,7 +3,7 @@
  * Centralizes logic for Firebase Storage and Firestore document interactions
  */
 
-import { getFirebaseAdmin } from "../../../../lib/firebase-admin";
+import { initFirebaseAdmin } from '@/lib/firebase/firebaseAdmin';
 import { extractTextFromPdf } from "../utils/extractText";
 import { v4 as uuidv4 } from "uuid";
 import { getAdminFirestore } from '../../../../lib/firebase-admin';
@@ -50,7 +50,7 @@ export async function saveDocument(file, userId, metadata = {}) {
     )}-${uniqueId}${fileExt}`;
 
     // Save to Firestore
-    const admin = getFirebaseAdmin();
+    const admin = initFirebaseAdmin();
     const db = admin.firestore();
     const docRef = db.collection("documents").doc();
     const documentId = docRef.id;
@@ -117,7 +117,7 @@ export async function saveDocument(file, userId, metadata = {}) {
  */
 export async function getDocument(documentId, userId) {
   try {
-    const admin = getFirebaseAdmin();
+    const admin = initFirebaseAdmin();
     const db = admin.firestore();
 
     // Get document metadata
@@ -157,7 +157,7 @@ export async function downloadDocument(document) {
       throw new Error("Invalid document or missing file path");
     }
 
-    const admin = getFirebaseAdmin();
+    const admin = initFirebaseAdmin();
     const bucket = admin.storage().bucket();
     const fileRef = bucket.file(document.filePath);
 
@@ -186,7 +186,7 @@ export async function downloadDocument(document) {
  */
 export async function createProcessingJob(userId, documentId, options = {}) {
   try {
-    const admin = getFirebaseAdmin();
+    const admin = initFirebaseAdmin();
     const db = admin.firestore();
 
     // Generate unique job ID
@@ -226,7 +226,7 @@ export async function createProcessingJob(userId, documentId, options = {}) {
  */
 export async function updateProcessingJob(jobId, statusUpdate) {
   try {
-    const admin = getFirebaseAdmin();
+    const admin = initFirebaseAdmin();
     const db = admin.firestore();
 
     const jobRef = db.collection("processingJobs").doc(jobId);

@@ -15,7 +15,7 @@ import {
 } from '../../components/ui/dropdown-menu';
 import { 
   Database, Home, Upload, FileText, Settings, 
-  User, LogOut, Bell, Search, CreditCard, FolderClosed, Code
+  User, LogOut, Bell, Search, CreditCard, FolderClosed, Code, ShieldAlert
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }) {
@@ -31,13 +31,46 @@ export default function DashboardLayout({ children }) {
   };
   
   const routes = [
-    { path: '/dashboard', label: 'Dashboard', icon: Home },
-    { path: '/dashboard/upload', label: 'Upload', icon: Upload },
-    { path: '/dashboard/documents', label: 'My Documents', icon: FolderClosed },
-    { path: '/dashboard/datasets', label: 'My Datasets', icon: FileText },
-    { path: '/dashboard/credits', label: 'Credits', icon: CreditCard },
-    { path: '/dashboard/api-test', label: 'API Testing', icon: Code },
-    { path: '/dashboard/settings', label: 'Settings', icon: Settings },
+    {
+      href: `/dashboard`,
+      label: "Overview",
+      icon: Home,
+    },
+    {
+      href: `/dashboard/upload`,
+      label: "Upload",
+      icon: Upload,
+    },
+    {
+      href: `/dashboard/documents`,
+      label: "My Documents",
+      icon: FolderClosed,
+    },
+    {
+      href: `/dashboard/datasets`,
+      label: "Datasets",
+      icon: Database,
+    },
+    {
+      href: `/dashboard/credits`,
+      label: "Credits",
+      icon: CreditCard,
+    },
+    {
+      href: `/dashboard/api-test`,
+      label: "API Testing",
+      icon: Code,
+    },
+    {
+      href: `/dashboard/firebase-auth-test`,
+      label: "Auth Test",
+      icon: ShieldAlert,
+    },
+    {
+      href: `/dashboard/settings`,
+      label: "Settings",
+      icon: Settings,
+    },
   ];
 
   return (
@@ -54,12 +87,12 @@ export default function DashboardLayout({ children }) {
             <ul className="space-y-1 px-3">
               {routes.map((route) => {
                 const Icon = route.icon;
-                const isActive = pathname === route.path;
+                const isActive = pathname === route.href;
                 
                 return (
-                  <li key={route.path}>
+                  <li key={route.href}>
                     <Link
-                      href={route.path}
+                      href={route.href}
                       className={`flex items-center px-4 py-3 text-sm rounded-md transition-colors ${
                         isActive 
                           ? 'bg-indigo-50 text-indigo-700 font-medium' 
