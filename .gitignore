@@ -41,3 +41,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+test-textract-standalone.js
+test-textract.js
+test_buffy_log.txt
+test-textract-standalone.js
+test-textract.js
+test_buffy_log.txt
