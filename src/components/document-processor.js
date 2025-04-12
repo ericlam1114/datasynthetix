@@ -47,6 +47,7 @@ import {
   Settings,
   Filter,
 } from "lucide-react";
+import DocumentProcessingStatus from "./DocumentProcessingStatus";
 import DocumentSplitter from "./DocumentSplitter";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { 
@@ -64,7 +65,8 @@ const DocumentProcessor = forwardRef(({
   initialDocument = null, 
   initialJobId = null, 
   autoShowProcessing = false,
-  domainType: initialDomainType = "general"
+  useCase: initialUseCase = "rewriter-legal",
+  outputFormat: initialOutputFormat = "openai-jsonl"
 }, ref) => {
   const { user } = useAuth();
   const [name, setName] = useState(initialDocument?.name || "");
@@ -74,16 +76,16 @@ const DocumentProcessor = forwardRef(({
   const [file, setFile] = useState(null);
   const [chunkSize, setChunkSize] = useState(1000);
   const [overlap, setOverlap] = useState(100);
-  const [outputFormat, setOutputFormat] = useState("jsonl");
+  const [outputFormat, setOutputFormat] = useState(initialOutputFormat);
   const [classFilter, setClassFilter] = useState("all");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [progress, setProgress] = useState(0);
-  const [processingState, setProcessingState] = useState(autoShowProcessing ? "processing" : "idle"); // Initialize to processing if autoShowProcessing
+  const [processingState, setProcessingState] = useState(autoShowProcessing ? "processing" : "idle");
   const [processAttempts, setProcessAttempts] = useState(0);
   const [processResult, setProcessResult] = useState(null);
   const [previewData, setPreviewData] = useState([]);
-  const [activeTab, setActiveTab] = useState(autoShowProcessing ? "preview" : "upload"); // Start with preview if autoShowProcessing
+  const [activeTab, setActiveTab] = useState(autoShowProcessing ? "preview" : "upload");
   const [creditsAvailable, setCreditsAvailable] = useState(5000);
   const [creditsUsed, setCreditsUsed] = useState(0);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
@@ -112,30 +114,47 @@ const DocumentProcessor = forwardRef(({
   const [documentAnalysis, setDocumentAnalysis] = useState(null);
   const [batchProcessing, setBatchProcessing] = useState(false);
   const [batchDocuments, setBatchDocuments] = useState([]);
-  const [batchProgress, setBatchProgress] = useState({});
-  const [batchResults, setBatchResults] = useState([]);
-  const [domainType, setDomainType] = useState(initialDomainType || "general");
+  const [useCase, setUseCase] = useState(initialUseCase);
   const [useTextract, setUseTextract] = useState(true);
+  const [componentMounted, setComponentMounted] = useState(false);
 
   // Expose functions to parent components via ref
   useImperativeHandle(ref, () => ({
     handleProcess: function () {
-      return handleProcess.apply(this);
+      return handleProcess();
     },
     setProcessingState: function(state, newJobId = null) {
+      console.log(`Setting processing state to ${state}`, {newJobId});
       setProcessingState(state);
       if (newJobId) {
         setJobId(newJobId);
         startPollingStatus(newJobId);
+      } else if (state === "processing" && initialDocument) {
+        // If setting to processing without a job ID, create one
+        const tempJobId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+        setJobId(tempJobId);
+        handleProcess();
       }
     }
   }));
 
+  // Set component as mounted after initial render
+  useEffect(() => {
+    setComponentMounted(true);
+    return () => setComponentMounted(false);
+  }, []);
+
   // Initialize UI as soon as component loads with initialJobId
   useEffect(() => {
-    // If we have an initial job ID, we should show processing UI right away
-    if (initialJobId && autoShowProcessing) {
-      console.log(`Initializing with processing view for job ID: ${initialJobId}`);
+    // If we have an initial job ID or autoShowProcessing is true, we should show processing UI right away
+    if (componentMounted && (initialJobId || (autoShowProcessing && initialDocument))) {
+      console.log(`Initializing with processing view:`, {
+        initialJobId, 
+        autoShowProcessing, 
+        documentAvailable: !!initialDocument
+      });
+      
+      // Set appropriate state to show processing UI
       setProcessingState("processing"); 
       setProgress(10);
       
@@ -146,10 +165,13 @@ const DocumentProcessor = forwardRef(({
         setActiveTab("upload");
       }
       
-      // Start polling for job status
-      startPollingStatus(initialJobId);
+      // If we have a job ID, start polling for status
+      if (initialJobId) {
+        console.log(`Starting polling for job ID: ${initialJobId}`);
+        startPollingStatus(initialJobId);
+      }
     }
-  }, [initialJobId, autoShowProcessing]);
+  }, [initialJobId, initialDocument, autoShowProcessing, componentMounted]);
 
   // Function to start polling for a job status
   const startPollingStatus = (jobIdToUse) => {
@@ -159,139 +181,9 @@ const DocumentProcessor = forwardRef(({
     setProcessingState("processing");
     setProgress(10); // Start with some progress
     
-    // Create polling interval
-    const pollingInterval = setInterval(async () => {
-      try {
-        if (!processAttempts || processAttempts > 300) {
-          clearInterval(pollingInterval);
-          return;
-        }
-
-        setLastPollingTime(new Date());
-        const progressEndpoint = `/api/process-status?jobId=${jobIdToUse}`;
-        const progressResponse = await fetch(progressEndpoint);
-
-        if (progressResponse.ok) {
-          const progressData = await progressResponse.json();
-          
-          console.log("Progress data:", progressData);
-          
-          // Handle progress updates similar to handleProcess polling
-          const processedChunks = progressData.processedChunks || 0;
-          const totalChunks = progressData.totalChunks || 100;
-          const progressPercent = Math.round((processedChunks / totalChunks) * 100);
-          
-          // Update timestamp if progress changed
-          if (progressPercent !== progress) {
-            setLastProgressUpdate(new Date());
-            setIsProcessingActive(true);
-          } else {
-            const stallTime = new Date() - new Date(lastProgressUpdate);
-            if (stallTime > 30000) {
-              setIsProcessingActive(false);
-            }
-          }
-          
-          // Update processing stats if available
-          if (progressData.processingStats) {
-            const stats = progressData.processingStats;
-            
-            if (stats.currentStage) {
-              setCurrentStage(stats.currentStage);
-            }
-            
-            setProcessingStats({
-              totalChunks: stats.totalChunks || totalChunks || 0,
-              extractedClauses: stats.totalClauses || stats.processedClauses || 0,
-              classifiedClauses: stats.classifiedClauses || stats.processedClauses || 0,
-              generatedVariants: stats.variantsGenerated || 0,
-              lastUpdateTime: stats.lastUpdateTime || new Date().toISOString()
-            });
-          }
-          
-          // Update progress
-          setProgress(progressPercent);
-          setCreditsUsed(progressData.creditsUsed || 0);
-          
-          // Check for completion
-          if (progressData.status === "complete" || progressPercent >= 100) {
-            clearInterval(pollingInterval);
-            setProcessingState("complete");
-            setProcessResult(progressData.result);
-            
-            if (progressData.result && progressData.result.classificationStats) {
-              setClassStats(progressData.result.classificationStats);
-            }
-            
-            // Update credits
-            setCreditsAvailable(progressData.creditsRemaining || 0);
-            setCreditsUsed(progressData.creditsUsed || 0);
-            
-            // Load preview data
-            if (progressData.result && progressData.result.filePath) {
-              try {
-                const previewResponse = await fetch(
-                  `/api/preview-jsonl?file=${progressData.result.filePath}&limit=5`
-                );
-                if (previewResponse.ok) {
-                  const previewData = await previewResponse.json();
-                  setPreviewData(previewData.data);
-                }
-              } catch (error) {
-                console.error("Error loading preview data:", error);
-                setPreviewData([
-                  {
-                    input: "Sample contract clause.",
-                    classification: "Critical",
-                    output: "Sample synthetic variant.",
-                  },
-                ]);
-              }
-            }
-            
-            setActiveTab("preview");
-          }
-        } else {
-          console.warn("Failed to get processing status:", progressResponse.status);
-          
-          setProcessAttempts((prev) => {
-            const newAttempts = prev + 1;
-            if (newAttempts > 10) {
-              clearInterval(pollingInterval);
-              setProcessingState("complete");
-              
-              // Create placeholder result data
-              setProcessResult({
-                documentId: initialDocument?.id,
-                resultCount: 0,
-                fileName: initialDocument?.fileName || "document.pdf",
-              });
-            }
-            return newAttempts;
-          });
-        }
-      } catch (error) {
-        console.error("Error checking progress:", error);
-      }
-    }, 2000);
-    
-    // Stop polling after 30 minutes
-    setTimeout(() => {
-      clearInterval(pollingInterval);
-      
-      if (processingState === "processing") {
-        setProgress(100);
-        setProcessingState("complete");
-        
-        if (!processResult) {
-          setProcessResult({
-            documentId: initialDocument?.id,
-            resultCount: 0,
-            fileName: initialDocument?.fileName || "document.pdf",
-          });
-        }
-      }
-    }, 30 * 60 * 1000);
+    // NOTE: We don't need to manually poll for status now - the DocumentProcessingStatus component will handle that
+    // Set the jobId to make the component work
+    setJobId(jobIdToUse);
   };
 
   // Fetch user credits on component mount
@@ -570,7 +462,7 @@ const DocumentProcessor = forwardRef(({
       formData.append("classFilter", classFilter);
       formData.append("prioritizeImportant", prioritizeImportant);
       formData.append("jobId", newJobId); // Add job ID to form data
-      formData.append("domainType", domainType); // Add domain type to form data
+      formData.append("useCase", useCase); // Add use case to form data
       formData.append("useTextract", useTextract);
 
       // Add timeout configurations for document processing
@@ -723,7 +615,7 @@ const DocumentProcessor = forwardRef(({
     switch (processingState) {
       case "uploading":
         return (
-          <div className="text-center py-6">
+          <div className="text-center py-6" data-testid="processing-state-uploading">
             <div className="animate-pulse text-indigo-600 mb-4">
               <Upload className="h-12 w-12 mx-auto" />
             </div>
@@ -737,157 +629,114 @@ const DocumentProcessor = forwardRef(({
 
         case "processing":
           return (
-            <div className="text-center py-6">
-              <div className="animate-spin text-indigo-600 mb-4">
-                <FileText className="h-12 w-12 mx-auto" />
-              </div>
-              <h3 className="text-lg font-medium mb-2">
-                {batchProcessing ? "Batch Processing" : "Synthesizing Data"}
-              </h3>
-              <p className="text-sm text-gray-500 mb-2">
-                {batchProcessing 
-                  ? `Processing documents in batches (${Object.values(batchProgress).filter(p => p.completed).length}/${batchDocuments.length})`
-                  : currentStage 
-                    ? `${currentStage.charAt(0).toUpperCase() + currentStage.slice(1)} in progress...` 
-                    : `Processing data (${progress}% complete)`}
-              </p>
-              <p className="text-xs text-indigo-600 mb-2">
-                {`Credits used: ${creditsUsed} / ${creditsAvailable} available`}
-              </p>
-              <Progress
-                value={progress}
-                className="h-2 w-full max-w-md mx-auto mb-4"
+            <div className="mt-6 space-y-6">
+              <DocumentProcessingStatus 
+                jobId={jobId}
+                onComplete={(result) => {
+                  // Update state when processing completes
+                  setProcessingState("complete");
+                  setProcessResult(result);
+                  // Calculate and set stats from the result if available
+                  if (result && result.stats) {
+                    setClassStats({
+                      Critical: result.stats.criticalClauses || 0,
+                      Important: result.stats.importantClauses || 0,
+                      Standard: result.stats.standardClauses || 0,
+                    });
+                    setCreditsUsed(result.stats.creditsUsed || 0);
+                  }
+                }} 
               />
-        
-              {/* Activity status indicator */}
-              <div className="flex items-center justify-center text-xs text-gray-500 mb-4">
-                <span className="mr-2">Status:</span>
-                {isProcessingActive ? (
-                  <>
-                    <span className="flex items-center text-green-600">
-                      <span className="animate-pulse h-2 w-2 bg-green-500 rounded-full mr-2"></span>
-                      Active
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <span className="flex items-center text-orange-600">
-                      <span className="h-2 w-2 bg-orange-500 rounded-full mr-2"></span>
-                      Waiting...
-                    </span>
-                  </>
-                )}
-              </div>
-        
-              {batchProcessing && (
-                <div className="max-w-md mx-auto mt-4 text-left bg-gray-50 p-3 rounded-md border text-sm">
-                  <h4 className="font-medium text-sm mb-2 text-gray-700">
-                    Batch Processing Status:
-                  </h4>
-                  <div className="space-y-1 text-xs max-h-32 overflow-y-auto">
-                    {batchDocuments.map((doc, i) => {
-                      const status = batchProgress[doc.id] || { completed: false, progress: 0 };
-                      return (
-                        <div key={doc.id} className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            {status.completed ? (
-                              status.success ? (
-                                <CheckCircle className="h-3 w-3 mr-2 text-green-500" />
-                              ) : (
-                                <AlertCircle className="h-3 w-3 mr-2 text-red-500" />
-                              )
-                            ) : (
-                              <div className="animate-pulse h-3 w-3 mr-2 rounded-full bg-indigo-500" />
-                            )}
-                            <span className="truncate max-w-[200px]">{doc.name}</span>
-                          </div>
-                          <span className={`text-xs ${status.completed ? (status.success ? 'text-green-600' : 'text-red-600') : 'text-gray-500'}`}>
-                            {status.completed ? (status.success ? 'Complete' : 'Failed') : 'Processing...'}
-                          </span>
+              
+              {partialResults && Object.keys(partialResults).length > 0 && (
+                <div className="bg-white p-4 rounded-md border mt-4">
+                  <Tabs defaultValue="stats" className="w-full">
+                    <TabsList className="mb-4">
+                      <TabsTrigger value="stats">Partial Stats</TabsTrigger>
+                      <TabsTrigger value="classes">Classifications</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="stats">
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <Card>
+                            <CardContent className="p-4 text-center">
+                              <p className="text-xs text-gray-500">Total Chunks</p>
+                              <p className="text-xl font-bold">
+                                {processingStats.totalChunks || 0}
+                              </p>
+                            </CardContent>
+                          </Card>
+                          <Card>
+                            <CardContent className="p-4 text-center">
+                              <p className="text-xs text-gray-500">Extracted</p>
+                              <p className="text-xl font-bold">
+                                {processingStats.extractedClauses || 0}
+                              </p>
+                            </CardContent>
+                          </Card>
+                          <Card>
+                            <CardContent className="p-4 text-center">
+                              <p className="text-xs text-gray-500">Classified</p>
+                              <p className="text-xl font-bold">
+                                {processingStats.classifiedClauses || 0}
+                              </p>
+                            </CardContent>
+                          </Card>
+                          <Card>
+                            <CardContent className="p-4 text-center">
+                              <p className="text-xs text-gray-500">Variants</p>
+                              <p className="text-xl font-bold">
+                                {processingStats.generatedVariants || 0}
+                              </p>
+                            </CardContent>
+                          </Card>
                         </div>
-                      );
-                    })}
-                  </div>
+                        
+                        {currentStage && (
+                          <div className="mt-4 text-sm text-center text-gray-500">
+                            {currentStage}
+                          </div>
+                        )}
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="classes">
+                      <div className="grid grid-cols-3 gap-4">
+                        <Card>
+                          <CardContent className="p-4 text-center">
+                            <p className="text-xs text-gray-500">Critical</p>
+                            <p className="text-xl font-bold text-red-600">
+                              {classStats.Critical || 0}
+                            </p>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardContent className="p-4 text-center">
+                            <p className="text-xs text-gray-500">Important</p>
+                            <p className="text-xl font-bold text-amber-600">
+                              {classStats.Important || 0}
+                            </p>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardContent className="p-4 text-center">
+                            <p className="text-xs text-gray-500">Standard</p>
+                            <p className="text-xl font-bold text-blue-600">
+                              {classStats.Standard || 0}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
                 </div>
               )}
-        
-              <div className="max-w-md mx-auto mt-4 text-left bg-gray-50 p-3 rounded-md border text-sm">
-                <h4 className="font-medium text-sm mb-2 text-gray-700">
-                  Processing Stats:
-                </h4>
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between">
-                    <span>Document Chunks:</span>
-                    <span>{processingStats.totalChunks || 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Extracted Clauses:</span>
-                    <span>{processingStats.extractedClauses || 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Classified Clauses:</span>
-                    <span>{processingStats.classifiedClauses || 0}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Generated Variants:</span>
-                    <span>{processingStats.generatedVariants || 0}</span>
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-500">
-                    <span>Last Update:</span>
-                    <span>{processingStats.lastUpdateTime ? new Date(processingStats.lastUpdateTime).toLocaleTimeString() : 'N/A'}</span>
-                  </div>
-                </div>
-              </div>
-        
-              {/* Processing Status */}
-              <div className="max-w-md mx-auto mt-4 text-left bg-gray-50 p-3 rounded-md border text-sm">
-                <h4 className="font-medium text-sm mb-2 text-gray-700">
-                  Processing Status Log:
-                </h4>
-                <div className="space-y-1 text-xs max-h-48 overflow-y-auto border p-2 bg-black text-green-400 font-mono">
-                  <div>Starting document processing pipeline...</div>
-                  {currentStage === 'initializing' && (
-                    <div className="animate-pulse">→ Initializing document processing...</div>
-                  )}
-                  {(currentStage === 'chunking' || progress >= 15) && (
-                    <div className={currentStage === 'chunking' ? 'animate-pulse' : ''}>
-                      → Document chunked into {processingStats.totalChunks || 0} segments
-                    </div>
-                  )}
-                  {(currentStage === 'extracting' || progress >= 30) && (
-                    <div className={currentStage === 'extracting' ? 'animate-pulse' : ''}>
-                      → Extracting clauses from chunks ({processingStats.processedChunks || 0}/{processingStats.totalChunks || 0})
-                    </div>
-                  )}
-                  {processingStats.extractedClauses > 0 && (
-                    <div>→ Found {processingStats.extractedClauses} clauses in document</div>
-                  )}
-                  {(currentStage === 'classifying' || progress >= 60) && (
-                    <div className={currentStage === 'classifying' ? 'animate-pulse' : ''}>
-                      → Classifying clauses by importance ({processingStats.classifiedClauses || 0}/{processingStats.extractedClauses || 0})
-                    </div>
-                  )}
-                  {(currentStage === 'generating' || progress >= 75) && (
-                    <div className={currentStage === 'generating' ? 'animate-pulse' : ''}>
-                      → Generating synthetic variants ({processingStats.generatedVariants || 0} variants created)
-                    </div>
-                  )}
-                  {(currentStage === 'formatting' || progress >= 90) && (
-                    <div className={currentStage === 'formatting' ? 'animate-pulse' : ''}>
-                      → Formatting output data...
-                    </div>
-                  )}
-                  {progress >= 100 && (
-                    <div>→ Processing complete! Generated {processingStats.generatedVariants || 0} synthetic variants</div>
-                  )}
-                  <div className="text-xs text-gray-400 mt-1">Last updated: {new Date(processingStats.lastUpdateTime || Date.now()).toLocaleTimeString()}</div>
-                </div>
-              </div>
               
-              <div className="max-w-md mx-auto mt-4 text-xs text-gray-500">
-                You can safely navigate away from this page. Processing will
-                continue in the background and results will be available on your
-                dashboard.
+              {/* Credits display */}
+              <div className="mt-4 flex items-center space-x-1 text-sm text-gray-600">
+                <CreditCard className="h-4 w-4 mr-1" />
+                <span>
+                  Credits used: <b>{creditsUsed}</b>
+                </span>
               </div>
             </div>
           );
@@ -1191,11 +1040,12 @@ const DocumentProcessor = forwardRef(({
             <CardContent>
               <pre className="bg-gray-50 p-4 rounded-md text-xs overflow-auto">
                 {outputFormat === "mistral" &&
-                  `<s>[INST] Write a clause similar to this: ${
+                  `Write a clause similar to this: ${
                     previewData[0]?.input || "Example input clause"
-                  } [/INST] ${
+                  } 
+                  ${
                     previewData[0]?.output || "Example output clause"
-                  } </s>`}
+                  } `}
                 {outputFormat === "falcon" &&
                   `Human: Rewrite this clause: ${
                     previewData[0]?.input || "Example input clause"
@@ -1466,7 +1316,7 @@ const DocumentProcessor = forwardRef(({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-testid="document-processor">
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
           <TabsTrigger value="upload">
@@ -1672,35 +1522,21 @@ const DocumentProcessor = forwardRef(({
                         </div>
 
                         <div className="space-y-2">
-                          <Label htmlFor="domainType">Document Domain</Label>
+                          <Label htmlFor="useCase">Use Case</Label>
                           <Select
-                            value={domainType || "general"}
-                            onValueChange={(value) => setDomainType(value)}
+                            value={useCase || "rewriter-legal"}
+                            onValueChange={(value) => setUseCase(value)}
                           >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select document domain" />
+                            <SelectTrigger id="useCase">
+                              <SelectValue placeholder="Select use case" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="general">
-                                General (Default)
-                              </SelectItem>
-                              <SelectItem value="legal">
-                                Legal Documents
-                              </SelectItem>
-                              <SelectItem value="sop">
-                                Standard Operating Procedures
-                              </SelectItem>
-                              <SelectItem value="finance">
-                                Financial Documents
-                              </SelectItem>
-                              <SelectItem value="technical">
-                                Technical Documentation
-                              </SelectItem>
+                              <SelectItem value="rewriter-legal">Rewriter for Legal</SelectItem>
+                              <SelectItem value="qa-sops" disabled className="text-gray-400">Q&A for SOPs (Coming Soon)</SelectItem>
+                              <SelectItem value="math-finance" disabled className="text-gray-400">Math for Finance (Coming Soon)</SelectItem>
                             </SelectContent>
                           </Select>
-                          <p className="text-xs text-gray-500">
-                            Specifies the document domain for better synthesis results
-                          </p>
+                          <p className="text-xs text-gray-500">Optimize extraction based on document content</p>
                         </div>
 
                         <div className="space-y-2">

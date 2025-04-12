@@ -4,6 +4,7 @@ import { db, storage } from '@/firebase/admin';
 import { verifyAuth } from '@/lib/auth-utils';
 import { v4 as uuidv4 } from 'uuid';
 import { extractPdfData } from '@/lib/pdf-extraction';
+import { saveDatasetAsJsonl } from '@/utils/datasetService';
 
 // Initialize Firebase admin
 initializeFirebaseAdmin();
@@ -35,7 +36,9 @@ export async function POST(request) {
       detectTables: formData.get('detectTables') !== 'false',
       enhancedExtraction: formData.get('enhancedExtraction') === 'true',
       datasetName: formData.get('datasetName') || null,
-      datasetDescription: formData.get('datasetDescription') || null
+      datasetDescription: formData.get('datasetDescription') || null,
+      useCase: formData.get('useCase') || 'rewriter-legal',
+      outputFormat: formData.get('outputFormat') || 'openai-jsonl'
     };
     
     if (!documentId && !pdfFile) {
@@ -292,6 +295,25 @@ async function processDocument(jobId, documentId, pdfFile, userId, options = {})
         extractionMethod: extractedData.extractionMethod || 'standard'
       }
     });
+    
+    // Save dataset as JSONL to Firebase Storage
+    await updateJobStatus(jobId, 'processing', 'saving_jsonl', 92);
+    
+    try {
+      const jsonlResult = await saveDatasetAsJsonl(datasetId, userId, syntheticData);
+      
+      // Update dataset with JSONL file information
+      await datasetRef.update({
+        jsonlUrl: jsonlResult.downloadUrl,
+        jsonlPath: jsonlResult.filePath,
+        updatedAt: new Date()
+      });
+      
+      console.log(`JSONL file saved at ${jsonlResult.filePath}`);
+    } catch (jsonlError) {
+      console.error('Error saving JSONL file:', jsonlError);
+      // Continue processing even if JSONL saving fails
+    }
     
     // Update the document record with processing complete
     if (docData && docData.id) {

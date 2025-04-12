@@ -2,6 +2,83 @@
 import { SyntheticDataPipeline } from "../../../../lib/SyntheticDataPipeline";
 import { createTextChunks } from './textExtraction';
 import { MODELS, DEFAULT_CHUNK_SIZE, DEFAULT_OVERLAP, DEFAULT_OUTPUT_FORMAT, DEFAULT_CLASS_FILTER, DEFAULT_MAX_VARIANTS, DEFAULT_TIMEOUTS } from "../config";
+import { v4 as uuidv4 } from 'uuid';
+import { OpenAI } from 'openai';
+
+// Add memory monitoring
+let lastMemoryUsage = 0;
+let memoryWarningThreshold = 0.8; // 80% of available memory
+let criticalMemoryThreshold = 0.9; // 90% of available memory
+
+// Memory management constants
+const CHUNK_SIZE = 8000; // characters per chunk
+const MEMORY_WARNING_THRESHOLD = 85; // 85% of available memory triggers warnings
+const GC_THRESHOLD = 90; // 90% of available memory triggers GC
+const DEFAULT_MAX_CONCURRENT = 3; // default max concurrent requests
+const LOW_MEMORY_MAX_CONCURRENT = 1; // reduce to 1 when memory is constrained
+
+/**
+ * Check current memory usage and manage resources
+ * @returns {Object} Memory usage details
+ */
+function checkMemoryUsage() {
+  if (typeof process === 'undefined' || !process.memoryUsage) {
+    return { 
+      memoryUsage: 0, 
+      percentUsed: 0, 
+      isWarning: false, 
+      isCritical: false
+    };
+  }
+
+  try {
+    // Get memory usage
+    const memUsage = process.memoryUsage();
+    const heapUsed = memUsage.heapUsed;
+    const heapTotal = memUsage.heapTotal;
+    const percentUsed = heapUsed / heapTotal;
+    
+    // Check for memory warnings
+    const isWarning = percentUsed > memoryWarningThreshold;
+    const isCritical = percentUsed > criticalMemoryThreshold;
+    
+    // Track memory change rate
+    const memoryChangeRate = heapUsed - lastMemoryUsage;
+    lastMemoryUsage = heapUsed;
+    
+    // Log memory warnings
+    if (isWarning) {
+      console.warn(`⚠️ Memory warning: ${(percentUsed * 100).toFixed(1)}% used (${(heapUsed / 1024 / 1024).toFixed(2)}MB/${(heapTotal / 1024 / 1024).toFixed(2)}MB)`);
+    }
+    
+    if (isCritical) {
+      console.error(`🚨 Critical memory usage: ${(percentUsed * 100).toFixed(1)}% used (${(heapUsed / 1024 / 1024).toFixed(2)}MB/${(heapTotal / 1024 / 1024).toFixed(2)}MB)`);
+      // Force garbage collection if available (Node.js only, requires --expose-gc flag)
+      if (global.gc) {
+        global.gc();
+        console.log("Forced garbage collection complete");
+      }
+    }
+    
+    return {
+      memoryUsage: heapUsed,
+      memoryTotal: heapTotal,
+      percentUsed,
+      isWarning,
+      isCritical,
+      memoryChangeRate
+    };
+  } catch (error) {
+    console.error("Error checking memory usage:", error);
+    return { 
+      memoryUsage: 0, 
+      percentUsed: 0, 
+      isWarning: false, 
+      isCritical: false,
+      error: error.message
+    };
+  }
+}
 
 /**
  * Creates a new pipeline instance with the provided options
@@ -9,43 +86,19 @@ import { MODELS, DEFAULT_CHUNK_SIZE, DEFAULT_OVERLAP, DEFAULT_OUTPUT_FORMAT, DEF
  * @returns {SyntheticDataPipeline} Configured pipeline instance
  */
 export function createPipelineInstance(options = {}) {
-  try {
-    // Ensure required API key is available
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error('OpenAI API key is required for pipeline operation');
-    }
-    
-    // Configure pipeline with options and defaults
-    const pipeline = new SyntheticDataPipeline({
-      apiKey: process.env.OPENAI_API_KEY,
-      extractorModel: options.extractorModel || process.env.EXTRACTOR_MODEL || MODELS.extractor,
-      classifierModel: options.classifierModel || process.env.CLASSIFIER_MODEL || MODELS.classifier,
-      duplicatorModel: options.duplicatorModel || process.env.DUPLICATOR_MODEL || MODELS.duplicator,
-      chunkSize: options.chunkSize || DEFAULT_CHUNK_SIZE,
-      overlap: options.overlap || DEFAULT_OVERLAP,
-      outputFormat: options.outputFormat || DEFAULT_OUTPUT_FORMAT,
-      classFilter: options.classFilter || DEFAULT_CLASS_FILTER,
-      prioritizeImportant: options.prioritizeImportant === undefined ? true : options.prioritizeImportant === true,
-      maxClausesToProcess: options.maxClauses || 0,
-      maxVariantsPerClause: options.maxVariants || DEFAULT_MAX_VARIANTS,
-      generateVariants: options.generateVariants === undefined ? true : options.generateVariants === true,
-      timeouts: {
-        documentProcessing: options.documentTimeout || DEFAULT_TIMEOUTS.documentProcessing,
-        chunkProcessing: options.chunkTimeout || DEFAULT_TIMEOUTS.chunkProcessing,
-        clauseExtraction: options.extractionTimeout || DEFAULT_TIMEOUTS.clauseExtraction,
-        clauseClassification: options.classificationTimeout || DEFAULT_TIMEOUTS.classificationTimeout,
-        variantGeneration: options.variantTimeout || DEFAULT_TIMEOUTS.variantGeneration,
-      },
-    });
-    
-    // Add options reference to pipeline for later reference
-    pipeline._options = options;
-    
-    return pipeline;
-  } catch (error) {
-    console.error('Error creating pipeline:', error);
-    throw error;
+  // Ensure we have an API key
+  if (!process.env.OPENAI_API_KEY && !options.apiKey) {
+    throw new Error("OpenAI API key is required");
   }
+
+  const apiKey = options.apiKey || process.env.OPENAI_API_KEY;
+  
+  // Create an instance with custom configuration
+  return new OpenAI({
+    apiKey,
+    maxRetries: options.maxRetries || 2,
+    timeout: options.timeout || 60000, // 60 seconds default
+  });
 }
 
 /**
@@ -55,20 +108,118 @@ export function createPipelineInstance(options = {}) {
  * @param {String} operation - Name of the operation for error message
  * @returns {Promise} The promise result or timeout error
  */
-export function withTimeout(promise, timeoutMs, operation = 'operation') {
+export async function withTimeout(promise, timeoutMs, operation = 'Operation') {
   let timeoutId;
+  
   const timeoutPromise = new Promise((_, reject) => {
     timeoutId = setTimeout(() => {
-      reject(new Error(`Timeout: ${operation} took longer than ${timeoutMs}ms`));
+      reject(new Error(`${operation} timed out after ${timeoutMs}ms`));
     }, timeoutMs);
   });
 
-  return Promise.race([
-    promise,
-    timeoutPromise
-  ]).finally(() => {
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } finally {
     clearTimeout(timeoutId);
-  });
+  }
+}
+
+/**
+ * Monitor memory usage and return current percentage used
+ * @returns {number} Percentage of memory used (0-100)
+ */
+export function getMemoryUsage() {
+  if (typeof process === 'undefined' || !process.memoryUsage) {
+    // Browser environment doesn't have access to process.memoryUsage
+    return 0; 
+  }
+  
+  const { rss, heapTotal, heapUsed } = process.memoryUsage();
+  // Use relative heap usage as primary indicator
+  return Math.round((heapUsed / heapTotal) * 100);
+}
+
+/**
+ * Attempt to clean up memory by forcing garbage collection
+ * @returns {boolean} True if GC was triggered, false otherwise
+ */
+export function triggerMemoryCleanup() {
+  // First try to use the global GC if available
+  if (global.gc) {
+    try {
+      global.gc();
+      return true;
+    } catch (e) {
+      console.warn('Failed to trigger garbage collection:', e);
+    }
+  }
+  
+  // Otherwise try to clean up manually
+  // This is less effective but might help in some cases
+  try {
+    // Create some pressure for V8's GC to kick in by releasing references
+    if (typeof global !== 'undefined') {
+      const cache = {};
+      for (let i = 0; i < 10000; i++) {
+        cache[i] = new Array(10000).fill('x');
+        delete cache[i];
+      }
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * Split text into manageable chunks for processing
+ * @param {string} text Document text to chunk
+ * @param {number} targetSize Target chunk size (defaults to CHUNK_SIZE)
+ * @returns {Array<string>} Array of text chunks
+ */
+export function chunkText(text, targetSize = CHUNK_SIZE) {
+  if (!text || text.length <= targetSize) {
+    return [text];
+  }
+
+  const chunks = [];
+  let currentPos = 0;
+
+  while (currentPos < text.length) {
+    // Get a chunk of the target size or what's left
+    let chunkEnd = Math.min(currentPos + targetSize, text.length);
+    
+    // Try to break at a natural boundary like paragraph or sentence
+    if (chunkEnd < text.length) {
+      // Look for paragraph breaks first (most natural)
+      const paragraphBreak = text.lastIndexOf('\n\n', chunkEnd);
+      if (paragraphBreak > currentPos && (chunkEnd - paragraphBreak) < targetSize * 0.2) {
+        chunkEnd = paragraphBreak + 2; // Include the newlines
+      } else {
+        // Then try for a single newline
+        const lineBreak = text.lastIndexOf('\n', chunkEnd);
+        if (lineBreak > currentPos && (chunkEnd - lineBreak) < targetSize * 0.1) {
+          chunkEnd = lineBreak + 1; // Include the newline
+        } else {
+          // If no good newline, try for a sentence break
+          const sentenceBreak = Math.max(
+            text.lastIndexOf('. ', chunkEnd),
+            text.lastIndexOf('! ', chunkEnd),
+            text.lastIndexOf('? ', chunkEnd)
+          );
+          if (sentenceBreak > currentPos && (chunkEnd - sentenceBreak) < targetSize * 0.08) {
+            chunkEnd = sentenceBreak + 2; // Include the period and space
+          }
+        }
+      }
+    }
+
+    // Extract the chunk and add to our list
+    chunks.push(text.substring(currentPos, chunkEnd));
+    currentPos = chunkEnd;
+  }
+
+  return chunks;
 }
 
 /**
@@ -79,224 +230,776 @@ export function withTimeout(promise, timeoutMs, operation = 'operation') {
  * @returns {Function} Progress callback function
  */
 export function createProgressCallback(jobId, complexity, updateStatusFn) {
-  return async (progressData) => {
-    try {
-      if (!progressData) return;
+  let totalSteps = complexity.level === 'high' ? 10 : complexity.level === 'medium' ? 7 : 5;
+  let currentStep = 0;
+  
+  return (status, details = {}) => {
+    currentStep++;
+    const progress = Math.min(Math.round((currentStep / totalSteps) * 100), 95);
+    
+    // Check memory usage
+    const memoryUsage = getMemoryUsage();
+    
+    // Add memory info to the details
+    const statusDetails = {
+      ...details,
+      progress,
+      memory: {
+        usagePercent: memoryUsage,
+        isConstrained: memoryUsage > MEMORY_WARNING_THRESHOLD
+      }
+    };
+    
+    // Trigger garbage collection if we're above threshold
+    if (memoryUsage > GC_THRESHOLD && global.gc) {
+      statusDetails.memory.gcTriggered = true;
+      triggerMemoryCleanup();
+    }
+    
+    // Update the status with the collected information
+    updateStatusFn(jobId, status, statusDetails);
+    
+    return statusDetails;
+  };
+}
+
+/**
+ * Processes document text in smaller batches to prevent memory issues
+ * @param {SyntheticDataPipeline} pipeline - The pipeline instance
+ * @param {string} text - Document text
+ * @param {Object} options - Pipeline options
+ * @param {Function} progressCallback - Progress callback function
+ * @returns {Object} Combined processing results
+ */
+async function processByBatches(pipeline, text, options, progressCallback) {
+  // Create chunks
+  const chunkSize = options.chunkSize || DEFAULT_CHUNK_SIZE;
+  const overlap = options.overlap || DEFAULT_OVERLAP;
+  const memoryLimits = options.memoryLimits || {
+    maxChunksPerBatch: 10,
+    enforceChunkLimit: true
+  };
+  
+  const chunks = createTextChunks(text, {
+    maxChunkSize: chunkSize,
+    overlapSize: overlap
+  });
+  
+  console.log(`Processing ${chunks.length} chunks in batches of ${memoryLimits.maxChunksPerBatch}`);
+  
+  // Initialize results
+  const allClauses = [];
+  let totalProcessingTime = 0;
+  let failedChunks = 0;
+  let processedChunks = 0;
+  let totalClauses = 0;
+  let generatedVariants = 0;
+  
+  // Process in batches to manage memory
+  const batchSize = memoryLimits.maxChunksPerBatch || 10;
+  const numBatches = Math.ceil(chunks.length / batchSize);
+  
+  for (let batchIndex = 0; batchIndex < numBatches; batchIndex++) {
+    // Check memory before processing batch
+    const memoryStatus = checkMemoryUsage();
+    
+    // If memory is critical, pause processing and do garbage collection
+    if (memoryStatus.isCritical) {
+      console.warn("Critical memory usage detected, pausing processing for 2 seconds");
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const { currentChunk, totalChunks, processedClauses, totalClauses, stage, variantsGenerated } = progressData;
-      
-      const chunkProgress = totalChunks ? Math.round((currentChunk / totalChunks) * 100) : 0;
-      
-      const statusUpdate = {
-        status: 'processing',
-        processedChunks: currentChunk || 0,
-        totalChunks: totalChunks || complexity?.estimatedChunks || 0,
-        progress: 20 + Math.floor(chunkProgress * 0.6), // Scale to 20-80% range
-        stage: stage || 'processing',
-        processingStats: {
-          processedClauses: processedClauses || 0,
-          totalClauses: totalClauses || 0,
-          variantsGenerated: variantsGenerated || 0,
-          currentStage: stage || 'processing',
-          currentChunk,
-          totalChunks,
-          lastUpdateTime: new Date().toISOString()
-        }
-      };
-      
-      // Add a message based on stage
-      if (stage === 'extracting') {
-        statusUpdate.message = `Extracting clauses (chunk ${currentChunk}/${totalChunks})`;
-      } else if (stage === 'classifying') {
-        statusUpdate.message = `Classifying clauses (${processedClauses} found)`;
-      } else if (stage === 'generating') {
-        statusUpdate.message = `Generating variants (${variantsGenerated} variants created)`;
-      } else {
-        statusUpdate.message = `Processing document (${currentChunk}/${totalChunks} chunks)`;
+      // Force garbage collection if available
+      if (global.gc) {
+        global.gc();
       }
       
-      await updateStatusFn(jobId, statusUpdate);
-    } catch (progressError) {
-      console.error('Error in progress callback:', progressError);
+      // Re-check memory
+      const afterPauseMemory = checkMemoryUsage();
+      if (afterPauseMemory.isCritical) {
+        throw new Error("Unable to continue processing due to critical memory usage");
+      }
+    }
+    
+    // Calculate batch range
+    const startIdx = batchIndex * batchSize;
+    const endIdx = Math.min(startIdx + batchSize, chunks.length);
+    const batchChunks = chunks.slice(startIdx, endIdx);
+    
+    // Create a batch text with proper context
+    const batchText = batchChunks.join(' ');
+    
+    try {
+      console.log(`Processing batch ${batchIndex + 1}/${numBatches} (chunks ${startIdx + 1}-${endIdx})`);
+      
+      // Process this batch
+      const batchResult = await pipeline.processText(batchText, {
+        ...options,
+        batchIndex,
+        totalBatches: numBatches,
+        progressCallback: (progress) => {
+          if (progressCallback) {
+            // Adjust progress numbers to reflect overall progress
+            const adjustedProgress = {
+              ...progress,
+              currentChunk: startIdx + (progress.currentChunk || 0),
+              totalChunks: chunks.length
+            };
+            progressCallback(adjustedProgress);
+          }
+        }
+      });
+      
+      // Merge results
+      if (batchResult && batchResult.clauses) {
+        // Filter out duplicate clauses by text content
+        const existingTexts = new Set(allClauses.map(c => c.text));
+        const newClauses = batchResult.clauses.filter(c => !existingTexts.has(c.text));
+        
+        // Add batch ID to clauses for tracking
+        newClauses.forEach(clause => {
+          clause.batchIndex = batchIndex;
+          clause.id = clause.id || `clause-${uuidv4().substring(0, 8)}`;
+        });
+        
+        allClauses.push(...newClauses);
+        totalClauses += newClauses.length;
+        
+        // Track variants
+        generatedVariants += batchResult.stats?.generatedVariants || 0;
+        totalProcessingTime += batchResult.stats?.processingTimeMs || 0;
+      }
+      
+      processedChunks += batchChunks.length;
+      
+      // Allow some time for memory cleanup between batches
+      await new Promise(resolve => setTimeout(resolve, 500));
+    } catch (batchError) {
+      console.error(`Error processing batch ${batchIndex + 1}:`, batchError);
+      failedChunks += batchChunks.length;
+      
+      // Continue with next batch instead of failing completely
+      continue;
+    }
+  }
+  
+  // Return combined results
+  return {
+    success: true,
+    clauses: allClauses,
+    stats: {
+      totalChunks: chunks.length,
+      processedChunks,
+      failedChunks,
+      totalClauses,
+      processedClauses: totalClauses,
+      generatedVariants,
+      processingTimeMs: totalProcessingTime,
+      batchProcessed: true,
+      batchCount: numBatches
     }
   };
 }
 
 /**
- * Process a document with the pipeline
- * @param {string} text - The document text to process
+ * Process text in batches to avoid memory issues with large documents
+ * @param {string} text - Full document text
  * @param {Object} options - Processing options
- * @param {string} jobId - The processing job ID
- * @param {Object} complexity - Text complexity metrics
+ * @param {string} jobId - Job identifier
+ * @param {Object} complexity - Document complexity data
  * @param {Function} updateStatusFn - Function to update processing status
- * @returns {Object} Processing results
+ * @returns {Promise<Object>} - Processing result
  */
-export async function processWithPipeline(text, options, jobId, complexity, updateStatusFn) {
-  try {
-    console.log('Starting document processing with pipeline');
-    console.time('pipelineExecution');
+async function processBatched(text, options, jobId, complexity, updateStatusFn) {
+  // Set up progress tracking
+  const progressCallback = createProgressCallback(
+    jobId,
+    complexity,
+    updateStatusFn
+  );
+
+  // Calculate batch size based on complexity
+  const recommendedBatches = calculateRecommendedBatches(complexity);
+  const batchSize = Math.ceil(text.length / recommendedBatches);
+  
+  // Inform about batch processing start
+  updateStatusFn(jobId, {
+    stage: "processing",
+    message: `Processing document in ${recommendedBatches} batches due to size`,
+    progress: 0,
+    batchProcessing: true,
+    batchCount: recommendedBatches,
+    currentBatch: 1,
+    memoryStatus: "normal",
+  });
+  
+  let results = [];
+  let combinedOutput = {
+    entities: [],
+    relationships: [],
+    events: [],
+    summaries: {},
+    metadata: {
+      processedInBatches: true,
+      batchCount: recommendedBatches,
+      originalComplexity: complexity,
+    }
+  };
+  
+  // Process in batches
+  for (let i = 0; i < recommendedBatches; i++) {
+    const start = i * batchSize;
+    const end = Math.min(start + batchSize, text.length);
+    const batchText = text.slice(start, end);
+    const batchNumber = i + 1;
     
-    // Create pipeline instance
-    const pipeline = createPipelineInstance(options);
-    
-    // Create pipeline options with progress callback
-    const pipelineOptions = {
-      ...options,
-      progressCallback: createProgressCallback(jobId, complexity, updateStatusFn),
-      jobId
-    };
-    
-    // Log configured timeouts
-    console.log("Pipeline timeouts:", {
-      documentProcessing: pipelineOptions.documentTimeout || DEFAULT_TIMEOUTS.documentProcessing,
-      chunkProcessing: pipelineOptions.chunkTimeout || DEFAULT_TIMEOUTS.chunkProcessing,
-      clauseExtraction: pipelineOptions.extractionTimeout || DEFAULT_TIMEOUTS.clauseExtraction,
-      clauseClassification: pipelineOptions.classificationTimeout || DEFAULT_TIMEOUTS.classificationTimeout,
-      variantGeneration: pipelineOptions.variantTimeout || DEFAULT_TIMEOUTS.variantGeneration,
+    // Update status for this batch
+    updateStatusFn(jobId, {
+      stage: "processing",
+      message: `Processing batch ${batchNumber}/${recommendedBatches}`,
+      progress: (i / recommendedBatches) * 100,
+      batchProcessing: true,
+      batchCount: recommendedBatches,
+      currentBatch: batchNumber,
+      memoryStatus: "normal",
     });
     
-    // Process the document with timeout protection
-    const result = await withTimeout(
-      pipeline.processDocument(text, pipelineOptions),
-      options.timeout || DEFAULT_TIMEOUTS.documentProcessing, // Overall timeout
-      'Document processing'
-    );
-    
-    console.log('Document processing complete');
-    console.timeEnd('pipelineExecution');
-    
-    return {
-      success: true,
-      ...result
-    };
-  } catch (error) {
-    console.error('Error processing document with pipeline:', error);
-    
-    // In development mode, provide a simulated result if configured
-    if (process.env.NODE_ENV === 'development' && process.env.USE_SIMULATED_RESULTS === 'true') {
-      console.log('Development mode: Returning simulated processing result');
-      return createSimulatedResult(text, options);
+    try {
+      // Process this batch
+      const batchComplexity = evaluateTextComplexity(batchText);
+      const pipeline = createPipelineInstance(options);
+      
+      // Process with timeout
+      const batchResult = await withTimeout(
+        pipeline.process(batchText, progressCallback),
+        options.timeoutMs || 600000, // 10 minutes default timeout
+        `Processing batch ${batchNumber}/${recommendedBatches}`
+      );
+      
+      results.push(batchResult);
+      
+      // Merge batch results into combined output
+      mergeResults(combinedOutput, batchResult);
+      
+      // Force garbage collection if available
+      if (global.gc) {
+        global.gc();
+      }
+      
+      // Brief pause to allow memory to be released
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+    } catch (error) {
+      // If a batch fails, continue with others but log the error
+      console.error(`Error processing batch ${batchNumber}:`, error);
+      updateStatusFn(jobId, {
+        stage: "processing",
+        message: `Warning: Batch ${batchNumber} encountered issues`,
+        progress: (i / recommendedBatches) * 100,
+        batchProcessing: true,
+        batchCount: recommendedBatches,
+        currentBatch: batchNumber,
+        memoryStatus: "warning",
+        error: `Batch ${batchNumber} error: ${error.message}`,
+      });
     }
+  }
+  
+  // Final processing to ensure coherence of combined results
+  combinedOutput = postProcessCombinedResults(combinedOutput);
+  
+  return combinedOutput;
+}
+
+/**
+ * Calculate recommended number of batches based on document complexity
+ * @param {Object} complexity - Document complexity metrics
+ * @returns {number} - Recommended number of batches
+ */
+function calculateRecommendedBatches(complexity) {
+  const MEMORY_BASE_MB = 250; // Base memory usage
+  const MEMORY_PER_CHAR_MB = 0.00002; // ~20KB per 1000 chars
+  const MEMORY_PER_CHUNK_MB = 2.5; // ~2.5MB per chunk
+  const BATCH_MEMORY_THRESHOLD_MB = 500; // Target memory per batch
+  const BATCH_CHUNKS_THRESHOLD = 20; // Target chunks per batch
+  
+  // Calculate memory estimates
+  const memoryEstimateMB = Math.ceil(
+    MEMORY_BASE_MB + 
+    (complexity.textLength * MEMORY_PER_CHAR_MB) + 
+    (complexity.estimatedChunks * MEMORY_PER_CHUNK_MB)
+  );
+  
+  // Memory multiplier based on complexity
+  const memoryMultiplier = 
+    complexity.level === "high" ? 1.5 : 
+    complexity.level === "medium" ? 1.2 : 1;
+  
+  const adjustedMemoryEstimateMB = Math.ceil(memoryEstimateMB * memoryMultiplier);
+  
+  // Calculate batches based on memory and chunks
+  const memoryBasedBatches = Math.ceil(adjustedMemoryEstimateMB / BATCH_MEMORY_THRESHOLD_MB);
+  const chunkBasedBatches = Math.ceil(complexity.estimatedChunks / BATCH_CHUNKS_THRESHOLD);
+  
+  // Use the higher of the two calculations with minimum of 2 and maximum of 10
+  const recommendedBatches = Math.min(
+    Math.max(2, memoryBasedBatches, chunkBasedBatches),
+    10
+  );
+  
+  return complexity.level === "high" || complexity.textLength > 100000 ? 
+    recommendedBatches : 1;
+}
+
+/**
+ * Merge batch results into the combined output
+ * @param {Object} combinedOutput - Output being built up
+ * @param {Object} batchResult - Result from a single batch
+ */
+function mergeResults(combinedOutput, batchResult) {
+  // Merge entities with deduplication
+  if (batchResult.entities && batchResult.entities.length > 0) {
+    const existingIds = new Set(combinedOutput.entities.map(e => e.id));
+    batchResult.entities.forEach(entity => {
+      if (!existingIds.has(entity.id)) {
+        combinedOutput.entities.push(entity);
+        existingIds.add(entity.id);
+      }
+    });
+  }
+  
+  // Merge relationships with deduplication
+  if (batchResult.relationships && batchResult.relationships.length > 0) {
+    const relationshipKey = r => `${r.source}-${r.type}-${r.target}`;
+    const existingKeys = new Set(combinedOutput.relationships.map(relationshipKey));
     
+    batchResult.relationships.forEach(relationship => {
+      const key = relationshipKey(relationship);
+      if (!existingKeys.has(key)) {
+        combinedOutput.relationships.push(relationship);
+        existingKeys.add(key);
+      }
+    });
+  }
+  
+  // Merge events with deduplication
+  if (batchResult.events && batchResult.events.length > 0) {
+    const eventKey = e => `${e.type}-${e.timestamp}`;
+    const existingKeys = new Set(combinedOutput.events.map(eventKey));
+    
+    batchResult.events.forEach(event => {
+      const key = eventKey(event);
+      if (!existingKeys.has(key)) {
+        combinedOutput.events.push(event);
+        existingKeys.add(key);
+      }
+    });
+  }
+  
+  // Merge summaries - append or extend
+  if (batchResult.summaries) {
+    Object.keys(batchResult.summaries).forEach(key => {
+      if (!combinedOutput.summaries[key]) {
+        combinedOutput.summaries[key] = batchResult.summaries[key];
+      } else {
+        // For summary text, append with separation
+        if (typeof batchResult.summaries[key] === 'string') {
+          combinedOutput.summaries[key] += "\n\n" + batchResult.summaries[key];
+        } 
+        // For structured summaries, attempt to merge appropriately
+        else if (typeof batchResult.summaries[key] === 'object') {
+          combinedOutput.summaries[key] = {
+            ...combinedOutput.summaries[key],
+            ...batchResult.summaries[key]
+          };
+        }
+      }
+    });
+  }
+}
+
+/**
+ * Post-process combined results to ensure coherence
+ * @param {Object} combinedOutput - Combined results from all batches
+ * @returns {Object} - Processed and coherent results
+ */
+function postProcessCombinedResults(combinedOutput) {
+  // De-duplicate entities based on name and type
+  const uniqueEntities = [];
+  const entityMap = new Map();
+  
+  combinedOutput.entities.forEach(entity => {
+    const key = `${entity.type}-${entity.name}`;
+    if (!entityMap.has(key)) {
+      entityMap.set(key, entity);
+      uniqueEntities.push(entity);
+    } else {
+      // Merge properties if this is a duplicate
+      const existing = entityMap.get(key);
+      if (entity.properties) {
+        existing.properties = { ...existing.properties, ...entity.properties };
+      }
+    }
+  });
+  
+  combinedOutput.entities = uniqueEntities;
+  
+  // Sort events chronologically
+  if (combinedOutput.events && combinedOutput.events.length > 0) {
+    combinedOutput.events.sort((a, b) => {
+      if (a.timestamp && b.timestamp) {
+        return new Date(a.timestamp) - new Date(b.timestamp);
+      }
+      return 0;
+    });
+  }
+  
+  // Add metadata about the batched processing
+  combinedOutput.metadata = {
+    ...combinedOutput.metadata,
+    processedAt: new Date().toISOString(),
+    entityCount: combinedOutput.entities.length,
+    relationshipCount: combinedOutput.relationships.length,
+    eventCount: combinedOutput.events?.length || 0,
+  };
+  
+  return combinedOutput;
+}
+
+/**
+ * Process a document and extract structured information
+ * @param {string} text - Document text to process
+ * @param {Object} options - Processing options
+ * @param {string} jobId - Job identifier
+ * @param {Function} updateStatusFn - Function to update processing status
+ * @returns {Promise<Object>} - Processing result
+ */
+async function processWithPipeline(text, options, jobId, complexity, updateStatusFn) {
+  const startTime = Date.now();
+  
+  // Create a progress tracking callback
+  const progressCallback = createProgressCallback(jobId, complexity, updateStatusFn || (() => {}));
+  
+  // Check if this is a development environment with simulation enabled
+  if (process.env.NODE_ENV === 'development' && process.env.SIMULATE_PROCESSING === 'true') {
+    progressCallback('Simulating processing in development mode');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    const result = createSimulatedResult(text, options);
+    return {
+      ...result,
+      processingTimeMs: Date.now() - startTime,
+      complexity
+    };
+  }
+
+  try {
+    // Initialize our pipeline
+    const openai = createPipelineInstance(options);
+    
+    // Update status to indicate we're starting
+    progressCallback('Initializing pipeline');
+
+    // Get max concurrent operations based on memory conditions
+    const memoryUsage = getMemoryUsage();
+    const maxConcurrent = memoryUsage > MEMORY_WARNING_THRESHOLD 
+      ? LOW_MEMORY_MAX_CONCURRENT 
+      : (options.maxConcurrent || DEFAULT_MAX_CONCURRENT);
+    
+    // Split text into chunks if it's a large document
+    const chunks = chunkText(text, options.chunkSize || CHUNK_SIZE);
+    progressCallback('Analyzing document structure', { chunks: chunks.length });
+    
+    // If we have multiple chunks, process them with controlled concurrency
+    let results = [];
+    
+    if (chunks.length > 1) {
+      // Process chunks with controlled concurrency
+      progressCallback('Processing document in chunks', { 
+        chunkCount: chunks.length, 
+        maxConcurrent 
+      });
+      
+      // Process chunks in batches to control concurrency
+      for (let i = 0; i < chunks.length; i += maxConcurrent) {
+        const batch = chunks.slice(i, i + maxConcurrent);
+        const batchResults = await Promise.all(
+          batch.map((chunk, index) => {
+            return processChunk(openai, chunk, {
+              ...options,
+              chunkIndex: i + index,
+              totalChunks: chunks.length
+            });
+          })
+        );
+        
+        // Check memory after each batch
+        const memUsage = getMemoryUsage();
+        if (memUsage > GC_THRESHOLD) {
+          progressCallback('Memory cleanup required', { memoryUsage: memUsage });
+          triggerMemoryCleanup();
+        }
+        
+        // Add results and report progress
+        results = [...results, ...batchResults];
+        progressCallback('Chunk processing progress', { 
+          completedChunks: Math.min(i + maxConcurrent, chunks.length),
+          totalChunks: chunks.length
+        });
+      }
+      
+      // Merge the results
+      progressCallback('Merging results');
+      const mergedResult = mergeChunkResults(results);
+      
+      return {
+        ...mergedResult,
+        processingTimeMs: Date.now() - startTime,
+        complexity,
+        chunks: chunks.length
+      };
+    } else {
+      // For single chunks, process directly
+      progressCallback('Processing document');
+      const result = await processChunk(openai, text, options);
+      
+      progressCallback('Finalizing results');
+      return {
+        ...result,
+        processingTimeMs: Date.now() - startTime,
+        complexity,
+        chunks: 1
+      };
+    }
+  } catch (error) {
+    // Handle any errors that occurred
+    progressCallback('Processing error', { error: error.message });
     throw error;
   }
 }
 
 /**
- * Creates a simulated result for development and testing
- * @param {String} text - The input text
- * @param {Object} options - Processing options
- * @returns {Object} Simulated processing results
+ * Process a single chunk of text
  */
-function createSimulatedResult(text, options = {}) {
-  // Create chunks to simulate the processing
-  const chunks = createTextChunks(text, {
-    maxChunkSize: options.chunkSize || DEFAULT_CHUNK_SIZE,
-    overlapSize: options.overlap || DEFAULT_OVERLAP
-  });
+async function processChunk(openai, chunkText, options) {
+  // Define a system prompt that explains the task
+  const systemPrompt = options.systemPrompt || 
+    "You are a data analysis assistant. Extract key information from the provided text.";
   
-  // Create simulated clauses
-  const numClauses = Math.min(20, Math.ceil(text.length / 200));
-  const clauses = Array.from({ length: numClauses }, (_, i) => {
-    const start = Math.floor(Math.random() * Math.max(0, text.length - 100));
-    const end = Math.min(text.length, start + 100 + Math.floor(Math.random() * 200));
-    const clauseText = text.substring(start, end);
-    
-    // Classify randomly
-    const classifications = ['Critical', 'Important', 'Standard'];
-    const classification = classifications[Math.floor(Math.random() * classifications.length)];
-    
-    // Generate simulated variants
-    const numVariants = options.maxVariants || DEFAULT_MAX_VARIANTS;
-    const variants = Array.from({ length: numVariants }, (_, j) => {
-      return `Simulated variant ${j+1} for clause: ${clauseText.substring(0, 50)}...`;
+  // Select the model to use based on options or default
+  const model = options.model || 'gpt-3.5-turbo';
+  
+  try {
+    const completion = await openai.chat.completions.create({
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: `Process the following text:\n\n${chunkText}` }
+      ],
+      temperature: options.temperature || 0.3,
+      max_tokens: options.maxTokens || 1000,
     });
     
-    return {
-      id: `clause-${i}`,
-      text: clauseText,
-      classification,
-      variants
+    // Extract the response content
+    const responseContent = completion.choices[0]?.message?.content || '';
+    
+    // Try to parse as JSON if possible, otherwise return as text
+    try {
+      return JSON.parse(responseContent);
+    } catch (e) {
+      return { 
+        content: responseContent,
+        chunkIndex: options.chunkIndex,
+        totalChunks: options.totalChunks
+      };
+    }
+  } catch (error) {
+    console.error('Error processing chunk:', error);
+    return { 
+      error: error.message,
+      chunkIndex: options.chunkIndex,
+      totalChunks: options.totalChunks
     };
+  }
+}
+
+/**
+ * Merge results from multiple chunks into a coherent result
+ */
+function mergeChunkResults(chunkResults) {
+  // Basic implementation - this should be enhanced based on your specific data structure
+  const merged = {
+    entities: [],
+    keywords: [],
+    summary: '',
+    sentiments: [],
+    errors: []
+  };
+  
+  // Combine the results from each chunk
+  chunkResults.forEach((result, index) => {
+    // Check for errors in this chunk
+    if (result.error) {
+      merged.errors.push({
+        chunkIndex: index,
+        error: result.error
+      });
+      return;
+    }
+    
+    // Add entities, avoiding duplicates
+    if (Array.isArray(result.entities)) {
+      result.entities.forEach(entity => {
+        if (!merged.entities.some(e => e.name === entity.name)) {
+          merged.entities.push(entity);
+        }
+      });
+    }
+    
+    // Add keywords, avoiding duplicates
+    if (Array.isArray(result.keywords)) {
+      result.keywords.forEach(keyword => {
+        if (!merged.keywords.includes(keyword)) {
+          merged.keywords.push(keyword);
+        }
+      });
+    }
+    
+    // Append to summary
+    if (result.summary) {
+      merged.summary += (merged.summary ? ' ' : '') + result.summary;
+    }
+    
+    // Add sentiments
+    if (Array.isArray(result.sentiments)) {
+      merged.sentiments = [...merged.sentiments, ...result.sentiments];
+    }
   });
   
+  return merged;
+}
+
+/**
+ * Create simulated results for development purposes
+ */
+export function createSimulatedResult(text, options = {}) {
+  // Generate some sample entities based on text length
+  const wordCount = text.split(/\s+/).length;
+  const entityCount = Math.min(Math.max(3, Math.floor(wordCount / 100)), 15);
+  
+  const sampleEntities = [
+    { type: 'person', name: 'John Smith', confidence: 0.92 },
+    { type: 'organization', name: 'Acme Corporation', confidence: 0.88 },
+    { type: 'location', name: 'San Francisco', confidence: 0.95 },
+    { type: 'date', name: 'January 15, 2023', confidence: 0.97 },
+    { type: 'product', name: 'XPS 15 Laptop', confidence: 0.85 },
+    { type: 'event', name: 'Annual Conference', confidence: 0.82 },
+    { type: 'person', name: 'Sarah Johnson', confidence: 0.91 },
+    { type: 'organization', name: 'Global Industries', confidence: 0.89 },
+    { type: 'location', name: 'Tokyo', confidence: 0.94 },
+    { type: 'date', name: 'Q2 2023', confidence: 0.93 },
+    { type: 'product', name: 'AI Assistant Pro', confidence: 0.87 },
+    { type: 'event', name: 'Product Launch', confidence: 0.86 },
+    { type: 'person', name: 'David Lee', confidence: 0.90 },
+    { type: 'organization', name: 'Tech Innovations Ltd', confidence: 0.88 },
+    { type: 'location', name: 'Berlin', confidence: 0.94 },
+  ];
+  
+  // Take a subset of sample entities
+  const entities = sampleEntities.slice(0, entityCount);
+  
+  // Generate some keywords
+  const keywords = [
+    'analytics', 'technology', 'innovation', 'development', 
+    'strategy', 'implementation', 'solution', 'management'
+  ].slice(0, Math.floor(entityCount * 0.8));
+  
+  // Create a simple summary based on text length
+  const summary = `This document contains approximately ${wordCount} words and discusses topics related to ${keywords.slice(0, 3).join(', ')}.`;
+  
+  // Return the simulated result
   return {
-    success: true,
-    clauses,
-    stats: {
-      totalChunks: chunks.length,
-      processedChunks: chunks.length,
-      failedChunks: 0,
-      totalClauses: numClauses,
-      processedClauses: numClauses,
-      generatedVariants: numClauses * (options.maxVariants || DEFAULT_MAX_VARIANTS),
-      processingTimeMs: 1500
-    }
+    entities,
+    keywords,
+    summary,
+    sentiments: [
+      { topic: 'product', sentiment: 'positive', score: 0.78 },
+      { topic: 'service', sentiment: 'neutral', score: 0.52 },
+    ],
+    simulatedResult: true
   };
 }
 
 /**
- * Evaluates text complexity to estimate processing requirements
- * @param {string} text - The text to evaluate
- * @returns {Object} Complexity metrics
+ * Evaluates the complexity of the text and estimates processing requirements
  */
 export function evaluateTextComplexity(text) {
-  try {
-    if (!text) {
-      return { complexity: 'unknown', estimatedChunks: 1 };
-    }
-    
-    // Calculate basic metrics
-    const textLength = text.length;
-    const wordCount = text.split(/\s+/).length;
-    const sentenceCount = (text.match(/[.!?]+/g) || []).length || 1;
-    const averageWordLength = textLength / Math.max(1, wordCount);
-    const averageSentenceLength = wordCount / Math.max(1, sentenceCount);
-    
-    // Calculate estimated chunks based on text length and chunk size
-    const estimatedChunks = Math.ceil(textLength / DEFAULT_CHUNK_SIZE);
-    
-    // Estimate complexity on a scale of 1-10
-    let complexityScore = 1;
-    complexityScore += Math.min(4, textLength / 10000); // Length factor
-    complexityScore += Math.min(2, averageSentenceLength / 25); // Sentence complexity
-    complexityScore += Math.min(2, averageWordLength / 6); // Word complexity
-    
-    // Round to one decimal place
-    complexityScore = Math.round(complexityScore * 10) / 10;
-    
-    // Determine complexity level
-    let complexity = 'low';
-    if (complexityScore > 7 || textLength > 100000 || wordCount > 20000) {
-      complexity = 'high';
-    } else if (complexityScore > 4 || textLength > 20000 || wordCount > 4000) {
-      complexity = 'medium';
-    }
-    
-    // Estimate processing requirements
-    const estimatedTimeSeconds = Math.max(10, Math.ceil(textLength / 300));
-    const estimatedCredits = Math.max(1, Math.ceil(textLength / 1000));
-    
-    return {
-      complexity,
-      complexityScore,
-      estimatedChunks,
-      estimatedTimeSeconds,
-      estimatedCredits,
-      stats: {
-        textLength,
-        wordCount,
-        sentenceCount,
-        averageWordLength,
-        averageSentenceLength
-      }
-    };
-  } catch (error) {
-    console.error("Error evaluating text complexity:", error);
-    return { 
-      complexity: 'unknown', 
-      estimatedChunks: Math.ceil((text?.length || 1000) / DEFAULT_CHUNK_SIZE),
-      error: error.message
-    };
+  // Basic text metrics
+  const textLength = text.length;
+  const wordCount = text.split(/\s+/).filter(Boolean).length;
+  const sentenceCount = text.split(/[.!?]+/).filter(Boolean).length;
+  
+  // Calculate average word and sentence length
+  const avgWordLength = textLength / wordCount || 0;
+  const avgSentenceLength = wordCount / sentenceCount || 0;
+  
+  // Estimate the number of chunks based on text length
+  const chunkSize = CHUNK_SIZE;
+  const estimatedChunks = Math.ceil(textLength / chunkSize);
+  
+  // Calculate a complexity score (1-10 scale)
+  // Factors: text length, sentence complexity, chunk count
+  let complexityScore = 1;
+  
+  // Factor 1: Text length (up to 5 points)
+  if (textLength > 100000) complexityScore += 5;       // > 100k chars
+  else if (textLength > 50000) complexityScore += 4;   // > 50k chars
+  else if (textLength > 25000) complexityScore += 3;   // > 25k chars
+  else if (textLength > 10000) complexityScore += 2;   // > 10k chars
+  else if (textLength > 5000) complexityScore += 1;    // > 5k chars
+  
+  // Factor 2: Sentence complexity (up to 3 points)
+  if (avgSentenceLength > 30) complexityScore += 3;       // Very complex sentences
+  else if (avgSentenceLength > 20) complexityScore += 2;  // Complex sentences
+  else if (avgSentenceLength > 15) complexityScore += 1;  // Moderately complex
+  
+  // Factor 3: Word complexity (up to 2 points)
+  if (avgWordLength > 7) complexityScore += 2;         // Very complex vocabulary
+  else if (avgWordLength > 5) complexityScore += 1;    // Complex vocabulary
+  
+  // Ensure score is within range 1-10
+  complexityScore = Math.min(10, Math.max(1, complexityScore));
+  
+  // Determine complexity level
+  let complexityLevel = 'low';
+  if (complexityScore >= 7) {
+    complexityLevel = 'high';
+  } else if (complexityScore >= 4) {
+    complexityLevel = 'medium';
   }
+  
+  // Estimate processing time in seconds based on text length
+  // This is a rough estimate and should be calibrated based on actual performance
+  const estimatedTokens = textLength * 0.25; // Rough estimate: 4 chars per token
+  const tokensPerSecond = complexityLevel === 'high' ? 15 : 
+                         complexityLevel === 'medium' ? 25 : 40;
+  const estimatedProcessingTime = Math.ceil(estimatedTokens / tokensPerSecond);
+  
+  // Estimate credits (cost) based on token count
+  // Assumes approximately $0.001 per 1K tokens for gpt-3.5-turbo
+  const estimatedTokenCost = estimatedTokens / 1000 * 0.001;
+  
+  return {
+    metrics: {
+      textLength,
+      wordCount,
+      sentenceCount,
+      avgWordLength,
+      avgSentenceLength,
+      estimatedChunks,
+      estimatedTokens
+    },
+    score: complexityScore,
+    level: complexityLevel,
+    estimatedProcessingTime,
+    estimatedTokenCost
+  };
 }

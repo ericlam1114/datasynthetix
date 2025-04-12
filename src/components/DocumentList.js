@@ -44,18 +44,45 @@ export default function DocumentList() {
     setIsRetrying(true);
   };
 
-  const handleGenerateData = async (documentId) => {
+  const handleGenerateData = async (documentId, documentName, options) => {
+    console.log(`DocumentList: handleGenerateData called for ${documentId}`, { documentName, options });
+    
     try {
       // Show loading state
       setIsGenerating(documentId);
 
-      // Generate a temporary job ID client-side
-      const tempJobId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+      // Find the document with this ID to get its name
+      const document = documents.find(doc => doc.id === documentId);
       
-      // Immediately route to the processing page with the temporary job ID
-      router.push(
-        `/dashboard/process?tempJobId=${tempJobId}&documentId=${documentId}&startProcessing=true`
-      );
+      // If options are provided, skip the dashboard modal and go directly to processing
+      if (options) {
+        console.log("DocumentList: Options provided, bypassing dashboard modal and going to process page");
+        // Generate a temporary job ID client-side
+        const tempJobId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+        
+        // Navigate to processing page with selected options
+        router.push(
+          `/dashboard/process?tempJobId=${tempJobId}&documentId=${documentId}&useCase=${options.useCase}&outputFormat=${options.outputFormat}&startProcessing=true`
+        );
+        return;
+      }
+      
+      // If no options, use the dashboard modal via global function
+      if (typeof window.handleGenerateData === 'function') {
+        console.log("DocumentList: No options, calling window.handleGenerateData to show dashboard modal");
+        // Use the global function if it exists (set by DashboardPage)
+        window.handleGenerateData(documentId, documentName);
+      } else {
+        console.log("DocumentList: No global function found, using direct navigation");
+        // Otherwise, use the old direct navigation approach
+        // Generate a temporary job ID client-side
+        const tempJobId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+        
+        // Immediately route to the processing page with the temporary job ID
+        router.push(
+          `/dashboard/process?tempJobId=${tempJobId}&documentId=${documentId}&startProcessing=true`
+        );
+      }
       
       // No need to wait here for the API call, as it will be handled on the process page
     } catch (error) {
@@ -168,6 +195,8 @@ export default function DocumentList() {
               onDelete={handleDeleteDocument}
               onGenerateData={handleGenerateData}
               isGenerating={isGenerating === doc.id}
+              datasetId={doc.datasetId || null}
+              jsonlUrl={doc.jsonlUrl || null}
             />
           ))}
         </div>

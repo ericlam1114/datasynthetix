@@ -89,23 +89,54 @@ export function validateExtractedText(text, options = {}) {
    * @returns {Object} Validation result with valid flag and error message
    */
   export function validateFormData(formData) {
-    // For existing documents
-    const documentId = formData.get('documentId');
-    if (documentId) {
-      return { valid: true };
-    }
-    
-    // For new uploads
     const file = formData.get('file');
-    if (!file) {
-      return { 
-        valid: false, 
-        error: 'File is required for new document uploads',
-        stage: 'validation'
+    const documentId = formData.get('documentId');
+    
+    // Maximum allowed file size: 20MB (adjust as needed for your use case)
+    const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+    const ALLOWED_MIME_TYPES = [
+      'application/pdf',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
+      'application/msword', // doc
+      'text/plain',
+      'text/markdown',
+      'text/html',
+      'application/rtf'
+    ];
+
+    // Check if either file or documentId is provided
+    if (!file && !documentId) {
+      return {
+        valid: false,
+        error: 'Either a file or document ID must be provided',
+        stage: 'input_validation'
       };
     }
-    
-    return { valid: true };
+
+    // File validations when a file is provided
+    if (file && typeof file !== 'string') {
+      // Size validation
+      if (file.size > MAX_FILE_SIZE) {
+        return {
+          valid: false,
+          error: `File size exceeds maximum allowed size of ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
+          stage: 'size_validation'
+        };
+      }
+
+      // MIME type validation
+      if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+        return {
+          valid: false,
+          error: `File type ${file.type} is not supported. Allowed types: ${ALLOWED_MIME_TYPES.join(', ')}`,
+          stage: 'type_validation'
+        };
+      }
+    }
+
+    return {
+      valid: true
+    };
   }
   
   /**
@@ -114,23 +145,57 @@ export function validateExtractedText(text, options = {}) {
    * @param {File} file - Optional file object
    * @returns {Object} Parsed processing options
    */
-  export function parseProcessingOptions(formData, file = null) {
+  export function parseProcessingOptions(formData, file) {
+    // Get processing options from form data or use defaults
+    const chunkSize = parseInt(formData.get('chunkSize'), 10) || 1000;
+    const overlap = parseInt(formData.get('overlap'), 10) || 100;
+    const outputFormat = formData.get('outputFormat') || 'openai-jsonl';
+    const classFilter = formData.get('classFilter') || 'all';
+    const prioritizeImportant = formData.get('prioritizeImportant') === 'true';
+    const useCase = formData.get('useCase') || 'rewriter-legal';
+    const useTextract = formData.get('useTextract') !== 'false';
+    const enableOcr = formData.get('useOcr') === 'true' || false;
+    const jobId = formData.get('jobId');
+
+    // Parse timeout values with reasonable defaults to prevent endless processing
+    const documentTimeout = parseInt(formData.get('documentTimeout'), 10) || 600000; // 10 minutes
+    const chunkTimeout = parseInt(formData.get('chunkTimeout'), 10) || 120000; // 2 minutes
+    const extractionTimeout = parseInt(formData.get('extractionTimeout'), 10) || 30000; // 30 seconds
+    const classificationTimeout = parseInt(formData.get('classificationTimeout'), 10) || 15000; // 15 seconds
+    const variantTimeout = parseInt(formData.get('variantTimeout'), 10) || 20000; // 20 seconds
+
+    // Create memory management options
+    const maxTextLength = 500000; // Limit for very large documents - break into smaller chunks
+    const memoryLimits = {
+      maxTextLength,
+      maxChunksPerBatch: 10, // Process at most 10 chunks at a time
+      enforceChunkLimit: true, // Always enforce chunk limits
+      useStreaming: true // Use streaming for large documents
+    };
+
+    // Return combined options
     return {
-      name: formData.get('name') || (file ? file.name : ''),
-      description: formData.get('description') || '',
-      chunkSize: parseInt(formData.get('chunkSize') || 1000, 10),
-      overlap: parseInt(formData.get('overlap') || 100, 10),
-      outputFormat: formData.get('outputFormat') || 'jsonl',
-      classFilter: formData.get('classFilter') || 'all',
-      prioritizeImportant: formData.get('prioritizeImportant') === 'true',
-      enableOcr: formData.get('enableOcr') === 'true' || process.env.USE_OCR === 'true',
-      maxClauses: parseInt(formData.get("maxClauses") || 0, 10),
-      maxVariants: parseInt(formData.get("maxVariants") || 3, 10),
-      // Timeouts
-      documentTimeout: parseInt(formData.get("documentTimeout") || 600000, 10),
-      chunkTimeout: parseInt(formData.get("chunkTimeout") || 120000, 10),
-      extractionTimeout: parseInt(formData.get("extractionTimeout") || 30000, 10),
-      classificationTimeout: parseInt(formData.get("classificationTimeout") || 15000, 10),
-      variantTimeout: parseInt(formData.get("variantTimeout") || 20000, 10),
+      chunkSize: Math.min(chunkSize, 2000), // Enforce maximum chunk size for memory safety
+      overlap: Math.min(overlap, 200), // Enforce maximum overlap for memory safety
+      outputFormat,
+      classFilter,
+      prioritizeImportant,
+      enableOcr,
+      useCase,
+      useTextract,
+      fileName: file ? file.name : null,
+      fileType: file ? file.type : null,
+      fileSize: file ? file.size : null,
+      jobId,
+      
+      // Add timeout configurations
+      documentTimeout: Math.min(documentTimeout, 1200000), // Cap at 20 minutes max
+      chunkTimeout: Math.min(chunkTimeout, 180000), // Cap at 3 minutes max
+      extractionTimeout: Math.min(extractionTimeout, 60000), // Cap at 1 minute max
+      classificationTimeout: Math.min(classificationTimeout, 30000), // Cap at 30 seconds max
+      variantTimeout: Math.min(variantTimeout, 30000), // Cap at 30 seconds max
+      
+      // Add memory management options
+      memoryLimits
     };
   }

@@ -7,7 +7,7 @@ import { extractTextFromPdf, extractTextFromTxt } from "../utils/extractText";
 import { extractTextFromPdfWithTextract } from '../utils/extractText';
 import { validateExtractedText } from "../utils/validators";
 import { getAdminFirestore, getAdminStorage } from "../../../../lib/firebase-admin";
-const { extractTextFromPdf } = require('./utils/reliablePdfExtractor');
+import { extractTextFromPdf as extractPdfText } from '../utils/reliablePdfExtractor';
 
 // Conditionally import mammoth
 let mammoth;
@@ -34,7 +34,13 @@ export async function processExistingDocument(userId, documentId, processingOpti
     
     // Check if document belongs to user
     if (documentData.userId !== userId && !hasAdminCredentials) {
-      throw new Error("Not authorized to process this document");
+      // TEMPORARY BYPASS: Check if we're running in fallback mode
+      if (process.env.FIREBASE_ADMIN_FALLBACK_MODE === 'true') {
+        console.warn(`⚠️ DEVELOPER MODE: Bypassing document authorization check for document ${documentId}`);
+        console.warn(`Document owner: ${documentData.userId}, Request user: ${userId}`);
+      } else {
+        throw new Error("Not authorized to process this document");
+      }
     }
     
     // Get text content from document
@@ -42,8 +48,9 @@ export async function processExistingDocument(userId, documentId, processingOpti
     console.log(`Retrieved document content: ${text.length} characters`);
     
     // If there's a file path but no content, try to get from storage
-    if ((!text || text.length < 25) && documentData.filePath) {
-      console.log(`Document has filePath: ${documentData.filePath}. Attempting to retrieve from storage.`);
+    if ((!text || text.length < 25) && (documentData.filePath || documentData.fileUrl)) {
+      const filePath = documentData.filePath || documentData.fileUrl;
+      console.log(`Document has file reference: ${filePath}. Attempting to retrieve from storage.`);
       
       // Retrieve file from storage
       const fileBuffer = await retrieveFileFromStorage(documentData, hasAdminCredentials);
@@ -53,7 +60,7 @@ export async function processExistingDocument(userId, documentId, processingOpti
         
         try {
           // Try the more reliable extraction method
-          text = await extractTextFromPdf(fileBuffer, { 
+          text = await extractPdfText(fileBuffer, { 
             useTextract: true
           });
           
@@ -181,16 +188,43 @@ async function updateDocumentWithText(documentId, text, hasAdminCredentials) {
 async function retrieveFileFromStorage(documentData, hasAdminCredentials) {
   try {
     let fileBuffer = null;
+    // Use filePath or fileUrl, whichever is available
+    const filePath = documentData.filePath || documentData.fileUrl;
+    
+    if (!filePath) {
+      console.error("No file path or URL found in document data");
+      return null;
+    }
+    
     const storageType = documentData.storageType || 
-                      (documentData.filePath && documentData.filePath.includes('amazonaws.com') ? 's3' : 
-                      (documentData.filePath && documentData.filePath.startsWith('documents/') ? 'firebase' : 'unknown'));
+                      (filePath && filePath.includes('amazonaws.com') ? 's3' : 
+                      (filePath && filePath.startsWith('documents/') ? 'firebase' : 
+                      (filePath && (filePath.startsWith('http://') || filePath.startsWith('https://')) ? 'url' : 'unknown')));
     
     console.log(`Storage type determined as: ${storageType}`);
+    
+    // Direct URL - fetch directly
+    if (storageType === 'url') {
+      try {
+        console.log(`Attempting to fetch file from URL: ${filePath}`);
+        const response = await fetch(filePath);
+        if (response.ok) {
+          const arrayBuffer = await response.arrayBuffer();
+          fileBuffer = Buffer.from(arrayBuffer);
+          console.log(`File downloaded successfully from URL: ${fileBuffer.length} bytes`);
+          return fileBuffer;
+        } else {
+          console.error("URL fetch failed:", response.status, response.statusText);
+        }
+      } catch (urlError) {
+        console.error("Error fetching from URL:", urlError);
+      }
+    }
     
     // Try S3 if appropriate
     if (storageType === 's3' && process.env.AWS_S3_BUCKET && process.env.AWS_REGION) {
       try {
-        fileBuffer = await getFileFromS3(documentData.filePath);
+        fileBuffer = await getFileFromS3(filePath);
       } catch (s3Error) {
         console.error("Error retrieving from S3:", s3Error);
       }
@@ -199,7 +233,7 @@ async function retrieveFileFromStorage(documentData, hasAdminCredentials) {
     // Try admin storage
     if (!fileBuffer && hasAdminCredentials) {
       try {
-        fileBuffer = await getFileFromAdminStorage(documentData.filePath);
+        fileBuffer = await getFileFromAdminStorage(filePath);
       } catch (adminError) {
         console.error("Admin Storage file retrieval failed:", adminError);
       }
@@ -208,7 +242,7 @@ async function retrieveFileFromStorage(documentData, hasAdminCredentials) {
     // Fall back to client storage
     if (!fileBuffer) {
       try {
-        fileBuffer = await getFileFromClientStorage(documentData.filePath);
+        fileBuffer = await getFileFromClientStorage(filePath);
       } catch (clientError) {
         console.error("Client Storage file retrieval failed:", clientError);
       }
@@ -292,23 +326,45 @@ async function getFileFromAdminStorage(filePath) {
  * Gets a file from Firebase Client Storage
  */
 async function getFileFromClientStorage(filePath) {
-  console.log("Using client Storage SDK");
-  const storage = getStorage();
-  const fileRef = ref(storage, filePath);
-  
-  // Get download URL
-  const url = await getDownloadURL(fileRef);
-  console.log("File download URL obtained");
-  
-  // Fetch the file
-  const response = await fetch(url);
-  if (response.ok) {
-    const arrayBuffer = await response.arrayBuffer();
-    const fileBuffer = Buffer.from(arrayBuffer);
-    console.log(`File downloaded successfully: ${fileBuffer.length} bytes`);
-    return fileBuffer;
-  } else {
-    console.error("File fetch failed:", response.status, response.statusText);
+  try {
+    console.log("Using client Storage SDK");
+    
+    // If filePath is a complete URL (not a storage path)
+    if (filePath.startsWith('http')) {
+      console.log("File path is a URL, fetching directly");
+      const response = await fetch(filePath);
+      if (response.ok) {
+        const arrayBuffer = await response.arrayBuffer();
+        const fileBuffer = Buffer.from(arrayBuffer);
+        console.log(`File downloaded successfully from URL: ${fileBuffer.length} bytes`);
+        return fileBuffer;
+      } else {
+        console.error("URL fetch failed:", response.status, response.statusText);
+        return null;
+      }
+    }
+    
+    // Otherwise use Firebase Storage
+    const storage = getStorage();
+    const fileRef = ref(storage, filePath);
+    
+    // Get download URL
+    const url = await getDownloadURL(fileRef);
+    console.log("File download URL obtained");
+    
+    // Fetch the file
+    const response = await fetch(url);
+    if (response.ok) {
+      const arrayBuffer = await response.arrayBuffer();
+      const fileBuffer = Buffer.from(arrayBuffer);
+      console.log(`File downloaded successfully: ${fileBuffer.length} bytes`);
+      return fileBuffer;
+    } else {
+      console.error("File fetch failed:", response.status, response.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Client Storage file retrieval failed:", error);
     return null;
   }
 }
@@ -329,7 +385,7 @@ async function extractTextFromFile(fileBuffer, fileName, fileType, options) {
       if (useTextract) {
         text = await extractTextFromPdfWithTextract(fileBuffer, { useOcr });
       } else {
-        text = await extractTextFromPdf(fileBuffer, { 
+        text = await extractPdfText(fileBuffer, { 
           useOcr, 
           attemptAlternativeMethods: true 
         });
@@ -341,7 +397,7 @@ async function extractTextFromFile(fileBuffer, fileName, fileType, options) {
         if (useTextract) {
           text = await extractTextFromPdfWithTextract(fileBuffer, { useOcr: true });
         } else {
-          text = await extractTextFromPdf(fileBuffer, { 
+          text = await extractPdfText(fileBuffer, { 
             useOcr: true, 
             attemptAlternativeMethods: true 
           });

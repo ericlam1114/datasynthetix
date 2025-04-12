@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardFooter } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { 
@@ -12,7 +12,8 @@ import {
   AlertDialogTitle, 
   AlertDialogTrigger 
 } from '../components/ui/alert-dialog';
-import { Trash2, FileText } from 'lucide-react';
+import { Trash2, FileText, Download } from 'lucide-react';
+import GenerateDataModal from './GenerateDataModal';
 
 // This component adds a delete button and confirmation dialog to document cards
 export default function DocumentCard({ 
@@ -21,9 +22,35 @@ export default function DocumentCard({
   date, 
   description = "No description provided",
   onDelete,
-  onGenerateData
+  onGenerateData,
+  datasetId = null,
+  jsonlUrl = null
 }) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [downloadUrl, setDownloadUrl] = useState(jsonlUrl);
+  const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false);
+
+  // If datasetId is provided but no jsonlUrl, try to fetch the download URL
+  useEffect(() => {
+    if (datasetId && !jsonlUrl && !downloadUrl) {
+      fetchDownloadUrl();
+    }
+  }, [datasetId, jsonlUrl, downloadUrl]);
+
+  const fetchDownloadUrl = async () => {
+    try {
+      const response = await fetch(`/api/datasets/download?id=${datasetId}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.downloadUrl) {
+          setDownloadUrl(data.downloadUrl);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching download URL:', error);
+    }
+  };
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -36,12 +63,32 @@ export default function DocumentCard({
     }
   };
 
-  // Handle Generate Data button click
-  const handleGenerateData = () => {
-    // Pass the document ID to the parent component
+  // Open the generate data modal
+  const handleGenerateClick = () => {
+    console.log("DocumentCard: Opening generate data modal");
+    setIsGenerateModalOpen(true);
+  };
+
+  // Handle Generate Data confirmation from modal
+  const handleGenerateConfirm = async (documentId, options) => {
+    console.log("DocumentCard: Generate data confirmed with options:", options);
     if (onGenerateData) {
-      console.log(`Generating data for document: ${id}`);
-      onGenerateData(id, title);
+      setIsGenerating(true);
+      try {
+        console.log(`DocumentCard: Calling onGenerateData with documentId=${documentId}, title=${title}, options:`, options);
+        await onGenerateData(documentId, title, options);
+      } catch (error) {
+        console.error('Error generating data:', error);
+      } finally {
+        setIsGenerating(false);
+      }
+    }
+  };
+
+  // Handle Download button click
+  const handleDownload = () => {
+    if (downloadUrl) {
+      window.open(downloadUrl, '_blank');
     }
   };
 
@@ -89,16 +136,40 @@ export default function DocumentCard({
         
         <p className="text-sm text-gray-600 mb-4">{description}</p>
       </CardContent>
-      <CardFooter className="pt-0">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="w-full"
-          onClick={handleGenerateData}
-        >
-          Generate Data
-        </Button>
+      <CardFooter className="pt-0 flex gap-2">
+        {!datasetId && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full"
+            onClick={handleGenerateClick}
+            disabled={isGenerating}
+          >
+            {isGenerating ? 'Generating...' : 'Generate Data'}
+          </Button>
+        )}
+        
+        {datasetId && downloadUrl && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="w-full flex items-center gap-2"
+            onClick={handleDownload}
+          >
+            <Download className="h-4 w-4" />
+            Download JSONL
+          </Button>
+        )}
       </CardFooter>
+
+      {/* Generate Data Modal */}
+      <GenerateDataModal
+        isOpen={isGenerateModalOpen}
+        onClose={() => setIsGenerateModalOpen(false)}
+        onConfirm={handleGenerateConfirm}
+        documentId={id}
+        documentTitle={title}
+      />
     </Card>
   );
 }

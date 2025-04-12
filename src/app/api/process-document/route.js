@@ -1,6 +1,7 @@
 // src/app/api/process-document/route.js
 import "@ungap/with-resolvers"; // Polyfill for Promise.withResolvers
 import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from 'uuid';
 
 // Validators and helpers
 import { validateFormData, parseProcessingOptions } from "./utils/validators";
@@ -20,59 +21,253 @@ import {
 } from './services/statusUpdate';
 import { createErrorHandler } from './services/errorHandler';
 import { processExistingDocument } from './services/document-processing';
+import { processWithPipeline, evaluateTextComplexity, getMemoryUsage, triggerMemoryCleanup } from './services/pipeline';
+
+// Status tracking for document processing jobs
+const jobStatuses = new Map();
+
+// Memory thresholds for API management
+const MEMORY_SAFE_THRESHOLD = 70;  // 70% is considered safe
+const MEMORY_WARNING_THRESHOLD = 85;  // 85% triggers warnings and throttling
+const MEMORY_CRITICAL_THRESHOLD = 95;  // 95% will reject new requests
+
+// Queue management
+let isProcessing = false;
+const requestQueue = [];
+const MAX_QUEUE_SIZE = 10;
 
 /**
- * Main HTTP POST handler for document processing
+ * Updates the status of a processing job
  */
-export async function POST(request) {
-  console.log('POST /api/process-document starting');
-  console.time('documentProcessing');
+export async function updateJobStatus(jobId, status, details = {}) {
+  if (!jobId) return;
+  
+  // Merge with existing status if present
+  const currentStatus = jobStatuses.get(jobId) || {};
+  
+  const updatedStatus = {
+    ...currentStatus,
+    ...status,
+    ...details,
+    lastUpdated: new Date().toISOString()
+  };
+  
+  // Store the updated status
+  jobStatuses.set(jobId, updatedStatus);
+  
+  // Clean up old jobs (older than 1 hour) to prevent memory leaks
+  const ONE_HOUR_MS = 60 * 60 * 1000;
+  const now = Date.now();
+  
+  jobStatuses.forEach((status, id) => {
+    const lastUpdated = new Date(status.lastUpdated || 0).getTime();
+    if (now - lastUpdated > ONE_HOUR_MS) {
+      jobStatuses.delete(id);
+    }
+  });
+}
+
+/**
+ * Get memory status object for monitoring
+ */
+function checkMemoryStatus() {
+  const memoryUsage = getMemoryUsage();
+  return {
+    usagePercent: memoryUsage,
+    isSafe: memoryUsage < MEMORY_SAFE_THRESHOLD,
+    isWarning: memoryUsage >= MEMORY_WARNING_THRESHOLD,
+    isCritical: memoryUsage >= MEMORY_CRITICAL_THRESHOLD,
+    queueSize: requestQueue.length,
+    isProcessing
+  };
+}
+
+/**
+ * Process the next item in the queue
+ */
+async function processNextInQueue() {
+  if (isProcessing || requestQueue.length === 0) {
+    return;
+  }
+  
+  // Check memory conditions before processing
+  const memStatus = checkMemoryStatus();
+  if (memStatus.isCritical) {
+    console.warn('Critical memory situation, delaying queue processing');
+    triggerMemoryCleanup();
+    setTimeout(processNextInQueue, 5000); // Try again in 5 seconds
+    return;
+  }
+  
+  isProcessing = true;
   
   try {
-    // Step 1: Authenticate the user
-    const user = await authenticateUser(request);
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    const nextItem = requestQueue.shift();
+    const { jobId, text, options } = nextItem;
+    
+    // Update status to show we're processing
+    await updateJobStatus(jobId, { status: 'processing', queuePosition: 0 });
+    
+    // Process the document
+    const complexity = evaluateTextComplexity(text);
+    const result = await processWithPipeline(text, options, jobId, complexity, updateJobStatus);
+    
+    // Update final status with results
+    await updateJobStatus(jobId, { 
+      status: 'completed', 
+      result,
+      processingTimeMs: result.processingTimeMs || 0,
+      complexity
+    });
+  } catch (error) {
+    console.error('Error processing queue item:', error);
+  } finally {
+    isProcessing = false;
+    
+    // Clean up memory if needed
+    if (getMemoryUsage() > MEMORY_WARNING_THRESHOLD) {
+      triggerMemoryCleanup();
     }
     
-    // Create context-specific error handler
-    const errorHandler = createErrorHandler({ userId: user.uid });
+    // Process next item if any
+    if (requestQueue.length > 0) {
+      processNextInQueue();
+    }
+  }
+}
+
+/**
+ * Add a request to the processing queue
+ */
+function addToProcessingQueue(jobId, text, options) {
+  // Check memory status before adding to queue
+  const memStatus = checkMemoryStatus();
+  
+  if (memStatus.isCritical || requestQueue.length >= MAX_QUEUE_SIZE) {
+    throw new Error(
+      `Server is currently under high load. Memory usage: ${memStatus.usagePercent}%, ` +
+      `Queue size: ${requestQueue.length}/${MAX_QUEUE_SIZE}`
+    );
+  }
+  
+  // Add to queue with position
+  requestQueue.push({
+    jobId,
+    text, 
+    options,
+    addedAt: Date.now()
+  });
+  
+  // Update status to show queue position
+  updateJobStatus(jobId, { 
+    status: 'queued', 
+    queuePosition: requestQueue.length,
+    queueLength: requestQueue.length
+  });
+  
+  // Start processing if not already
+  if (!isProcessing) {
+    processNextInQueue();
+  }
+  
+  return {
+    jobId,
+    queuePosition: requestQueue.length
+  };
+}
+
+/**
+ * Main POST handler for document processing
+ */
+export async function POST(request) {
+  try {
+    const body = await request.json();
+    const { text, options = {} } = body;
     
-    // Step 2: Parse and validate the form data
-    const formData = await request.formData();
-    const file = formData.get('file');
-    const documentId = formData.get('documentId');
-    const tempJobId = formData.get('tempJobId');
-    
-    // Create a job ID (use the temp one if provided)
-    const jobId = tempJobId || `job-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-    
-    // Validate form data
-    const validation = validateFormData(formData);
-    if (!validation.valid) {
-      return Response.json(errorHandler(new Error(validation.error), { 
-        stage: validation.stage,
-        statusCode: 400 
-      }), { status: 400 });
+    // Validate input
+    if (!text) {
+      return NextResponse.json(
+        { error: 'Text is required' },
+        { status: 400 }
+      );
     }
     
-    // Parse processing options
-    const options = parseProcessingOptions(formData, file);
+    // Check system capacity
+    const memStatus = checkMemoryStatus();
+    if (memStatus.isCritical) {
+      return NextResponse.json(
+        { 
+          error: 'Server is currently under high memory load, please try again later',
+          memoryUsage: memStatus.usagePercent,
+          queueStatus: {
+            size: requestQueue.length,
+            maxSize: MAX_QUEUE_SIZE
+          }
+        },
+        { status: 503 } // Service Unavailable
+      );
+    }
     
-    // Check if we're processing an existing document
-    if (documentId) {
-      return await processExistingDocumentRequest(user.uid, documentId, options, jobId, errorHandler);
+    // Generate a job ID for tracking
+    const jobId = options.jobId || uuidv4();
+    
+    // Get complexity estimate
+    const complexity = evaluateTextComplexity(text);
+    
+    // Initialize job status
+    await updateJobStatus(jobId, { 
+      status: 'initialized',
+      text: text.length > 500 ? `${text.substring(0, 500)}...` : text,
+      complexity,
+      options
+    });
+    
+    // For very large documents or when system is under load, use queue
+    const shouldQueue = complexity.level === 'high' || 
+                       text.length > 50000 || 
+                       memStatus.isWarning || 
+                       isProcessing;
+    
+    if (shouldQueue) {
+      // Add to processing queue
+      const queueInfo = addToProcessingQueue(jobId, text, options);
+      
+      return NextResponse.json({
+        jobId,
+        status: 'queued',
+        complexity,
+        queuePosition: queueInfo.queuePosition,
+        queueLength: requestQueue.length,
+        estimatedProcessingTime: complexity.estimatedProcessingTime
+      });
     } else {
-      return await processNewDocumentRequest(user.uid, file, options, jobId, errorHandler);
+      // For smaller documents, process immediately
+      updateJobStatus(jobId, { status: 'processing' });
+      
+      // Process document with the pipeline
+      const result = await processWithPipeline(text, options, jobId, complexity, updateJobStatus);
+      
+      // Update job status with results
+      updateJobStatus(jobId, { 
+        status: 'completed',
+        result
+      });
+      
+      // Return results
+      return NextResponse.json({
+        jobId,
+        status: 'completed',
+        result,
+        complexity
+      });
     }
   } catch (error) {
-    console.error('Unexpected error in document processing:', error);
-    return Response.json({ 
-      error: error.message || 'An unexpected error occurred',
-      success: false 
-    }, { status: 500 });
-  } finally {
-    console.timeEnd('documentProcessing');
+    console.error('Error processing document:', error);
+    
+    return NextResponse.json(
+      { error: error.message || 'Error processing document' },
+      { status: 500 }
+    );
   }
 }
 
@@ -143,21 +338,58 @@ async function processExistingDocumentRequest(userId, documentId, options, jobId
       jobId
     );
     
-    // Return success response
+    // Check if the result has warnings
+    const hasWarning = result.warning ? true : false;
+    
+    // Return success response (with warning info if present)
     return Response.json({
       success: true,
-      message: 'Document processed successfully',
+      message: result.message || 'Document processed successfully',
+      warning: hasWarning ? result.warning : undefined,
+      warningDetails: hasWarning ? result.message : undefined,
       jobId,
       documentId,
       stats: result.stats
     });
   } catch (processingError) {
+    // Check for specific error types and handle accordingly
+    const statusCode = processingError.statusCode || 500;
+    const errorType = processingError.type || 'processing_error';
+    const isRecoverable = processingError.recoverable || false;
+    
+    // For timeout errors, we want to provide a more user-friendly response
+    if (errorType === 'timeout_error' || errorType === 'network_timeout') {
+      // Log the timeout but don't fail completely - instead mark as a warning
+      console.warn(`Processing timeout occurred for document ${documentId}, job ${jobId}`);
+      
+      await updateProcessingStatus(jobId, {
+        status: 'warning',
+        message: 'Processing timed out - partial results may be available',
+        warning: true,
+        warningType: 'timeout',
+        progress: 95
+      });
+      
+      // Return a success response with warning
+      return Response.json({
+        success: true,
+        warning: 'timeout',
+        message: 'Document processing timed out, but partial results may be available',
+        jobId,
+        documentId,
+        errorDetails: processingError.message
+      });
+    }
+    
+    // For other errors, use the error handler
     return Response.json(errorHandler(processingError, { 
       stage: 'pipeline_processing', 
       jobId,
       documentId,
-      statusCode: 500 
-    }), { status: 500 });
+      statusCode,
+      errorType,
+      recoverable: isRecoverable
+    }), { status: statusCode });
   }
 }
 
@@ -247,21 +479,58 @@ async function processNewDocumentRequest(userId, file, options, jobId, errorHand
       jobId
     );
     
-    // Return success response
+    // Check if the result has warnings
+    const hasWarning = result.warning ? true : false;
+    
+    // Return success response (with warning info if present)
     return Response.json({
       success: true,
-      message: 'Document processed successfully',
+      message: result.message || 'Document processed successfully',
+      warning: hasWarning ? result.warning : undefined,
+      warningDetails: hasWarning ? result.message : undefined,
       jobId,
       documentId: documentInfo.documentId,
       stats: result.stats
     });
   } catch (processingError) {
+    // Check for specific error types and handle accordingly
+    const statusCode = processingError.statusCode || 500;
+    const errorType = processingError.type || 'processing_error';
+    const isRecoverable = processingError.recoverable || false;
+    
+    // For timeout errors, provide a more user-friendly response
+    if (errorType === 'timeout_error' || errorType === 'network_timeout') {
+      // Log the timeout but don't fail completely
+      console.warn(`Processing timeout occurred for document ${documentInfo.documentId}, job ${jobId}`);
+      
+      await updateProcessingStatus(jobId, {
+        status: 'warning',
+        message: 'Processing timed out - partial results may be available',
+        warning: true,
+        warningType: 'timeout',
+        progress: 95
+      });
+      
+      // Return a success response with warning
+      return Response.json({
+        success: true,
+        warning: 'timeout',
+        message: 'Document processing timed out, but partial results may be available',
+        jobId,
+        documentId: documentInfo.documentId,
+        errorDetails: processingError.message
+      });
+    }
+    
+    // For other errors, use the error handler
     return Response.json(errorHandler(processingError, { 
       stage: 'pipeline_processing', 
       jobId,
       documentId: documentInfo.documentId,
-      statusCode: 500 
-    }), { status: 500 });
+      statusCode,
+      errorType,
+      recoverable: isRecoverable
+    }), { status: statusCode });
   }
 }
 
@@ -321,4 +590,36 @@ export async function GET(request) {
       { status: 500 }
     );
   }
+}
+
+/**
+ * GET handler to check job status
+ */
+export async function GET(request) {
+  const url = new URL(request.url);
+  const jobId = url.searchParams.get('jobId');
+  
+  if (!jobId) {
+    return NextResponse.json(
+      { error: 'Job ID is required' },
+      { status: 400 }
+    );
+  }
+  
+  // Get status for the specified job
+  const status = jobStatuses.get(jobId);
+  
+  if (!status) {
+    return NextResponse.json(
+      { error: 'Job not found' },
+      { status: 404 }
+    );
+  }
+  
+  // Return the current job status
+  return NextResponse.json({
+    jobId,
+    ...status,
+    memoryStatus: checkMemoryStatus()
+  });
 }

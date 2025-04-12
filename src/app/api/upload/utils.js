@@ -89,7 +89,22 @@ export async function combineChunks(uploadId, jobId, userId, uploadInfo) {
     const deletePromises = files.map(file => file.delete());
     await Promise.all(deletePromises);
     
-    // Complete job
+    // Create document record
+    const documentId = `doc-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    
+    await db.collection('documents').doc(documentId).set({
+      id: documentId,
+      userId,
+      fileName: uploadInfo.fileName,
+      fileType: uploadInfo.contentType,
+      fileSize: uploadInfo.fileSize,
+      filePath: finalPath,
+      status: 'uploaded',
+      createdAt: admin.FieldValue.serverTimestamp(),
+      updatedAt: admin.FieldValue.serverTimestamp()
+    });
+    
+    // Complete upload job
     await updateJobStatus(db, jobId, 'completed', 100);
     
     // Clean up temp file
@@ -98,10 +113,32 @@ export async function combineChunks(uploadId, jobId, userId, uploadInfo) {
       await fs.rmdir(path.dirname(tempFilePath));
     }
     
+    // Start PDF processing with a new job
+    const processingJobId = `job-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    
+    // Create processing job
+    await db.collection('jobs').doc(processingJobId).set({
+      id: processingJobId,
+      userId,
+      documentId,
+      status: 'pending',
+      stage: 'initializing',
+      progress: 0,
+      createdAt: admin.FieldValue.serverTimestamp(),
+      updatedAt: admin.FieldValue.serverTimestamp()
+    });
+    
+    // Start processing asynchronously
+    startPdfProcessing(documentId, finalPath, userId, processingJobId)
+      .then(() => console.log(`Started PDF processing for document ${documentId}`))
+      .catch(error => console.error(`Error starting PDF processing: ${error.message}`));
+    
     return {
       success: true,
       uploadId,
       jobId,
+      processingJobId,
+      documentId,
       filePath: finalPath
     };
   } catch (error) {
@@ -315,6 +352,104 @@ async function startPdfProcessing(jobId, fileUrl, fileName, userId) {
       status: 'failed',
       error: error.message,
       updatedAt: new Date()
+    });
+    
+    throw error;
+  }
+}
+
+/**
+ * Start PDF extraction and processing after file upload is complete
+ * @param {string} documentId - ID of the document
+ * @param {string} filePath - Path to the file in storage
+ * @param {string} userId - ID of the user
+ * @param {string} jobId - ID of the job
+ * @returns {Promise<object>} - Processing result
+ */
+export async function startPdfProcessing(documentId, filePath, userId, jobId) {
+  try {
+    // Get Firebase admin instances
+    const admin = await import('firebase-admin/app').then(() => import('firebase-admin/firestore'));
+    const storage = (await import('firebase-admin/storage')).getStorage();
+    const db = admin.getFirestore();
+    
+    // Update job status to processing
+    await db.collection('jobs').doc(jobId).update({
+      status: 'processing',
+      stage: 'extraction',
+      progress: 10,
+      updatedAt: admin.FieldValue.serverTimestamp()
+    });
+    
+    // Get file from storage
+    const bucket = storage.bucket();
+    const file = bucket.file(filePath);
+    const [fileBuffer] = await file.download();
+    
+    // Import the extraction functionality
+    const { extractPdfData } = await import('@/utils/pdf-processor');
+    
+    // Update job status to extracting
+    await db.collection('jobs').doc(jobId).update({
+      stage: 'extracting_text',
+      progress: 20,
+      updatedAt: admin.FieldValue.serverTimestamp()
+    });
+    
+    // Perform extraction
+    const extractionResult = await extractPdfData(fileBuffer, {
+      onProgress: async (stage, progress) => {
+        // Update job progress
+        await db.collection('jobs').doc(jobId).update({
+          stage,
+          progress: 20 + Math.floor(progress * 0.6), // Scale to 20-80%
+          updatedAt: admin.FieldValue.serverTimestamp()
+        });
+      }
+    });
+    
+    // Update job status to finalizing
+    await db.collection('jobs').doc(jobId).update({
+      stage: 'saving_results',
+      progress: 90,
+      updatedAt: admin.FieldValue.serverTimestamp()
+    });
+    
+    // Save extraction results to document record
+    await db.collection('documents').doc(documentId).update({
+      extractionResults: extractionResult,
+      status: 'processed',
+      pageCount: extractionResult.pageCount || 0,
+      textContent: extractionResult.text || '',
+      metadata: extractionResult.metadata || {},
+      updatedAt: admin.FieldValue.serverTimestamp()
+    });
+    
+    // Update job status to completed
+    await db.collection('jobs').doc(jobId).update({
+      status: 'completed',
+      stage: 'complete',
+      progress: 100,
+      updatedAt: admin.FieldValue.serverTimestamp()
+    });
+    
+    return {
+      success: true,
+      documentId,
+      extractionResults: extractionResult
+    };
+  } catch (error) {
+    console.error('Error processing PDF:', error);
+    
+    // Get Firestore instance
+    const admin = await import('firebase-admin/app').then(() => import('firebase-admin/firestore'));
+    const db = admin.getFirestore();
+    
+    // Update job with error
+    await db.collection('jobs').doc(jobId).update({
+      status: 'error',
+      error: error.message,
+      updatedAt: admin.FieldValue.serverTimestamp()
     });
     
     throw error;

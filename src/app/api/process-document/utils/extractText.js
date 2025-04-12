@@ -173,49 +173,46 @@ export async function extractTextFromPdfWithTextract(buffer, options = {}) {
     
     try {
       // Try to dynamically import AWS SDK
-      const AWS = await import('aws-sdk');
+      const { TextractClient, DetectDocumentTextCommand, AnalyzeDocumentCommand } = await import('@aws-sdk/client-textract');
       
       // Configure AWS
-      AWS.config.update({
+      const textractClient = new TextractClient({
         region: process.env.AWS_REGION || 'us-east-1',
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        credentials: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        }
       });
-      
-      // Create Textract client
-      const textract = new AWS.Textract();
       
       // Call the appropriate Textract API based on useOcr flag
       let result;
       if (useOcr) {
         // Use DetectDocumentText for OCR (scanned documents)
-        result = await textract.detectDocumentText({
+        const command = new DetectDocumentTextCommand({
           Document: { Bytes: buffer }
-        }).promise();
+        });
+        result = await textractClient.send(command);
       } else {
         // Use AnalyzeDocument for digital documents
-        result = await textract.analyzeDocument({
+        const command = new AnalyzeDocumentCommand({
           Document: { Bytes: buffer },
           FeatureTypes: ['TABLES', 'FORMS']
-        }).promise();
+        });
+        result = await textractClient.send(command);
       }
       
       // Process the response
       let extractedText = '';
       
-      if (useOcr && result.Blocks) {
-        // Process DetectDocumentText response
+      if (result.Blocks) {
+        // Process response (both commands return similar structures)
         for (const block of result.Blocks) {
           if (block.BlockType === 'LINE') {
             extractedText += block.Text + '\n';
-          }
-        }
-      } else if (result.Blocks) {
-        // Process AnalyzeDocument response
-        for (const block of result.Blocks) {
-          if (block.BlockType === 'LINE' || block.BlockType === 'WORD') {
+          } else if (block.BlockType === 'WORD' && !useOcr) {
+            // Only add words separately for AnalyzeDocument
             if (block.Text) {
-              extractedText += block.Text + (block.BlockType === 'LINE' ? '\n' : ' ');
+              extractedText += block.Text + ' ';
             }
           }
         }
@@ -249,7 +246,7 @@ export async function extractTextFromPdfWithTextract(buffer, options = {}) {
  */
 function isAwsSdkAvailable() {
   try {
-    require.resolve('aws-sdk');
+    require.resolve('@aws-sdk/client-textract');
     return true;
   } catch (e) {
     return false;

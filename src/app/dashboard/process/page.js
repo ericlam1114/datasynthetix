@@ -26,7 +26,8 @@ export default function ProcessDocumentPage() {
   const jobId = searchParams.get('jobId');
   const tempJobId = searchParams.get('tempJobId');
   const startProcessing = searchParams.get('startProcessing') === 'true';
-  const domainType = searchParams.get("domainType") || "general";
+  const useCase = searchParams.get("useCase") || "rewriter-legal";
+  const outputFormat = searchParams.get("outputFormat") || "openai-jsonl";
   
   // Start API processing if directed from DocumentList
   useEffect(() => {
@@ -44,8 +45,9 @@ export default function ProcessDocumentPage() {
         formData.append("documentId", documentId);
         formData.append("chunkSize", "1000");
         formData.append("overlap", "100");
-        formData.append("outputFormat", "jsonl");
+        formData.append("outputFormat", outputFormat);
         formData.append("tempJobId", tempJobId);
+        formData.append("useCase", useCase);
         
         // Make the API request in the background
         const response = await fetch("/api/process-document", {
@@ -82,26 +84,38 @@ export default function ProcessDocumentPage() {
     };
     
     initiateProcessing();
-  }, [user, documentId, tempJobId, startProcessing, processingStarted, router]);
+  }, [user, documentId, tempJobId, startProcessing, processingStarted, router, outputFormat, useCase]);
   
   // Fetch document data
   useEffect(() => {
     async function fetchDocument() {
+      console.log("Fetching document data...", { documentId, user: !!user, useCase, outputFormat });
+      
       if (documentId && user) {
         try {
           setLoading(true);
           setError("");
           
+          console.log("Making Firestore request for document:", documentId);
           const fetchedDoc = await getDocument(documentId);
+          console.log("Document data received:", fetchedDoc ? "success" : "not found");
           
           // Verify this document belongs to the current user
           if (fetchedDoc && fetchedDoc.userId === user.uid) {
-            // Add domain type to document data
-            fetchedDoc.domainType = domainType;
+            // Add use case and output format to document data
+            fetchedDoc.useCase = useCase;
+            fetchedDoc.outputFormat = outputFormat;
+            
+            console.log("Setting document state with:", {
+              name: fetchedDoc.name || fetchedDoc.fileName,
+              useCase,
+              outputFormat
+            });
             
             setDocument(fetchedDoc);
           } else {
             // If not found or not owned by this user, go back to dashboard
+            console.log("Document not found or not owned by current user, redirecting to dashboard");
             router.push('/dashboard');
           }
         } catch (error) {
@@ -109,27 +123,105 @@ export default function ProcessDocumentPage() {
           setError("Failed to load document");
         } finally {
           setLoading(false);
+          console.log("Document loading complete, loading state set to false");
         }
+      } else {
+        console.log("Missing required parameters:", { documentId, user: !!user });
+        setLoading(false);
       }
-      
-      fetchDocument();
     }
     
     fetchDocument();
-  }, [documentId, user, router, domainType]);
+  }, [documentId, user, router, useCase, outputFormat]);
+  
+  // Automatically start processing when document is loaded
+  useEffect(() => {
+    // Only auto-start if we have a document and weren't triggered by the API flow
+    if (document && processorRef.current && !processingStarted && !tempJobId) {
+      console.log("Auto-starting document processing");
+      // Small delay to ensure the component is fully mounted
+      const timer = setTimeout(() => {
+        if (processorRef.current && typeof processorRef.current.handleProcess === 'function') {
+          processorRef.current.handleProcess();
+          setProcessingStarted(true);
+        } else {
+          console.error("DocumentProcessor reference or handleProcess method not available");
+        }
+      }, 1000); // Increased delay to ensure component is ready
+      
+      return () => clearTimeout(timer);
+    }
+  }, [document, processingStarted, tempJobId]);
   
   // Handle document processing
   const handleProcess = async () => {
-    if (processorRef.current) {
+    if (processorRef.current && typeof processorRef.current.handleProcess === 'function') {
       processorRef.current.handleProcess();
+      setProcessingStarted(true);
+    } else {
+      console.error("DocumentProcessor reference or handleProcess method not available");
     }
   };
+  
+  // Auto start processing via the processor's internal state if we have a document and were triggered via API
+  useEffect(() => {
+    if (document && processorRef.current && startProcessing && !processingStarted && tempJobId) {
+      console.log("Setting processor to processing state via internal API");
+      // Use setProcessingState instead of handleProcess to avoid duplicate API calls
+      const timer = setTimeout(() => {
+        if (processorRef.current && typeof processorRef.current.setProcessingState === 'function') {
+          processorRef.current.setProcessingState('processing');
+          setProcessingStarted(true);
+        }
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [document, processorRef.current, startProcessing, processingStarted, tempJobId]);
+  
+  // Add a function to load the test script
+  useEffect(() => {
+    // Check if we should run tests (you can pass a test=true query param to enable)
+    const runTests = searchParams.get('test') === 'true';
+    
+    if (runTests) {
+      // Create and append the test script dynamically
+      const script = document.createElement('script');
+      script.src = '/tests/documentProcessor.test.js';
+      script.type = 'module';
+      script.async = true;
+      document.body.appendChild(script);
+      
+      console.log('Test script loaded');
+      
+      return () => {
+        // Clean up
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
+      };
+    }
+  }, [searchParams]);
   
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Spinner className="h-8 w-8 text-blue-600" />
         <span className="ml-2">Loading document...</span>
+      </div>
+    );
+  }
+
+  // If document wasn't found but loading is complete, show an error
+  if (!document && !loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen space-y-4">
+        <div className="text-red-600 text-xl">
+          Document could not be loaded
+        </div>
+        <Button onClick={() => router.push('/dashboard')}>
+          Return to Dashboard
+        </Button>
       </div>
     );
   }
@@ -155,14 +247,31 @@ export default function ProcessDocumentPage() {
         </div>
       )}
       
+      {/* Debugging info - only shown when needed */}
+      {searchParams.get('debug') === 'true' && (
+        <div className="bg-gray-100 p-4 rounded mb-4 text-xs font-mono">
+          <h3 className="font-bold mb-2">Debug Info:</h3>
+          <ul className="space-y-1">
+            <li>Document ID: {documentId || 'Not set'}</li>
+            <li>Use Case: {useCase}</li>
+            <li>Output Format: {outputFormat}</li>
+            <li>Document Loaded: {document ? 'Yes' : 'No'}</li>
+            <li>Processing Started: {processingStarted ? 'Yes' : 'No'}</li>
+            <li>Auto Start: {startProcessing ? 'Yes' : 'No'}</li>
+            <li>Document Name: {document?.name || document?.fileName || 'N/A'}</li>
+          </ul>
+        </div>
+      )}
+      
       <DocumentProcessor 
         ref={processorRef}
         initialDocument={document} 
-        domainType={domainType}
-        autoShowProcessing={!!document} 
+        useCase={useCase}
+        outputFormat={outputFormat}
+        autoShowProcessing={true} 
       />
       
-      {document && (
+      {document && !processingStarted && (
         <div className="mt-6">
           <button
             onClick={handleProcess}

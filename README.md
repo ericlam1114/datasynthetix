@@ -217,3 +217,161 @@ for (let i = 0; i < totalChunks; i++) {
   });
 }
 ```
+
+# DataSynthetix Document Processing System
+
+This project provides a document processing pipeline with advanced memory management features for handling large documents efficiently.
+
+## Key Features
+
+- **Memory Management**: Intelligent memory monitoring and management for processing large documents
+- **Document Chunking**: Automatic splitting of large documents into manageable chunks
+- **Queue Processing**: Smart queue management for handling multiple document processing requests
+- **Real-time Status Updates**: Live status tracking for document processing jobs
+- **Timeout Handling**: Graceful timeout handling for large document processing
+
+## Architecture
+
+### API Routes
+
+- `POST /api/process-document`: Upload and process a document
+- `GET /api/process-document?jobId=<jobId>`: Get the status of a processing job
+
+### Components
+
+- `DocumentProcessingStatus`: React component to display job status, memory usage, and queue position
+- `DocumentProcessor`: Main document handling component with file upload and processing capabilities
+
+## Memory Management Features
+
+### Memory Thresholds
+
+The system defines several memory usage thresholds:
+
+- **Safe Threshold (70%)**: Normal operation
+- **Warning Threshold (85%)**: Reduced concurrency, throttling
+- **Critical Threshold (95%)**: Reject new requests, force garbage collection
+
+### Chunk Processing
+
+Large documents are automatically split into chunks for processing:
+
+- **Chunk Size**: Default 8000 characters per chunk
+- **Natural Boundaries**: Chunks are split at natural paragraph and sentence boundaries
+- **Concurrent Processing**: Controlled concurrency based on memory conditions
+
+### Queue Management
+
+The system includes a queue for processing requests:
+
+- **Queue Size Limit**: Maximum of 10 requests in queue
+- **Priority Processing**: Based on document complexity
+- **Memory-Aware Processing**: Processes queue items based on memory availability
+
+## Implementation Details
+
+### Memory Monitoring
+
+```javascript
+function checkMemoryUsage() {
+  const memUsage = process.memoryUsage();
+  const heapUsed = memUsage.heapUsed;
+  const heapTotal = memUsage.heapTotal;
+  const percentUsed = heapUsed / heapTotal;
+  
+  return {
+    memoryUsage: heapUsed,
+    memoryTotal: heapTotal,
+    percentUsed,
+    isWarning: percentUsed > MEMORY_WARNING_THRESHOLD / 100,
+    isCritical: percentUsed > MEMORY_CRITICAL_THRESHOLD / 100
+  };
+}
+```
+
+### Garbage Collection
+
+```javascript
+function triggerMemoryCleanup() {
+  if (global.gc) {
+    try {
+      global.gc();
+      return true;
+    } catch (e) {
+      console.warn('Failed to trigger garbage collection:', e);
+    }
+  }
+  
+  // Manual cleanup fallback
+  return false;
+}
+```
+
+### Document Complexity Analysis
+
+Documents are analyzed for complexity based on:
+
+- Text length
+- Average sentence length
+- Average word length
+- Estimated number of chunks
+
+This analysis determines the processing strategy (immediate vs. queued, batch size, etc.).
+
+## Usage
+
+### Processing a Document
+
+```javascript
+// Upload a document for processing
+const formData = new FormData();
+formData.append('file', fileObject);
+
+// Send to API
+const response = await fetch('/api/process-document', {
+  method: 'POST',
+  body: formData
+});
+
+const { jobId } = await response.json();
+
+// Track processing status
+<DocumentProcessingStatus jobId={jobId} onComplete={handleComplete} />
+```
+
+### Memory-Aware Processing
+
+The system automatically adjusts processing based on memory conditions:
+
+1. **Normal Memory**: Full concurrent processing
+2. **Warning Level**: Reduced concurrency, throttled processing
+3. **Critical Level**: Queue new requests, pause processing, trigger GC
+
+## Configuration
+
+Key configuration values (in `src/app/api/process-document/route.js`):
+
+```javascript
+const MEMORY_SAFE_THRESHOLD = 70;    // 70% is considered safe
+const MEMORY_WARNING_THRESHOLD = 85; // 85% triggers warnings and throttling
+const MEMORY_CRITICAL_THRESHOLD = 95; // 95% will reject new requests
+const MAX_QUEUE_SIZE = 10;           // Maximum queue size
+```
+
+## Development
+
+To run the development server:
+
+```bash
+npm run dev
+```
+
+For improved garbage collection in development, use:
+
+```bash
+node --expose-gc ./node_modules/.bin/next dev
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

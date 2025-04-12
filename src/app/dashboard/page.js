@@ -71,7 +71,8 @@ export default function DashboardPage() {
   const [selectedDocumentId, setSelectedDocumentId] = useState(null);
   const [selectedDocumentName, setSelectedDocumentName] = useState('');
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
-  const [domainType, setDomainType] = useState('general');
+  const [useCase, setUseCase] = useState("rewriter-legal");
+  const [outputFormat, setOutputFormat] = useState("openai-jsonl");
 
   // Load data including processing jobs
   useEffect(() => {
@@ -241,11 +242,14 @@ export default function DashboardPage() {
   const completedJobCount = processingJobs.filter(job => job.status === 'complete').length;
 
   const handleGenerateData = async (documentId, documentName) => {
+    console.log(`Dashboard: handleGenerateData called for ${documentId}`, { documentName });
+    
     try {
       // Create a temporary job ID
       const tempJobId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
       
       // Show advanced options dialog before processing
+      console.log(`Dashboard: Opening advanced options dialog for ${documentId}`);
       setSelectedDocumentId(documentId);
       setSelectedDocumentName(documentName);
       setShowAdvancedOptions(true);
@@ -254,6 +258,25 @@ export default function DashboardPage() {
       setError('Failed to start processing. Please try again.');
     }
   };
+
+  // Expose handleGenerateData function to window for DocumentList component
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Only set the global function if it's not already defined
+      if (!window.handleGenerateData) {
+        console.log('Dashboard: Registering global handleGenerateData function');
+        window.handleGenerateData = handleGenerateData;
+      }
+    }
+    
+    // Cleanup function
+    return () => {
+      if (typeof window !== 'undefined' && window.handleGenerateData === handleGenerateData) {
+        console.log('Dashboard: Cleaning up global handleGenerateData function');
+        delete window.handleGenerateData;
+      }
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -501,33 +524,44 @@ export default function DashboardPage() {
         <Dialog open={showAdvancedOptions} onOpenChange={setShowAdvancedOptions}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Processing Options</DialogTitle>
+              <DialogTitle>Generate Synthetic Data</DialogTitle>
               <DialogDescription>
-                Configure how "{selectedDocumentName}" will be processed
+                Select a use case and output format for generating synthetic data from "{selectedDocumentName}".
               </DialogDescription>
             </DialogHeader>
             
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="domainType">Document Domain</Label>
+                <Label htmlFor="useCase">Use Case</Label>
                 <Select
-                  defaultValue="general"
-                  onValueChange={(value) => setDomainType(value)}
+                  value={useCase}
+                  onValueChange={(value) => setUseCase(value)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select document domain" />
+                    <SelectValue placeholder="Select a use case" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="general">General (Default)</SelectItem>
-                    <SelectItem value="legal">Legal Documents</SelectItem>
-                    <SelectItem value="sop">Standard Operating Procedures</SelectItem>
-                    <SelectItem value="finance">Financial Documents</SelectItem>
-                    <SelectItem value="technical">Technical Documentation</SelectItem>
+                    <SelectItem value="rewriter-legal">Rewriter for Legal</SelectItem>
+                    <SelectItem value="qa-sops" disabled className="text-gray-400">Q&A for SOPs (Coming Soon)</SelectItem>
+                    <SelectItem value="math-finance" disabled className="text-gray-400">Math for Finance (Coming Soon)</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-gray-500">
-                  Specify the document domain for better results
-                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="outputFormat">Output Format</Label>
+                <Select
+                  value={outputFormat}
+                  onValueChange={(value) => setOutputFormat(value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an output format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="openai-jsonl">OpenAI JSONL</SelectItem>
+                    <SelectItem value="llama" disabled className="text-gray-400">Llama (Coming Soon)</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             
@@ -537,9 +571,9 @@ export default function DashboardPage() {
               </Button>
               <Button onClick={() => {
                 setShowAdvancedOptions(false);
-                router.push(`/dashboard/process?documentId=${selectedDocumentId}&domainType=${domainType}`);
+                router.push(`/dashboard/process?documentId=${selectedDocumentId}&useCase=${useCase}&outputFormat=${outputFormat}`);
               }}>
-                Process Document
+                Generate
               </Button>
             </DialogFooter>
           </DialogContent>

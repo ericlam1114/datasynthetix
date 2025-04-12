@@ -12,8 +12,17 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  // Check if we're in development mode
+  const isDev = process.env.NODE_ENV === 'development';
+  
   return (
     <html lang="en">
+      <head>
+        {/* Load test helpers in development mode */}
+        {isDev && (
+          <script src="/tests/test-helpers.js" defer></script>
+        )}
+      </head>
       <body className={inter.className}>
         <Providers>
           {children}
